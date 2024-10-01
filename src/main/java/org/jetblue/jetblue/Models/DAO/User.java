@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -44,5 +45,8 @@ public class User {
     @OneToOne
     @JoinColumn(name = "user-preference")
     private UserPreference userPreference;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
 }
