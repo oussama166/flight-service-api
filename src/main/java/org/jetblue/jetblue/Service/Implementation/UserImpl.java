@@ -4,7 +4,6 @@ import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 import org.jetblue.jetblue.Repositories.UserRepo;
 import org.jetblue.jetblue.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +12,10 @@ import java.util.Optional;
 @Service
 public class UserImpl implements UserService {
 
+
+
     // Inject the user repo
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
     // Constructor
     public UserImpl(UserRepo userRepo) {
@@ -38,33 +39,46 @@ public class UserImpl implements UserService {
             return false;
         }
         else {
+
             userRepo.save(user);
             return true;
         }
     }
 
     @Override
-    public boolean updateUser(User user) {
-        User userOpt = userRepo.findByUsername(user.getUsername()).orElse(null);
-        if(userOpt != null) {
+    public boolean updateUser(String username,User user) {
+        User userOpt = userRepo.findByUsername(username).orElse(null);
+        if(userOpt == null) {
             return false;
         }
         else {
-            userRepo.save(user);
+            userOpt.setUsername(user.getUsername());
+            userOpt.setEmail(user.getEmail());
+            userOpt.setAddress(user.getAddress());
+            userOpt.setPhone(user.getPhone());
+            userOpt.setBirthday(user.getBirthday());
+            userOpt.setGender(user.getGender());
+            userOpt.setFrequentFlyerNumber(String.valueOf(user.getFrequentFlyerNumber()));
+            userOpt.setLastName(user.getLastName());
+            userOpt.setName(user.getName());
+            userOpt.setMiddleName(user.getMiddleName());
+            userRepo.save(userOpt);
+            return true;
         }
 
-        return false;
     }
 
     @Override
     public boolean deleteUser(String username) {
-        return false;
+        User user = userRepo.findByUsername(username).orElse(null);
+        if(user == null) {
+            return false;
+        } else {
+            userRepo.delete(user);
+            return true;
+        }
     }
 
-    @Override
-    public boolean connect(String username, String password) {
-        return false;
-    }
 
     @Override
     public UserBasicDTO getUserBasicDTO(User user) {

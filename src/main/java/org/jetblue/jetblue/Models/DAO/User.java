@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class User {
     private String phone;
     private String address;
     private String origin;
-    private Date birthday;
+    private LocalDate birthday;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private boolean verified;

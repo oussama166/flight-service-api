@@ -27,11 +27,12 @@ public interface UserService {
      *
      * This function is for updating user info with insert new info about user
      *
+     * @param username
      * @param user
      *
      * @return boolean
      * */
-    boolean updateUser(User user);
+    boolean updateUser(String username,User user);
 
     /**
     * This function is to delete user
@@ -44,16 +45,6 @@ public interface UserService {
 
 
 
-    /**
-     * This function allow to user to connect with credential
-     *
-     * @param username
-     * @param password
-     *
-     * @return boolean
-     * */
-
-    boolean connect(String username , String password);
 
 
 

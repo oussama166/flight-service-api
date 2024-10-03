@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Models.DTO;
 
 import org.jetblue.jetblue.Models.ENUM.Gender;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class UserBasicDTO {
@@ -14,12 +15,12 @@ public class UserBasicDTO {
     private String phone;
     private String address;
     private String origin;
-    private Date Birthday;
+    private LocalDate Birthday;
     private Gender gender;
     private boolean verified;
 
     public UserBasicDTO() {}
-    public UserBasicDTO(String username, String name, String lastName, String middleName, String email, String phone, String address, String origin, Date birthday, Gender gender, boolean verified) {
+    public UserBasicDTO(String username, String name, String lastName, String middleName, String email, String phone, String address, String origin, LocalDate birthday, Gender gender, boolean verified) {
         this.username = username;
         this.name = name;
         this.lastName = lastName;
@@ -65,7 +66,7 @@ public class UserBasicDTO {
         return origin;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return Birthday;
     }
 
