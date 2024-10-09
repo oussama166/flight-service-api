@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-
-@Component
-@Order(1)
+//
+//@Component
+//@Order(1)
 public class corsFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(corsFilter.class);

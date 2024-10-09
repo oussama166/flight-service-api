@@ -19,17 +19,17 @@ public class JetblueApplication {
     /*
     * This function is for make filter with specific route
     * */
-    /**
-     * Register specific pattern filter
-     * @return FilterRegistrationBean
-     * */
-    @Bean
-    FilterRegistrationBean<corsFilter> corsFilterRegistration() {
-        FilterRegistrationBean<corsFilter> bean = new FilterRegistrationBean<>(new corsFilter());
-        bean.setFilter(new corsFilter());
-        bean.addUrlPatterns("/specification/*");
-
-        return bean;
-    }
+        //    /**
+        //     * Register specific pattern filter
+        //     * @return FilterRegistrationBean
+        //     * */
+        //    @Bean
+        //    FilterRegistrationBean<corsFilter> corsFilterRegistration() {
+        //        FilterRegistrationBean<corsFilter> bean = new FilterRegistrationBean<>(new corsFilter());
+        //        bean.setFilter(new corsFilter());
+        //        bean.addUrlPatterns("/specification/*");
+        //
+        //        return bean;
+        //    }
 
 }

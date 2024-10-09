@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,8 +20,12 @@ public class Airport {
     private String code;
     private String name;
     private String location;
+    @Column(unique=true)
+    private double latitude;
+    @Column(unique=true)
+    private double longitude;
 
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="flight_id")
-    private Flight flight;
+    private List<Flight> flight;
 }

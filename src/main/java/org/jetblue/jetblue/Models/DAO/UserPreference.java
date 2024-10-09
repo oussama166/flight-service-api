@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetblue.jetblue.Models.ENUM.Notification;
 
 @Entity
 @Builder
@@ -18,7 +19,9 @@ public class UserPreference {
     private Long id;
     private String seatPreference;
     private String mealPreference;
-    private String notificationPreference;
+    @Enumerated(EnumType.STRING)
+    private Notification notificationPreference = Notification.PUSH;
+
 
     // Relation
     @OneToOne(fetch = FetchType.EAGER)

@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -16,20 +17,21 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(nullable = false,unique = true)
     private String flightNumber;
-    private Date departureTime;
-    private Date arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
     private double price;
 
     // Relation
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="airport-dep")
     private Airport departure;
     @OneToOne
     @JoinColumn(name="airport-arr")
     private Airport arrival;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="airline-id")
     private Airline airline;
 
@@ -39,4 +41,10 @@ public class Flight {
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "Flight-status-id")
     private FlightStatus status;
+
+
+    @PrePersist
+    public void generateFlightNumber() {
+        this.flightNumber = UUID.randomUUID().toString();
+    }
 }

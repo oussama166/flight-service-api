@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserPreferenceController {
 
     // Implement the  repo
-    private UserPreferenceService userPreferenceService;
+    private final UserPreferenceService userPreferenceService;
 
 
     public UserPreferenceController(UserPreferenceService userPreferenceService) {

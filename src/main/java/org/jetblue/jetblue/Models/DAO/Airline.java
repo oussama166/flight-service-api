@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -16,8 +18,9 @@ public class Airline {
     private String airlineName;
     private String airlineCode;
     private String airlineUrl;
+    private String airlineLogoLink;
 
-    @OneToOne
-    @JoinColumn(name = "flight-id")
-    private Flight flight;
+    @OneToMany
+    @JoinColumn(name = "flights")
+    private Set<Flight> flight;
 }

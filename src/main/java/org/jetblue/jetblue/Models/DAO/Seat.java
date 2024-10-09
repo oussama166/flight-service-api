@@ -18,7 +18,7 @@ public class Seat {
 
     // Relation
     @OneToOne
-    @JoinColumn(name = "seatType-id")
+    @JoinColumn(name = "seat-type-id")
     private SeatType seatClass;
 
     @ManyToOne
