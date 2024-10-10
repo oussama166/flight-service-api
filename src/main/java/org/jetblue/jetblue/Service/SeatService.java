@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Seat;
 
 public interface SeatService {
@@ -18,7 +19,7 @@ public interface SeatService {
      * @param seatId -- seat id
      * @param seatInfo -- seat info
      * */
-    Seat updateSeat(int seatId,Seat seatInfo);
+    Seat updateSeat(int seatId, Seat seatInfo, String flightNumber);
 
     /**
      *
