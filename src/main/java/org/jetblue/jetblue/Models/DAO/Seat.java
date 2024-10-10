@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetblue.jetblue.Models.ENUM.SeatType;
 
 @Entity
 @Data
@@ -15,17 +16,22 @@ public class Seat {
     private int seatNumber;
     private double price;
     private boolean isAvailable = true;
+    @Enumerated(EnumType.STRING)
+    private SeatType seatType;
 
     // Relation
-    @OneToOne
-    @JoinColumn(name = "seat-type-id")
-    private SeatType seatClass;
 
     @ManyToOne
     @JoinColumn(name = "flight-seat-id")
     private Flight flight;
 
     @ManyToOne
-    @JoinColumn(name="seat-booking")
+    @JoinColumn(name = "seat-booking")
     private Booking seatBooking;
+
+
+    //    @OneToOne
+    //    @JoinColumn(name = "seat-type-id")
+    //    private SeatType seatClass;
+
 }
