@@ -35,8 +35,9 @@ public class Flight {
     @JoinColumn(name="airline-id")
     private Airline airline;
 
-    @OneToMany(cascade=CascadeType.ALL)
-    private List<Seat> seats;
+   @ManyToMany
+   @JoinTable()
+   private List<Airplane> airPlane;
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "Flight-status-id")

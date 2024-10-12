@@ -91,6 +91,7 @@ public class AirportController {
         return ResponseEntity.ok(airports);
     }
 
+
     @DeleteMapping(
             value = "/deleteAirport/{code}"
     )

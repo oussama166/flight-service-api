@@ -1,7 +1,9 @@
 package org.jetblue.jetblue.Service;
 
-import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Seat;
+import org.jetblue.jetblue.Models.ENUM.SeatType;
+
+import java.util.List;
 
 public interface SeatService {
 
@@ -12,6 +14,19 @@ public interface SeatService {
      * */
 
     Seat createSeat(Seat seat);
+
+    /**
+     * Create range of seats
+     *
+     * @param maxSeatNumber -- Max number of seats
+     * @param price -- Price of the seat
+     * @param seatType -- Seat type [FIRST_CLASS,SECOND_CLASS,ECONOMY_CLASS]
+     * @param flightNumber --Number of the flight
+     *
+     */
+    List<Seat> createSeats(int maxSeatNumber, double price, SeatType seatType, String flightNumber);
+
+
 
     /**
      * Update Seat info

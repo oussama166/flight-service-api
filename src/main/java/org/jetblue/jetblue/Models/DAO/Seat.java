@@ -22,8 +22,8 @@ public class Seat {
     // Relation
 
     @ManyToOne
-    @JoinColumn(name = "flight-seat-id")
-    private Flight flight;
+    @JoinColumn(name = "seats")
+    private Airplane airPlane;
 
     @ManyToOne
     @JoinColumn(name = "seat-booking")

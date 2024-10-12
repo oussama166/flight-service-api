@@ -9,4 +9,6 @@ public interface AirportRepo extends JpaRepository<Airport,Long> {
 
 
     public Optional<Airport> findByCode( String code);
+
+
 }
