@@ -3,6 +3,8 @@ package org.jetblue.jetblue.Service;
 
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
 
+import java.util.List;
+
 public interface FlightStatusService {
 
 
@@ -14,11 +16,24 @@ public interface FlightStatusService {
     FlightStatus setFlightStatus(FlightStatus flightStatus);
 
     /**
+     * Create new flights status
+     *
+     * @param status -- List of all the status that we need to be added
+     * */
+
+    boolean setListFlightStatus(List<String> status);
+    /**
      * Getting Flight status by the name
      *
      * @param status -- Status name
      */
     FlightStatus getFlightStatus(String status);
+
+    /**
+     *
+     * Getting all the flight status on the database
+     * */
+    List<FlightStatus> getAllFlightStatus();
 
     /**
      * Getting Flight status by the name

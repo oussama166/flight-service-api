@@ -6,6 +6,8 @@ import org.jetblue.jetblue.Service.FlightStatusService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class FlightStatusController {
@@ -13,7 +15,7 @@ public class FlightStatusController {
     private FlightStatusService flightStatusService;
 
     @PostMapping(
-            name = "/setFlightStatus",
+            value = "/setFlightStatus",
             consumes = "application/json",
             produces = "application/json"
     )
@@ -27,8 +29,27 @@ public class FlightStatusController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping(
+            value="/setListFlightsStatus",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> setListFlightsStatus(
+            @RequestBody List<String> flightStatus
+    ) {
+        try {
+            boolean flightStatusChanged = flightStatusService.setListFlightStatus(flightStatus);
+            if(flightStatusChanged) {
+                return ResponseEntity.ok(flightStatus);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping(
-            name = "/getFlightStatus/{status}",
+            value = "/getFlightStatus/{status}",
             consumes = "application/json",
             produces = "application/json"
     )
@@ -39,9 +60,21 @@ public class FlightStatusController {
         }
         return ResponseEntity.ok(flightStatus);
     }
+    @GetMapping(
+            value = "/getFlightStatus",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> getFlightStatus() {
+        try {
+            List<FlightStatus> fl = flightStatusService.getAllFlightStatus();
+            return ResponseEntity.ok(fl);
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @PutMapping(
-            name = "/updateFlightStatus/{status}",
+            value = "/updateFlightStatus/{status}",
             consumes = "application/json",
             produces = "application/json"
     )
@@ -54,7 +87,7 @@ public class FlightStatusController {
     }
 
     @DeleteMapping(
-            name="/deleteFlightStatus/{status}",
+            value="/deleteFlightStatus/{status}",
             consumes = "application/json",
             produces = "application/json"
     )
