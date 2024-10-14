@@ -2,10 +2,11 @@ package org.jetblue.jetblue.Service.Implementation;
 
 
 import lombok.AllArgsConstructor;
-import org.jetblue.jetblue.Models.DAO.Airplane;
+import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Repositories.AirplaneRepo;
+import org.jetblue.jetblue.Repositories.FlightRepo;
 import org.jetblue.jetblue.Repositories.SeatsRepo;
 import org.jetblue.jetblue.Service.SeatService;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class SeatImpl implements SeatService {
 
     // Injection
     private final SeatsRepo seatsRepo;
-    private final AirplaneRepo airplaneRepo;
+    private final FlightRepo flightRepo;
 
     // Implementation
 
@@ -29,9 +30,8 @@ public class SeatImpl implements SeatService {
         List<Seat> seats = new ArrayList<Seat>();
 
         // finding the flight using the flight number
-        Airplane airPlane = airplaneRepo.findByName(airplaneName).orElse(null);
-
-        if(airPlane == null) {
+        Flight flight = flightRepo.findByFlightNumber(airplaneName).orElse(null);
+        if(flight == null) {
             return null;
         }
         // Loop through and create seats up to the max seat number
@@ -39,7 +39,9 @@ public class SeatImpl implements SeatService {
             Seat seat = new Seat(); // Assuming a Seat class with appropriate setters
             seat.setPrice(price); // Assign price
             seat.setSeatType(seatType); // Assign seat type (Economy, Business, etc.)
-            seat.setAirPlane(airPlane);
+            seat.setFlight(flight);
+            seat.setFlag("");
+
 
             // Optionally set other properties like availability, etc.
             seat.setAvailable(true); // Assuming there's an available flag for seats
@@ -53,14 +55,18 @@ public class SeatImpl implements SeatService {
 
     @Override
     public Seat createSeat(Seat seat) {
-        Airplane airplane = airplaneRepo.findByName(seat.getAirPlane().getName()).orElse(null);
-        if(airplane == null) {
+
+        Flight flight = flightRepo.findByFlightNumber(seat.getFlight().getFlightNumber()).orElse(null);
+
+        if(flight == null) {
             return null;
         }
+
         Seat seatInst = new Seat();
         seatInst.setPrice(seat.getPrice());
         seatInst.setSeatType(seat.getSeatType());
-        seatInst.setAirPlane(airplane);
+        seatInst.setFlag(seat.getFlag());
+
         seatInst.setAvailable(true);
         seatsRepo.save(seatInst);
         return seatInst;
@@ -70,7 +76,7 @@ public class SeatImpl implements SeatService {
     @Override
     public Seat updateSeat(int seatId, Seat seatInfo, String airplaneName) {
         // trying to find first the flight
-        Seat seat = seatsRepo.findBySeatNumberAndAirPlane(seatId,airplaneName).orElse(null);
+        Seat seat = seatsRepo.findBySeatNumberAndFlight(seatId,airplaneName).orElse(null);
 
         if(seat == null) {
             return null;

@@ -10,9 +10,9 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
 
     Optional<Seat> findBySeatNumber(int seatId);
     @Query(
-            "SELECT st FROM Seat st where st.seatNumber = ?1 AND st.airPlane.name LIKE %?2% "
+            "SELECT st FROM Seat st where st.seatNumber = ?1 AND st.flight.flightNumber LIKE %?2% "
     )
-    Optional<Seat> findBySeatNumberAndAirPlane(int seatNumber, String airplaneName);
+    Optional<Seat> findBySeatNumberAndFlight(int seatNumber, String airplaneName);
 
 
 }

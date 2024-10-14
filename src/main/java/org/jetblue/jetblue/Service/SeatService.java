@@ -18,7 +18,6 @@ public interface SeatService {
     /**
      * Create range of seats
      *
-     * @param maxSeatNumber -- Max number of seats
      * @param price -- Price of the seat
      * @param seatType -- Seat type [FIRST_CLASS,SECOND_CLASS,ECONOMY_CLASS]
      * @param flightNumber --Number of the flight

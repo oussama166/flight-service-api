@@ -31,6 +31,8 @@ public class Airplane {
             cascade = CascadeType.ALL
     )
     private List<FlightAirplane> flightAirplanes;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Flight> flight;
 
 
 }

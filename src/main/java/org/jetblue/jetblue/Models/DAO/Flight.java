@@ -19,9 +19,12 @@ public class Flight {
     private long id;
     @Column(nullable = false,unique = true)
     private String flightNumber;
+    private int max_seats;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private double price;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Airplane airplane;
 
     // Relation
     @ManyToOne
@@ -35,14 +38,13 @@ public class Flight {
     @JoinColumn(name="airline-id")
     private Airline airline;
 
-   @ManyToMany
-   @JoinTable()
-   private List<Airplane> airPlane;
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "Flight-status-id")
     private FlightStatus status;
 
+    @OneToMany
+    private List<Seat> seats;
 
     @PrePersist
     public void generateFlightNumber() {

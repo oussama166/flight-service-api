@@ -14,6 +14,7 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int seatNumber;
+    private String flag;
     private double price;
     private boolean isAvailable = true;
     @Enumerated(EnumType.STRING)
@@ -23,15 +24,15 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "seats")
-    private Airplane airPlane;
+    private Flight flight;
 
     @ManyToOne
     @JoinColumn(name = "seat-booking")
-    private Booking seatBooking;
+    private Booking seatbooking;
 
 
-    //    @OneToOne
-    //    @JoinColumn(name = "seat-type-id")
-    //    private SeatType seatClass;
-
+    @PrePersist
+    public void prePersistFlag(){
+        this.flag = this.getSeatNumber() + "-" + this.flight.getFlightNumber();
+    }
 }

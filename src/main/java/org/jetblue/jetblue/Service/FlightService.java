@@ -16,18 +16,18 @@ public interface FlightService {
      * @param departure -- Departure airport
      * @param arrival -- Arrival airport
      * @param airline -- airline of the flight (air maroc ....?)
-     * @param seats -- List of all the seat number in the flight
+     * @param airplane -- airplane that will take the flight (Airbus A220 ...?)
      * @param flightStatus -- Status of the flight (canceled ....)
      * */
     Flight setFlight(
             LocalDateTime departureTime,
             LocalDateTime arrivalTime,
             double price,
-            Airport departure,
-            Airport arrival,
-            Airline airline,
-            List<Seat> seats,
-            FlightStatus flightStatus
+            String departure,
+            String arrival,
+            String airline,
+            String airplane,
+            String flightStatus
     );
 
     /**
