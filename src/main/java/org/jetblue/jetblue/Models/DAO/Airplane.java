@@ -26,11 +26,6 @@ public class Airplane {
     @OneToMany
     private List<Seat> seats;
 
-    @OneToMany(
-            mappedBy = "airplane",
-            cascade = CascadeType.ALL
-    )
-    private List<FlightAirplane> flightAirplanes;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Flight> flight;
 

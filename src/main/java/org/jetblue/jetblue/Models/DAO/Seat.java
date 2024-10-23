@@ -2,6 +2,7 @@ package org.jetblue.jetblue.Models.DAO;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
@@ -10,6 +11,7 @@ import org.jetblue.jetblue.Models.ENUM.SeatType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

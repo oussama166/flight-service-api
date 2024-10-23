@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Controller;
 
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.Seat;
+import org.jetblue.jetblue.Models.DTO.SeatCreate;
 import org.jetblue.jetblue.Models.DTO.SeatCreationRequest;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Service.SeatService;
@@ -25,7 +26,7 @@ public class SeatController {
             produces = "application/json"
     )
     public ResponseEntity<?> createSeat(
-            @RequestBody Seat seat
+            @RequestBody SeatCreate seat
     ) {
         try {
             // Create a seat using the seatService

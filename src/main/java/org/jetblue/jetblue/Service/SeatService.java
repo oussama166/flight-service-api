@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Service;
 
 import org.jetblue.jetblue.Models.DAO.Seat;
+import org.jetblue.jetblue.Models.DTO.SeatCreate;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface SeatService {
      * @param seat -- Adding new seat
      * */
 
-    Seat createSeat(Seat seat);
+    Seat createSeat(SeatCreate seat);
 
     /**
      * Create range of seats

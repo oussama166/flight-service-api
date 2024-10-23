@@ -1,15 +1,12 @@
 package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Repositories.AirlineRepo;
-import org.jetblue.jetblue.Repositories.AirportRepo;
 import org.jetblue.jetblue.Service.AirlineService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +17,6 @@ public class AirlineImpl implements AirlineService {
 
     // inject
     private final AirlineRepo airlineRepo;
-    private final AirportRepo airportRepo;
 
 
     @Override
@@ -38,12 +34,16 @@ public class AirlineImpl implements AirlineService {
 
     @Override
     public Airline getAirline(String airlineName) {
-        return airlineRepo.findByAirlineCode(airlineName).orElse(null);
+        return airlineRepo
+                .findByAirlineCode(airlineName)
+                .orElse(null);
     }
 
     @Override
     public Airline updateAirline(String airlineName, Airline airline) {
-        Airline airlineResp = airlineRepo.findByAirlineCode(airlineName).orElse(null);
+        Airline airlineResp = airlineRepo
+                .findByAirlineCode(airlineName)
+                .orElse(null);
         if (airlineResp == null) {
             setAirline(airline);
             return new Airline();

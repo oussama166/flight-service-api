@@ -13,9 +13,14 @@ public class FlightPostDTO {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private double price;
+    private int maxSeats;
     private String departure;
     private String arrival;
     private String airline;
     private String airplane;
+    private int maxFirst;
+    private int maxSecond;
+    private int maxThird;
     private String flightStatus;
+
 }
