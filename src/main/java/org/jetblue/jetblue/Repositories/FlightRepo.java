@@ -19,7 +19,7 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
 
     Optional<Flight> findByFlightNumberOrAirline_AirlineCode(String flightNumber, String airlineCode);
 
-    Optional<Flight> findByDeparture_CodeAndArrival_CodeAndStatus(String departure_code, String arrival_code, FlightStatus status) ;
+    List<Flight> findByDeparture_CodeAndArrival_CodeAndStatus(String departure_code, String arrival_code, FlightStatus status) ;
 
     @Query(
             "SELECT fl FROM Flight  fl where fl.flightNumber LIKE ?1"

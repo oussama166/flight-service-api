@@ -1,12 +1,15 @@
 package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Models.DAO.Airplane;
 import org.jetblue.jetblue.Models.DAO.Airport;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.FlightService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FlightImpl implements FlightService {
@@ -23,6 +27,8 @@ public class FlightImpl implements FlightService {
     private final FlightStatusRepo flightStatusRepo;
     private final AirplaneRepo airplaneRepo;
     private FlightRepo flightRepo;
+
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
@@ -41,9 +47,9 @@ public class FlightImpl implements FlightService {
             String flightStatus
     ) {
         // Find necessary entities
-        Airport departureAirport = airportRepo.findByCode(departure).orElseThrow(
+        Airport departureAirport = airportRepo.findByCodeOrLocation(departure).orElseThrow(
                 () -> new IllegalArgumentException("Departure airport not found"));
-        Airport arrivalAirport = airportRepo.findByCode(arrival).orElseThrow(
+        Airport arrivalAirport = airportRepo.findByCodeOrLocation(arrival).orElseThrow(
                 () -> new IllegalArgumentException("Arrival airport not found"));
         Airplane targetAirplane = airplaneRepo.findByName(airplane).orElseThrow(
                 () -> new IllegalArgumentException("Airplane not found"));
@@ -97,15 +103,34 @@ public class FlightImpl implements FlightService {
     }
 
     @Override
-    public Flight getFlight(String departure, String arrival, String flightStatus) {
+    public List<Flight> getFlight(String departure, String arrival, String flightStatus) throws Exception {
+        // Validate departure airport
+        LOG.info(departure);
+        Airport departureAirport = airportRepo.findByCodeOrLocation(departure)
+                .orElseThrow(() -> new IllegalArgumentException("Departure airport not found"));
 
-        // getting the flight status
-        FlightStatus FlSt = flightStatusRepo.findByStatus(flightStatus).orElse(null);
+        // Validate arrival airport
+        Airport arrivalAirport = airportRepo.findByCodeOrLocation(arrival)
+                .orElseThrow(() -> new IllegalArgumentException("Arrival airport not found"));
 
-        assert FlSt != null;
+        // Check if departure and arrival airports are the same
+        if (departureAirport.equals(arrivalAirport)) {
+            throw new DataIntegrityViolationException("Departure and arrival airports cannot be the same");
+        }
 
-        // TRYING TO GET THE FLIGHTS
-        return flightRepo.findByDeparture_CodeAndArrival_CodeAndStatus(departure, arrival, FlSt).orElse(null);
+        // Getting the flight status
+        FlightStatus flightStatusEntity = flightStatusRepo.findByStatus(flightStatus)
+                .orElseGet(() -> {
+                    try {
+                        return flightStatusRepo.findByStatus("On Time")
+                                .orElseThrow(() -> new Exception("Status flight invalid !!!"));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        // Fetch and return flights
+        return flightRepo.findByDeparture_CodeAndArrival_CodeAndStatus(departureAirport.getCode(), arrivalAirport.getCode(), flightStatusEntity);
     }
 
     @Override

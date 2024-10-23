@@ -54,7 +54,7 @@ public class AirportImpl implements AirportService {
 
     @Override
     public Airport getAirport(String code) {
-        return airportRepo.findByCode(code).orElse(null);
+        return airportRepo.findByCodeOrLocation(code).orElse(null);
     }
 
     @Override

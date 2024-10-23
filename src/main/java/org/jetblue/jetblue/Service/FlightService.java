@@ -57,12 +57,12 @@ public interface FlightService {
     /**
      * Getting flight using the Number Flight
      *
-     * @param numberFlight -- each flight has unique flight number
-     * @param airline -- mention the airline of the flight
+     * @param departure -- departure airport
+     * @param arrival -- arrival airport
      * @param flightStatus -- using the flight status to find a flight
      *
      * */
-    Flight getFlight(String departure, String arrival, String flightStatus);
+    List<Flight> getFlight(String departure, String arrival, String flightStatus) throws Exception;
 
     /**
      * Getting List of flights using the departure and the arrival

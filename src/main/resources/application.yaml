@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/JetBlue?createDatabaseIfNotExist=true
@@ -7,12 +8,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # Change to validate, create-drop, etc., as needed
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  application:
+    name: JETBLUE-API-SERVICE
 
-# Additional configurations (if needed)
+
 logging:
   level:
-    org.hibernate.SQL: DEBUG   # To log SQL queries
+    org.hibernate.SQL: DEBUG

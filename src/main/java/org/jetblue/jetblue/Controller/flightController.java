@@ -3,9 +3,12 @@ package org.jetblue.jetblue.Controller;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DTO.FlightPostDTO;
+import org.jetblue.jetblue.Models.DTO.FlightSearch;
 import org.jetblue.jetblue.Service.FlightService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -83,23 +86,21 @@ public class flightController {
         }
     }
 
-//    @GetMapping(
-//            value = "/getFlight",
-//            produces = "application/json"
-//    )
-//    public ResponseEntity<?> getFlights(
-//            @RequestParam("departure") String departure,
-//            @RequestParam("arrival") String arrival,
-//            @RequestParam(value = "flightStatus", defaultValue = "On Time") String flightStatus
-//    ) {
-//        try {
-//            Flight flight = flightService.getFlight(departure, arrival, flightStatus);
-//            if (flight == null) {
-//                return ResponseEntity.notFound().build();
-//            }
-//            return ResponseEntity.ok(flight);
-//        } catch (Exception e) {
-//            return ResponseEntity.internalServerError().body(e.getMessage());
-//        }
-//    }
+    @GetMapping(
+            value = "/getFlightByArrDes",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> getFlights(@RequestBody FlightSearch flightSearch) {
+        try {
+            System.out.println(flightSearch.getDeparture());
+            List<Flight> flights = flightService.getFlight(flightSearch.getDeparture(), flightSearch.getArrival(), flightSearch.getFlightStatus());
+            if (flights.isEmpty()) { // Check if the list is empty
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(flights);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }
