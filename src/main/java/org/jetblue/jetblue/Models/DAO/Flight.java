@@ -24,6 +24,8 @@ public class Flight {
     private int max_seats;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
+    private double distance;
+    private double duration;
     private double price;
     @ManyToOne(cascade = CascadeType.ALL)
     private Airplane airplane;

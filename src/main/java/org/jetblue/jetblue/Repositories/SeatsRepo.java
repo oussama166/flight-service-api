@@ -20,5 +20,7 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
     )
     Optional<Flight> findByFlightFlightNumber(String flightNumber);
 
+    boolean existsByFlightFlightNumberAndSeatLabel(String flightNumber, String seatLabel);
+
 
 }

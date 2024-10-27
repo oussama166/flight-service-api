@@ -8,6 +8,7 @@ import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.FlightService;
+import org.jetblue.jetblue.Utils.FlightUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -67,6 +68,7 @@ public class FlightImpl implements FlightService {
 
         // Initialize flight object
         Flight flight = new Flight();
+        double distance = FlightUtils.calculateDistance(departureAirport.getLatitude(), departureAirport.getLongitude(), arrivalAirport.getLatitude(), arrivalAirport.getLongitude());
         flight.setDeparture(departureAirport);
         flight.setArrival(arrivalAirport);
         flight.setAirplane(targetAirplane);
@@ -76,6 +78,8 @@ public class FlightImpl implements FlightService {
                 () -> new IllegalArgumentException("Flight status not found")));
         flight.setDepartureTime(departureTime);
         flight.setArrivalTime(arrivalTime);
+        flight.setDistance(distance);
+        flight.setDuration(FlightUtils.estimateTimeToReachDes(distance));
         flight.setPrice(price);
         flight.setMaxFirstClass(maxFirst);
         flight.setMaxSecondClass(maxSecond);

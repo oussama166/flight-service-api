@@ -13,4 +13,10 @@ public class SeatCreate {
     private double price;
     private SeatType seatType;
     private String flightNumber;
+    private boolean LapEnfant;
+    private boolean SpecialTrait;
+    private boolean Sold;
+    private int col;
+    private int row;
+
 }

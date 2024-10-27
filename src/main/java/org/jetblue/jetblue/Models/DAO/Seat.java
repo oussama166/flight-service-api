@@ -16,9 +16,15 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int seatNumber;
+    private String seatLabel;
     private String flag;
     private double price;
     private boolean isAvailable = true;
+    private boolean isSpecialTrait = false;
+    private boolean isSold = false;
+    private boolean isLeapEnfantSeat = false;
+    private int col;
+    private int row;
     @Enumerated(EnumType.STRING)
     private SeatType seatType;
 

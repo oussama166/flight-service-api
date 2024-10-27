@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.DTO.SeatCreate;
 import org.jetblue.jetblue.Models.DTO.SeatCreationRequest;
-import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Service.SeatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +53,8 @@ public class SeatController {
                     seatCreationRequest.getMaxSeatNumber(),
                     seatCreationRequest.getPrice(),
                     seatCreationRequest.getSeatType(),
-                    seatCreationRequest.getAirplaneName()
+                    seatCreationRequest.getAirplaneName(),
+                    seatCreationRequest.getRowStart()
             );
 
             // If the list is not empty, return the seats created with HTTP status 201 (Created)
@@ -78,8 +78,8 @@ public class SeatController {
     )
     public ResponseEntity<?> updateSeat(
             @RequestParam("seatId") int seatId,
-            @RequestBody Seat seat,
-            @RequestParam("flightNumber") String flightNumber
+            @RequestParam("flightNumber") String flightNumber,
+            @RequestBody Seat seat
     ) {
         try {
             Seat seatResp = seatService.updateSeat(seatId, seat, flightNumber);

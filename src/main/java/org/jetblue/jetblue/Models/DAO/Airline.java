@@ -19,6 +19,8 @@ public class Airline {
     private String airlineCode;
     private String airlineUrl;
     private String airlineLogoLink;
+    private int colFormation;
+    private int rowFormation;
 
     @OneToMany
     @JoinColumn(name = "flights")

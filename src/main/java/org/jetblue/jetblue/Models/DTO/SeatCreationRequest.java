@@ -14,4 +14,5 @@ public class SeatCreationRequest {
     private double price;
     private SeatType seatType;
     private String airplaneName;
+    private int rowStart;
 }
