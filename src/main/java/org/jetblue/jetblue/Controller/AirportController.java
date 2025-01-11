@@ -29,10 +29,10 @@ public class AirportController {
                 Airport airportResponse =  airportService.createAirport(airport);
 
                 if(airportResponse != null) {
-                    return ResponseEntity.ok("Airport already exist !!!");
+                    return ResponseEntity.ok("Airport created successfully !!!");
                 }
                 else {
-                    return ResponseEntity.ok("Airport created successfully !!!");
+                    return ResponseEntity.ok("Airport already exist !!!");
                 }
         }catch (Exception e) {
             return ResponseEntity.badRequest().body("Error occurred  at server level !!!");

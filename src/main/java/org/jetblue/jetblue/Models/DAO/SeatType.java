@@ -1,18 +1,14 @@
 package org.jetblue.jetblue.Models.DAO;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Entity
-@Data
+//@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="SeatType")
 public class SeatType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

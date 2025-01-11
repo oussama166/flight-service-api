@@ -12,6 +12,7 @@ import org.jetblue.jetblue.Service.SeatService;
 import org.jetblue.jetblue.Utils.SeatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class SeatImpl implements SeatService {
     // Implementation
 
 
-    //Todo : Refactoring the create Seats logic to adapt the new approach column x row
+    // Todo : Refactoring the create Seats logic to adapt the new approach column x row
     @Override
     public List<Seat> createSeats(int maxSeatNumber, double price, SeatType seatType, String airplaneName, int startRow) {
         List<Seat> seats = new ArrayList<>();
@@ -47,15 +48,15 @@ public class SeatImpl implements SeatService {
         int row = flight.getAirline().getRowFormation();
         int counter = 0;
 
-        for (int i = 0; i < row; i++) {
+        for (int i = 1; i <= row; i++) {
             if (counter < maxSeatNumber) {
-                for (int j = 0; j < col; j++) {
+                for (int j = 1; j <= col; j++) {
                     String seatLabel = SeatUtils.generateSingleSeat(i, j);
                     boolean isExist = seatsRepo.existsByFlightFlightNumberAndSeatLabel(flight.getFlightNumber(), seatLabel);
                     if (isExist) {
                         continue;
                     }
-                    createSeat(
+                    seats.add(createSeat(
                             SeatCreate.builder()
                                     .flag("")
                                     .price(price)
@@ -64,20 +65,17 @@ public class SeatImpl implements SeatService {
                                     .col(i)
                                     .row(j)
                                     .build()
-                    );
+                    ));
                     counter++;
                 }
             }
         }
 
 
-
-
-
         // Loop through and create seats up to the max seat number
 
 
-//        seatsRepo.saveAll(seats);
+        // seatsRepo.saveAll(seats);
         return seats;
     }
 
@@ -151,10 +149,12 @@ public class SeatImpl implements SeatService {
         Seat seat = seatsRepo
                 .findBySeatNumberAndFlight(seatId, airplaneName)
                 .orElseThrow(() -> new DataIntegrityViolationException("Seat not found"));
+        LOG.info(seat.toString());
         try {
             seat.setPrice(seatInfo.getPrice());
             seat.setAvailable(seat.isAvailable());
             seat.setSeatType(seatInfo.getSeatType());
+            seat.setFlight(seatInfo.getFlight());
             seat.setPrice(seatInfo.getPrice());
             seat.setAvailable(seatInfo.isAvailable());
             seat.setLeapEnfantSeat(seatInfo.isLeapEnfantSeat());
@@ -172,5 +172,9 @@ public class SeatImpl implements SeatService {
         return seatsRepo.findBySeatNumber(seatId).orElse(null);
     }
 
+    @Override
+    public List<Seat> getAllSeats(String flightNumber) {
 
+        return seatsRepo.findByFlight_FlightNumber(flightNumber);
+    }
 }

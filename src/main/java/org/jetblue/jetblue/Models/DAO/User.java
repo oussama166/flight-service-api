@@ -1,21 +1,20 @@
 package org.jetblue.jetblue.Models.DAO;
 
 
+import lombok.*;
 import org.jetblue.jetblue.Models.ENUM.Gender;
 import org.jetblue.jetblue.Models.ENUM.Role;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -27,6 +26,7 @@ public class User {
     private String username;
     private String name;
     private String lastName;
+
     @Column(nullable = true)
     private String middleName;
     @Column(unique = true)
@@ -46,10 +46,13 @@ public class User {
 
     // Relation
     @OneToOne
-    @JoinColumn(name = "user-preference")
+    @JoinColumn(name = "user_preference")
     private UserPreference userPreference;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Booking> bookings;
+
+    @OneToMany
+    private List<Passenger> passengers;
 
 }

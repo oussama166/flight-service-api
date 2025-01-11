@@ -84,7 +84,7 @@ public class FlightImpl implements FlightService {
         flight.setMaxFirstClass(maxFirst);
         flight.setMaxSecondClass(maxSecond);
         flight.setMaxThirdClass(maxThird);
-        flight.setMax_seats(maxSeat);
+        flight.setMaxSeats(maxSeat);
 
         // Save flight with proper exception handling
         try {

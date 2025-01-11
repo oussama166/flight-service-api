@@ -8,7 +8,7 @@ import java.util.List;
 public interface BookingStatusService {
 
     /**
-    * This function is dedicated to adding new Booking status
+    * This function is dedicated to adding new BookingRepo status
     *
     * @param bookingStatus -- given a hole booking status info object
     * */
@@ -17,7 +17,7 @@ public interface BookingStatusService {
     /**
      * This function is dedicated to adding a list of booking status to dataset
      *
-     * @param bookingStatuses -- Booking status list
+     * @param bookingStatuses -- BookingRepo status list
      * */
     BookingStatus setBookingStatus(List<BookingStatus> bookingStatuses);
 

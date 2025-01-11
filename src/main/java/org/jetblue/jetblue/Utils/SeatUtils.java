@@ -1,8 +1,5 @@
 package org.jetblue.jetblue.Utils;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 

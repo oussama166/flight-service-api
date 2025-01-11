@@ -1,46 +1,44 @@
 package org.jetblue.jetblue.Models.DAO;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 
-
-
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@Table(name = "Booking")
 public class Booking {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "booking_id", columnDefinition = "VARCHAR(36)")
     @JdbcTypeCode(Types.VARCHAR)
     private UUID bookingId;
+
+    @Column(name = "total_price")
     private double totalPrice;
 
-
-    // Relation
-
-    @ManyToOne
-    @JoinColumn(name = "user-id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "flight-id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="flight-seats")
+    @OneToMany(mappedBy = "seatBooking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seats;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "booking-status-id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_id", nullable = false)
     private BookingStatus status;
-
-
 }

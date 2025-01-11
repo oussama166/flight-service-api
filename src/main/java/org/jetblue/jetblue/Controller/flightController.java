@@ -86,6 +86,7 @@ public class flightController {
         }
     }
 
+
     @GetMapping(
             value = "/getFlightByArrDes",
             consumes = "application/json",
@@ -94,7 +95,11 @@ public class flightController {
     public ResponseEntity<?> getFlights(@RequestBody FlightSearch flightSearch) {
         try {
             System.out.println(flightSearch.getDeparture());
-            List<Flight> flights = flightService.getFlight(flightSearch.getDeparture(), flightSearch.getArrival(), flightSearch.getFlightStatus());
+            List<Flight> flights = flightService.getFlight(
+                    flightSearch.getDeparture(),
+                    flightSearch.getArrival(),
+                    flightSearch.getFlightStatus()
+            );
             if (flights.isEmpty()) { // Check if the list is empty
                 return ResponseEntity.notFound().build();
             }

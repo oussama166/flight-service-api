@@ -27,4 +27,5 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     Optional<Flight> findByFlightNumber(String flightNumber);
 
 
+
 }

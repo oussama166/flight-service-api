@@ -1,6 +1,11 @@
 package org.jetblue.jetblue.Controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
+import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
+import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
 import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Service.AirlineService;
@@ -16,6 +21,7 @@ public class AirlineController {
 
     // Integration
     private AirlineService airlineService;
+    private AirlineMapper airlineMapper;
 
 
     @PostMapping(
@@ -24,9 +30,9 @@ public class AirlineController {
             produces = "application/json"
     )
     public ResponseEntity<?> setAirline(
-            @RequestBody Airline airline
+            @RequestBody @Valid AirlineRequest airline
     ) {
-        Airline airlineRes = airlineService.setAirline(airline);
+        Airline airlineRes = airlineService.setAirline(airlineMapper.toAirline(airline));
 
         if (airlineRes == null) {
             return ResponseEntity.notFound().build();
@@ -41,7 +47,7 @@ public class AirlineController {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> getAirline(
+    public ResponseEntity<AirlineResponse> getAirline(
             @PathVariable String airline
     ) {
         Airline airlineRes = airlineService.getAirline(airline);
@@ -49,7 +55,7 @@ public class AirlineController {
         if (airlineRes == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(airlineRes);
+            return ResponseEntity.ok(airlineMapper.toAirlineResponse(airlineRes));
         }
     }
 

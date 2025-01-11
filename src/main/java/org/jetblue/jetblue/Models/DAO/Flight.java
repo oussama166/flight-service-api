@@ -1,66 +1,80 @@
 package org.jetblue.jetblue.Models.DAO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Flight {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(nullable = false, unique = true)
     private String flightNumber;
-    private int max_seats;
+
+    private int maxSeats;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private double distance;
     private double duration;
     private double price;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Airplane airplane;
+
     private int maxFirstClass;
     private int maxSecondClass;
     private int maxThirdClass;
-    // this is being increment directly using the business logic
-    private int FirstClassReserve;
-    private int SecondClassReserve;
-    private int ThirdClassReserve;
 
-    // this is being increment directly using the booking by users
-    private int FirstClassReserved;
-    private int SecondClassReserved;
-    private int ThirdClassReserved;
+    private int firstClassReserve; // Renamed for consistency
+    private int secondClassReserve;
+    private int thirdClassReserve;
 
-    // Relation
-    @ManyToOne
-    @JoinColumn(name = "airport-dep")
+    private boolean firstClassAvailable = true; // Renamed for consistency
+    private boolean secondClassAvailable = true;
+    private boolean thirdClassAvailable = true;
+
+    private int firstClassReserved;
+    private int secondClassReserved;
+    private int thirdClassReserved;
+
+    private boolean allowsBassinet;
+    private boolean allowsUnaccompaniedMinors;
+    private boolean providesChildMeals;
+
+    // Relationships
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Airplane airplane;
+
+    @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "airport_dep")
     private Airport departure;
-    @ManyToOne
-    @JoinColumn(name = "airport-arr")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "airport_arr")
     private Airport arrival;
 
     @ManyToOne
-    @JoinColumn(name = "airline-id")
+    @JoinColumn(name = "airline_id")
+    @JsonBackReference("airline-flight") // Add this annotation
     private Airline airline;
 
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Flight-status-id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_status_id")
     private FlightStatus status;
-
-    @OneToMany
-    private List<Seat> seats;
 
     @PrePersist
     public void generateFlightNumber() {

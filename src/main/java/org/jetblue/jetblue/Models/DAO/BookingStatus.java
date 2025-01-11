@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class BookingStatus {
     private String status;
 
     // Relation
-    @OneToOne
-    @JoinColumn(name="booking-id")
-    private Booking booking;
+    @OneToMany
+    @JoinColumn(name = "status")
+    private List<Booking> booking;
 }

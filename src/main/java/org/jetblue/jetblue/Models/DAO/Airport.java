@@ -1,15 +1,16 @@
 package org.jetblue.jetblue.Models.DAO;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Airport {
@@ -25,7 +26,11 @@ public class Airport {
     @Column(unique=true)
     private double longitude;
 
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="flight_id")
-    private List<Flight> flight;
+    @OneToMany(mappedBy = "departure", fetch = FetchType.LAZY)
+    @JsonManagedReference("departure-flights")
+    private List<Flight> departures;
+
+    @OneToMany(mappedBy = "arrival", fetch = FetchType.LAZY)
+    @JsonManagedReference("arrival-flights")
+    private List<Flight> arrivals;
 }

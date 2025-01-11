@@ -4,9 +4,11 @@ import org.jetblue.jetblue.Models.DAO.BookingStatus;
 import org.jetblue.jetblue.Repositories.BookingStatusRepo;
 import org.jetblue.jetblue.Service.BookingStatusService;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class bookingStatusImpl implements BookingStatusService {
 
     // Inject the dependence
@@ -22,7 +24,7 @@ public class bookingStatusImpl implements BookingStatusService {
         BookingStatus bookingStats = bookingStatusRepo.findByStatus(bookingStatus.getStatus()).orElse(null);
 
         if(bookingStats != null) {
-            throw new IllegalStateException("Booking status not found");
+            throw new IllegalStateException("BookingRepo status not found");
         }
         return BookingStatus.builder()
                 .status(bookingStatus.getStatus())
@@ -32,8 +34,9 @@ public class bookingStatusImpl implements BookingStatusService {
 
     @Override
     public BookingStatus setBookingStatus(List<BookingStatus> bookingStatuses) {
+        System.out.println(bookingStatuses.size());;
 
-        if(bookingStatuses==null || bookingStatuses.isEmpty()){
+        if(bookingStatuses.isEmpty()){
             throw new IllegalArgumentException("bookingStatuses cannot be null or empty");
         }
 
@@ -42,7 +45,7 @@ public class bookingStatusImpl implements BookingStatusService {
 
     @Override
     public BookingStatus getBookingStatus(String bookingName) {
-        return bookingStatusRepo.findByStatus(bookingName).orElseThrow(() -> new IllegalStateException("Booking status not found"));
+        return bookingStatusRepo.findByStatus(bookingName).orElseThrow(() -> new IllegalStateException("BookingRepo status not found"));
     }
 
     @Override
@@ -54,7 +57,7 @@ public class bookingStatusImpl implements BookingStatusService {
     public BookingStatus updateBookingStatus(BookingStatus bookingStatus) {
         // try to get the booking status
         BookingStatus bookingStat = bookingStatusRepo.findByStatus(bookingStatus.getStatus()).orElseThrow(
-                () -> new DataIntegrityViolationException("Booking status not found")
+                () -> new DataIntegrityViolationException("BookingRepo status not found")
         );
 
         bookingStatus.setStatus(bookingStatus.getStatus());
@@ -65,7 +68,7 @@ public class bookingStatusImpl implements BookingStatusService {
     @Override
     public BookingStatus deleteBookingStatus(String bookingName) {
         BookingStatus bookingStatus= bookingStatusRepo.findByStatus(bookingName).orElseThrow(
-                () -> new DataIntegrityViolationException("Booking status not found")
+                () -> new DataIntegrityViolationException("BookingRepo status not found")
         );
         bookingStatusRepo.delete(bookingStatus);
         return bookingStatus;

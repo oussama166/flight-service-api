@@ -26,10 +26,9 @@ public class AirlineImpl implements AirlineService {
         if (airlineResp == null) {
             airlineRepo.save(airline);
             return airline;
-        } else {
-            updateAirline(airline.getAirlineName(), airline);
-            return null;
         }
+        //! - Refactor this code : Raise stackoverflow issue
+        return null;
     }
 
     @Override

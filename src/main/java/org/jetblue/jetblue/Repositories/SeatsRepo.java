@@ -5,6 +5,7 @@ import org.jetblue.jetblue.Models.DAO.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SeatsRepo extends JpaRepository<Seat, Long> {
@@ -20,7 +21,14 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
     )
     Optional<Flight> findByFlightFlightNumber(String flightNumber);
 
+
+
+
     boolean existsByFlightFlightNumberAndSeatLabel(String flightNumber, String seatLabel);
 
+    @Query("select s from Seat s where s.flight.flightNumber = ?1")
+    List<Seat> findByFlight_FlightNumber(String flightNumber);
+
+    Optional<Flight> findFlightBySeatNumber(int seatNumber);
 
 }

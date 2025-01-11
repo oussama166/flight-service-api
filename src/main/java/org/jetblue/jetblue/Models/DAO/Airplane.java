@@ -1,17 +1,21 @@
 package org.jetblue.jetblue.Models.DAO;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
+@Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Airplane {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,11 +27,13 @@ public class Airplane {
 
 
     // relation
-    @OneToMany
+    @OneToMany(mappedBy = "airplane", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Seat> seats;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "airplane", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("airplane-flight")
     private List<Flight> flight;
+
 
 
 }

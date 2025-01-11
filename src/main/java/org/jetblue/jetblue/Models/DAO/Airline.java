@@ -1,15 +1,17 @@
 package org.jetblue.jetblue.Models.DAO;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Set;
+import java.util.List;
+
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class Airline {
     @Id
@@ -22,7 +24,7 @@ public class Airline {
     private int colFormation;
     private int rowFormation;
 
-    @OneToMany
-    @JoinColumn(name = "flights")
-    private Set<Flight> flight;
+    @OneToMany(mappedBy = "airline", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("airline-flight")
+    private List<Flight> flights;
 }

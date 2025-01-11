@@ -1,6 +1,10 @@
 package org.jetblue.jetblue.Controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneMapper;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneRequest;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneResponse;
 import org.jetblue.jetblue.Models.DAO.Airplane;
 import org.jetblue.jetblue.Service.AirplaneService;
 import org.springframework.http.HttpStatus;
@@ -16,21 +20,19 @@ public class AirplaneController {
 
     // inject the service
     private final AirplaneService airplaneService;
+    private final AirplaneMapper airplaneMapper;
 
     @PostMapping(
             value = "/createAirplane",
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> createAirplane(
-            @RequestBody Airplane airplane
+    public ResponseEntity<AirplaneResponse> createAirplane(
+            @RequestBody @Valid AirplaneRequest airplane
     ) {
-        try {
-            Airplane newAirplane = airplaneService.create(airplane);
-            return ResponseEntity.ok(Objects.requireNonNullElse(newAirplane, HttpStatus.NO_CONTENT));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        Airplane newAirplane = airplaneService.create(airplaneMapper.toAirplane(airplane));
+        return ResponseEntity.ok(airplaneMapper.toAirplaneResponse(newAirplane));
+
     }
 
     @PutMapping(
@@ -40,10 +42,10 @@ public class AirplaneController {
     )
     public ResponseEntity<?> updateAirplane(
             @PathVariable String airplaneName,
-            @RequestBody Airplane airplane
+            @RequestBody @Valid AirplaneRequest airplane
     ) {
         try {
-            Airplane airplaneRes = airplaneService.update(airplaneName, airplane);
+            Airplane airplaneRes = airplaneService.update(airplaneName, airplaneMapper.toAirplane(airplane));
             return ResponseEntity.ok(Objects.requireNonNullElse(airplaneRes, HttpStatus.NO_CONTENT));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -64,6 +66,7 @@ public class AirplaneController {
         }
 
     }
+
     @GetMapping(
             value = "/getAirplanes",
             produces = "application/json"

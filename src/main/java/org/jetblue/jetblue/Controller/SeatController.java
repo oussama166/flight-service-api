@@ -1,10 +1,12 @@
 package org.jetblue.jetblue.Controller;
 
 
+import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.DTO.SeatCreate;
 import org.jetblue.jetblue.Models.DTO.SeatCreationRequest;
+import org.jetblue.jetblue.Repositories.FlightRepo;
 import org.jetblue.jetblue.Service.SeatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class SeatController {
 
 
     private final SeatService seatService;
+    private final FlightRepo flightRepo;
 
     @PostMapping(
             value = "/createSeat",
@@ -70,7 +73,6 @@ public class SeatController {
         }
     }
 
-
     @PutMapping(
             value = "/updateSeat",
             consumes = "application/json",
@@ -93,7 +95,7 @@ public class SeatController {
     }
 
     @GetMapping(
-            name = "/getSeat",
+            value = "/getSeat",
             produces = "application/json"
     )
     public ResponseEntity<?> getSeat(
@@ -108,5 +110,20 @@ public class SeatController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping(
+            value = "/getSeats/{flightNumber}",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> getSeats(@PathVariable String flightNumber) {
+        System.out.println(flightNumber);
+        List<Seat> seats = seatService.getAllSeats(flightNumber);
+
+        if (!seats.isEmpty()) {
+            return ResponseEntity.ok(seats);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
