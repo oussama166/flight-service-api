@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Service;
 
 
+import org.jetblue.jetblue.Mapper.FlightStatus.FlightStatusResponse;
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface FlightStatusService {
      *
      * Getting all the flight status on the database
      * */
-    List<FlightStatus> getAllFlightStatus();
+    List<FlightStatusResponse> getAllFlightStatus();
 
     /**
      * Getting Flight status by the name

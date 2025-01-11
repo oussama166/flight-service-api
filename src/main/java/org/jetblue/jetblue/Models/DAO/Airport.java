@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

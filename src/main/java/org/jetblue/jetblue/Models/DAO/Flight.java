@@ -36,11 +36,11 @@ public class Flight {
     private int maxSecondClass;
     private int maxThirdClass;
 
-    private int firstClassReserve; // Renamed for consistency
+    private int firstClassReserve;
     private int secondClassReserve;
     private int thirdClassReserve;
 
-    private boolean firstClassAvailable = true; // Renamed for consistency
+    private boolean firstClassAvailable = true;
     private boolean secondClassAvailable = true;
     private boolean thirdClassAvailable = true;
 

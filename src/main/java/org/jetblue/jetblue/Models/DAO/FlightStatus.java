@@ -2,16 +2,16 @@ package org.jetblue.jetblue.Models.DAO;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FlightStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

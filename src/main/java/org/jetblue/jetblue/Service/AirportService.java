@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Airport.AirportResponse;
 import org.jetblue.jetblue.Models.DAO.Airport;
 
 import java.util.List;
@@ -31,13 +32,13 @@ public interface AirportService {
      *
      * @return List<Airports>
      * */
-    public List<Airport> getAllAirports();
+    public List<AirportResponse> getAllAirports();
 
 
     /**
      * This function is for deleting airports from the database using the code of the airport
      *
-     * @retun   Boolean
+     * @retun Boolean
      * */
     public boolean deleteAirport(String code);
 

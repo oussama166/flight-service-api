@@ -1,6 +1,8 @@
 package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneMapper;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneResponse;
 import org.jetblue.jetblue.Models.DAO.Airplane;
 import org.jetblue.jetblue.Repositories.AirplaneRepo;
 import org.jetblue.jetblue.Service.AirplaneService;
@@ -49,8 +51,8 @@ public class AirplaneImpl implements AirplaneService {
     }
 
     @Override
-    public List<Airplane> getAllAirplanes() {
-        return airplaneRepo.findAll().stream().toList();
+    public List<AirplaneResponse> getAllAirplanes() {
+        return airplaneRepo.findAll().stream().map(AirplaneMapper::toAirplaneResponse).toList();
     }
 
     @Override

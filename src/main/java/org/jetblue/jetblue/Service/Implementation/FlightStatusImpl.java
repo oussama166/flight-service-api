@@ -1,6 +1,8 @@
 package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.FlightStatus.FlightStatusMapper;
+import org.jetblue.jetblue.Mapper.FlightStatus.FlightStatusResponse;
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
 import org.jetblue.jetblue.Repositories.FlightStatusRepo;
 import org.jetblue.jetblue.Service.FlightStatusService;
@@ -49,9 +51,10 @@ public class FlightStatusImpl implements FlightStatusService {
 
 
     @Override
-    public List<FlightStatus> getAllFlightStatus() {
+    public List<FlightStatusResponse> getAllFlightStatus() {
         return flightStatusRepo.findAll().stream()
                 .sorted(Comparator.comparing(FlightStatus::getId))
+                .map(FlightStatusMapper::toFlightStatusResponse)
                 .toList();
     }
 

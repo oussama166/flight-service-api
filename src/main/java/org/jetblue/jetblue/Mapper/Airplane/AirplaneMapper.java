@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AirplaneMapper {
 
-    public  Airplane toAirplane(AirplaneRequest airplaneRequest) {
+    public  static Airplane toAirplane(AirplaneRequest airplaneRequest) {
         return Airplane.builder()
                 .name(airplaneRequest.name())
                 .airplaneImageUrl(airplaneRequest.airplaneImageUrl())
@@ -15,7 +15,7 @@ public class AirplaneMapper {
                 .build();
     }
 
-    public AirplaneResponse toAirplaneResponse(Airplane airplane) {
+    public static AirplaneResponse toAirplaneResponse(Airplane airplane) {
         return AirplaneResponse.builder()
                 .name(airplane.getName())
                 .airplaneImageUrl(airplane.getAirplaneImageUrl())

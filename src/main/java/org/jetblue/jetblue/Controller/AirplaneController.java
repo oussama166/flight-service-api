@@ -20,7 +20,6 @@ public class AirplaneController {
 
     // inject the service
     private final AirplaneService airplaneService;
-    private final AirplaneMapper airplaneMapper;
 
     @PostMapping(
             value = "/createAirplane",
@@ -30,8 +29,8 @@ public class AirplaneController {
     public ResponseEntity<AirplaneResponse> createAirplane(
             @RequestBody @Valid AirplaneRequest airplane
     ) {
-        Airplane newAirplane = airplaneService.create(airplaneMapper.toAirplane(airplane));
-        return ResponseEntity.ok(airplaneMapper.toAirplaneResponse(newAirplane));
+        Airplane newAirplane = airplaneService.create(AirplaneMapper.toAirplane(airplane));
+        return ResponseEntity.ok(AirplaneMapper.toAirplaneResponse(newAirplane));
 
     }
 
@@ -45,7 +44,7 @@ public class AirplaneController {
             @RequestBody @Valid AirplaneRequest airplane
     ) {
         try {
-            Airplane airplaneRes = airplaneService.update(airplaneName, airplaneMapper.toAirplane(airplane));
+            Airplane airplaneRes = airplaneService.update(airplaneName, AirplaneMapper.toAirplane(airplane));
             return ResponseEntity.ok(Objects.requireNonNullElse(airplaneRes, HttpStatus.NO_CONTENT));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -60,11 +59,10 @@ public class AirplaneController {
     public ResponseEntity<?> getAirplane(@PathVariable String airplaneName) {
         try {
             Airplane airplane = airplaneService.getAirplane(airplaneName);
-            return ResponseEntity.ok(Objects.requireNonNullElse(airplane, HttpStatus.NO_CONTENT));
+            return ResponseEntity.ok(Objects.requireNonNullElse(AirplaneMapper.toAirplaneResponse(airplane), HttpStatus.NO_CONTENT));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-
     }
 
     @GetMapping(
@@ -73,7 +71,7 @@ public class AirplaneController {
     )
     public ResponseEntity<?> getAllAirplanes() {
         try {
-            List<Airplane> airplanes = airplaneService.getAllAirplanes();
+            List<AirplaneResponse> airplanes = airplaneService.getAllAirplanes();
             return ResponseEntity.ok(Objects.requireNonNullElse(airplanes, HttpStatus.NO_CONTENT));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

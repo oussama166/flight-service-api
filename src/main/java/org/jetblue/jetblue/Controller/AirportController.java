@@ -1,5 +1,9 @@
 package org.jetblue.jetblue.Controller;
 
+import jakarta.validation.Valid;
+import org.jetblue.jetblue.Mapper.Airport.AirportMapper;
+import org.jetblue.jetblue.Mapper.Airport.AirportRequest;
+import org.jetblue.jetblue.Mapper.Airport.AirportResponse;
 import org.jetblue.jetblue.Models.DAO.Airport;
 import org.jetblue.jetblue.Service.AirportService;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +27,10 @@ public class AirportController {
             produces = "application/json"
     )
     public ResponseEntity<?> setAirport(
-            @RequestBody Airport airport
+            @RequestBody AirportRequest airport
     ){
         try {
-                Airport airportResponse =  airportService.createAirport(airport);
+                Airport airportResponse =  airportService.createAirport(AirportMapper.toAirport(airport));
 
                 if(airportResponse != null) {
                     return ResponseEntity.ok("Airport created successfully !!!");
@@ -39,16 +43,17 @@ public class AirportController {
         }
     }
 
+    //!- Refactor this to could accept only the field or fields wanted changes
     @PatchMapping(
             value = "/updateAirport/{code}",
             consumes = "application/json",
             produces = "application/json"
     )
     public ResponseEntity<?> updateAirport(
-            @RequestBody Airport airport,
+            @RequestBody @Valid AirportRequest airport,
             @PathVariable String code
     ){
-        Airport airportResponse = airportService.updateAirport(code, airport);
+        Airport airportResponse = airportService.updateAirport(code, AirportMapper.toAirport(airport));
 
         try {
             if(airportResponse != null) {
@@ -71,7 +76,7 @@ public class AirportController {
         Airport airport = airportService.getAirport(code);
         try {
             if(airport != null) {
-                return ResponseEntity.ok(airport);
+                return ResponseEntity.ok(AirportMapper.toAirportResponse(airport));
             }
             else {
                 return ResponseEntity.badRequest().body("Airport not found !!!");
@@ -86,7 +91,7 @@ public class AirportController {
             produces = "application/json"
     )
     public ResponseEntity<?> getAllAirports(){
-        List<Airport> airports = airportService.getAllAirports();
+        List<AirportResponse> airports = airportService.getAllAirports();
 
         return ResponseEntity.ok(airports);
     }
