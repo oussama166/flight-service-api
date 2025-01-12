@@ -1,8 +1,8 @@
 package org.jetblue.jetblue.Controller;
 
 
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Seat.SeatResponse;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.DTO.SeatCreate;
 import org.jetblue.jetblue.Models.DTO.SeatCreationRequest;
@@ -32,7 +32,7 @@ public class SeatController {
     ) {
         try {
             // Create a seat using the seatService
-            Seat savedSeat = seatService.createSeat(seat);
+            SeatResponse savedSeat = seatService.createSeat(seat);
 
             // Return the created seat with HTTP status 201 (Created)
             return ResponseEntity.status(HttpStatus.CREATED).body(savedSeat);
@@ -52,7 +52,7 @@ public class SeatController {
     ) {
         try {
             // Create seats using the seatService
-            List<Seat> seats = seatService.createSeats(
+            List<SeatResponse> seats = seatService.createSeats(
                     seatCreationRequest.getMaxSeatNumber(),
                     seatCreationRequest.getPrice(),
                     seatCreationRequest.getSeatType(),
@@ -79,12 +79,12 @@ public class SeatController {
             produces = "application/json"
     )
     public ResponseEntity<?> updateSeat(
-            @RequestParam("seatId") int seatId,
+            @RequestParam("seatLabel") String seatLabel,
             @RequestParam("flightNumber") String flightNumber,
             @RequestBody Seat seat
     ) {
         try {
-            Seat seatResp = seatService.updateSeat(seatId, seat, flightNumber);
+            Seat seatResp = seatService.updateSeat(seatLabel, seat, flightNumber);
             if (seatResp == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -99,10 +99,10 @@ public class SeatController {
             produces = "application/json"
     )
     public ResponseEntity<?> getSeat(
-            @PathVariable int seatId
+            @PathVariable String seatLabel
     ) {
         try {
-            Seat seat = seatService.getSeat(seatId);
+            Seat seat = seatService.getSeat(seatLabel);
             if (seat == null) {
                 return ResponseEntity.noContent().build();
             }

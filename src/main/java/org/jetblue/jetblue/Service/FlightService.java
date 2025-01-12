@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Models.DAO.*;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public interface FlightService {
      * @param maxThird -- max seats on the commercial class
      * @param flightStatus -- Status of the flight (canceled ....)
      * */
-    Flight setFlight(
+    FlightResponse setFlight(
             LocalDateTime departureTime,
             LocalDateTime arrivalTime,
             double price,
@@ -62,7 +63,7 @@ public interface FlightService {
      * @param flightStatus -- using the flight status to find a flight
      *
      * */
-    List<Flight> getFlight(String departure, String arrival, String flightStatus) throws Exception;
+    List<FlightResponse> getFlight(String departure, String arrival, String flightStatus) throws Exception;
 
     /**
      * Getting List of flights using the departure and the arrival

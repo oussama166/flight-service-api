@@ -10,11 +10,10 @@ import java.util.Optional;
 
 public interface SeatsRepo extends JpaRepository<Seat, Long> {
 
-    Optional<Seat> findBySeatNumber(int seatId);
     @Query(
-            "SELECT st FROM Seat st where st.seatNumber = ?1 AND st.flight.flightNumber LIKE %?2% "
+            "SELECT st FROM Seat st where st.seatLabel = ?1 AND st.flight.flightNumber LIKE %?2% "
     )
-    Optional<Seat> findBySeatNumberAndFlight(int seatNumber, String airplaneName);
+    Optional<Seat> findBySeatNumberAndFlight(String seatLabel, String airplaneName);
 
     @Query(
             value = "SELECT fl FROM Flight fl WHERE fl.flightNumber = ?1"
@@ -22,13 +21,14 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
     Optional<Flight> findByFlightFlightNumber(String flightNumber);
 
 
-
-
     boolean existsByFlightFlightNumberAndSeatLabel(String flightNumber, String seatLabel);
 
     @Query("select s from Seat s where s.flight.flightNumber = ?1")
     List<Seat> findByFlight_FlightNumber(String flightNumber);
 
-    Optional<Flight> findFlightBySeatNumber(int seatNumber);
+    Optional<Seat> findBySeatLabel(String seatLabel);
 
+    Optional<Flight> findFlightBySeatLabel(String seatLabel);
+
+    Optional<Seat> findSeatByFlight_FlightNumberAndSeatLabel(String flightFlightNumber, String seatLabel);
 }

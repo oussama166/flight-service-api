@@ -14,9 +14,10 @@ public interface BookingService {
      * Set new booking associate btw user and flight seat
      *
      * @param username -- User information
-     * @param seat_number  -- Seat associated with the flight
+     * @param flight_number -- flight number
+     * @param seat_label  -- Seat associated with the flight
      * */
-    Booking setBooking(String username, long seat_number);
+    Booking setBooking(String username,String flight_number, String seat_label);
 
 
     /**
@@ -30,7 +31,7 @@ public interface BookingService {
     /**
      * Get the booking associated with the user account
      *
-     * @param user -- user info
+     * @param userName -- user info
      * */
     List<Booking> getUserBookings(String userName);
 

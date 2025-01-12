@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Controller;
 
 import jakarta.websocket.server.PathParam;
+import org.jetblue.jetblue.Mapper.Booking.BookingRequest;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Service.BookingService;
@@ -21,15 +22,18 @@ public class BookingController {
     }
 
     @PostMapping(
-            value = "setBooking/{username}/{seatNumber}",
+            value = "setBooking/",
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> setBooking(@PathVariable String seatNumber, @PathVariable String username) {
-        System.out.println(
-                "username" + username + "seatNumber" + seatNumber
+    public ResponseEntity<?> setBooking(
+            @RequestBody BookingRequest booking
+    ) {
+        Booking bookingRes = bookingService.setBooking(
+                booking.UserName(),
+                booking.FlightNumber(),
+                booking.seatLabel()
         );
-        Booking bookingRes = bookingService.setBooking(username,Long.parseLong(seatNumber));
 
         if(bookingRes == null){
             return ResponseEntity.notFound().build();

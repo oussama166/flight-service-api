@@ -12,26 +12,22 @@ import org.jetblue.jetblue.Models.ENUM.SeatType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "seat",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"flight_id", "seat_number"}),
-                @UniqueConstraint(columnNames = {"flag"})
-        }
+@Table(name = "seat"
+//        uniqueConstraints = {
+//                @UniqueConstraint(columnNames = {"flight_id", "seat_number"}),
+//        }
 )
 public class Seat {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "seat_number", nullable = false)
-    private int seatNumber;
 
     @Column(name = "seat_label", nullable = false)
     private String seatLabel;
 
-    @Column(name = "flag", unique = true)
+    @Column(name = "flag", nullable = false)
     private String flag;
 
     @Column(nullable = false)
@@ -49,7 +45,7 @@ public class Seat {
     @Column(name = "is_leap_enfant_seat")
     private boolean isLeapEnfantSeat = false;
 
-    @Column(nullable = false)
+    @Column(name = "seat_col", nullable = false)
     private int col;
 
     // Change 'row' to 'seat_row' to avoid reserved keyword
@@ -60,24 +56,24 @@ public class Seat {
     @Column(name = "seat_type", nullable = false)
     private SeatType seatType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "flight_id")
     @JsonBackReference("flight-seats")
     private Flight flight;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "seat_booking_id")
     private Booking seatBooking;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "airplane_id", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "airplane_id")
     private Airplane airplane;
 
     @PrePersist
     public void prePersistFlag() {
         if (this.flight != null) {
-            this.flag = this.seatNumber + "-" + this.seatType + "-" + this.flight.getFlightNumber();
+            this.flag = this.airplane.getId() + "-" + this.seatLabel + "-" + this.flight.getFlightNumber() + "-" + System.currentTimeMillis();
         }
     }
 }

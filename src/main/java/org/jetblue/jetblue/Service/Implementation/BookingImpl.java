@@ -35,10 +35,10 @@ public class BookingImpl implements BookingService {
     // !ANCHOR : Data need to be appreciated here
 
     @Override
-    public Booking setBooking(String username, long seat_number) {
+    public Booking setBooking(String username,String flight_number, String seat_label) {
         User user = findUserByUsername(username);
-        Seat seat = gettingSeat(seat_number);
-        Flight flight = findFlightBySeat(seat);
+        Seat seat = gettingSeat(flight_number,seat_label);
+        Flight flight = findFlightBySeat(flight_number);
 
         verifyUser(user);
         checkSeatAvailability(seat, flight);
@@ -139,8 +139,8 @@ public class BookingImpl implements BookingService {
 
     // Helper function
 
-    private Seat ExtractSeat(int seatNumber) {
-        return seatsRepo.findBySeatNumber(seatNumber).orElse(null);
+    private Seat ExtractSeat(String FlightNumber,String seatNumber) {
+        return seatsRepo.findSeatByFlight_FlightNumberAndSeatLabel(FlightNumber,seatNumber).orElse(null);
     }
 
     private User findUserByUsername(String username) {
@@ -153,9 +153,8 @@ public class BookingImpl implements BookingService {
                 .orElseThrow(() -> new DataIntegrityViolationException("Flight booking cannot be found!"));
     }
 
-    private Flight findFlightBySeat(int seat) {
-        return seatsRepo.findFlightBySeatNumber(seat)
-                .orElseThrow(() -> new DataIntegrityViolationException("Flight booking cannot be found!"));
+    private Flight findFlightBySeat(String seatLabel) {
+        return seatsRepo.findFlightBySeatLabel(seatLabel).orElseThrow(() -> new DataIntegrityViolationException("Flight booking cannot be found!"));
     }
 
     private void verifyUser(User user) {
@@ -193,8 +192,8 @@ public class BookingImpl implements BookingService {
 
     }
 
-    private Seat gettingSeat(long seatNumber) {
-        return seatsRepo.findBySeatNumber((int) seatNumber).orElseThrow(
+    private Seat gettingSeat(String FlightNumber,String seatLabel) {
+        return seatsRepo.findSeatByFlight_FlightNumberAndSeatLabel(FlightNumber,seatLabel).orElseThrow(
                 () -> new DataAccessResourceFailureException("Can not found the seat")
         );
     }

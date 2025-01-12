@@ -1,6 +1,10 @@
 package org.jetblue.jetblue.Controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
+import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
+import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DTO.FlightPostDTO;
 import org.jetblue.jetblue.Models.DTO.FlightSearch;
@@ -23,22 +27,22 @@ public class flightController {
             produces = "application/json"
     )
     public ResponseEntity<?> setFlight(
-            @RequestBody FlightPostDTO flight
+            @RequestBody @Valid FlightRequest flight
     ) {
         try {
-            Flight flightResp = flightService.setFlight(
-                    flight.getDepartureTime(),
-                    flight.getArrivalTime(),
-                    flight.getPrice(),
-                    flight.getMaxSeats(),
-                    flight.getDeparture(),
-                    flight.getArrival(),
-                    flight.getAirline(),
-                    flight.getAirplane(),
-                    flight.getMaxFirst(),
-                    flight.getMaxSecond(),
-                    flight.getMaxThird(),
-                    flight.getFlightStatus()
+            FlightResponse flightResp = flightService.setFlight(
+                    flight.departureTime(),
+                    flight.arrivalTime(),
+                    flight.price(),
+                    flight.maxSeats(),
+                    flight.departure(),
+                    flight.arrival(),
+                    flight.airline(),
+                    flight.airplane(),
+                    flight.maxFirst(),
+                    flight.maxSecond(),
+                    flight.maxThird(),
+                    flight.flightStatus()
             );
             if (flightResp == null) {
                 return ResponseEntity.notFound().build();
@@ -61,7 +65,7 @@ public class flightController {
             if (flightResp == null) {
                 return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.ok(flightResp);
+            return ResponseEntity.ok(FlightMapper.toFlightResponse(flightResp));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -94,8 +98,7 @@ public class flightController {
     )
     public ResponseEntity<?> getFlights(@RequestBody FlightSearch flightSearch) {
         try {
-            System.out.println(flightSearch.getDeparture());
-            List<Flight> flights = flightService.getFlight(
+            List<FlightResponse> flights = flightService.getFlight(
                     flightSearch.getDeparture(),
                     flightSearch.getArrival(),
                     flightSearch.getFlightStatus()

@@ -2,6 +2,8 @@ package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
+import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Models.DAO.Airplane;
 import org.jetblue.jetblue.Models.DAO.Airport;
 import org.jetblue.jetblue.Models.DAO.Flight;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,7 +36,7 @@ public class FlightImpl implements FlightService {
 
 
     @Override
-    public Flight setFlight(
+    public FlightResponse setFlight(
             LocalDateTime departureTime,
             LocalDateTime arrivalTime,
             double price,
@@ -88,7 +91,8 @@ public class FlightImpl implements FlightService {
 
         // Save flight with proper exception handling
         try {
-            return flightRepo.save(flight);
+            Flight res = flightRepo.save(flight);
+            return FlightMapper.toFlightResponse(res);
         } catch (DataIntegrityViolationException e) {
             System.err.println("Failed to save flight: " + e.getMessage());
             throw new RuntimeException("Could not save flight due to unique constraint violation", e);
@@ -107,7 +111,7 @@ public class FlightImpl implements FlightService {
     }
 
     @Override
-    public List<Flight> getFlight(String departure, String arrival, String flightStatus) throws Exception {
+    public List<FlightResponse> getFlight(String departure, String arrival, String flightStatus) throws Exception {
         // Validate departure airport
         LOG.info(departure);
         Airport departureAirport = airportRepo.findByCodeOrLocation(departure)
@@ -134,7 +138,7 @@ public class FlightImpl implements FlightService {
                 });
 
         // Fetch and return flights
-        return flightRepo.findByDeparture_CodeAndArrival_CodeAndStatus(departureAirport.getCode(), arrivalAirport.getCode(), flightStatusEntity);
+        return flightRepo.findByDeparture_CodeAndArrival_CodeAndStatus(departureAirport.getCode(), arrivalAirport.getCode(), flightStatusEntity).stream().map(FlightMapper::toFlightResponse).collect(Collectors.toList());
     }
 
     @Override
