@@ -1,5 +1,7 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
+import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
 import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Models.DAO.Flight;
 
@@ -34,7 +36,7 @@ public interface AirlineService {
      *
      * @return Airline - return airline object with all the updated field
      * */
-    Airline updateAirline(String airlineName,Airline airline);
+    AirlineResponse updateAirline(String airlineName, AirlineRequest airline);
 
     /**
      *

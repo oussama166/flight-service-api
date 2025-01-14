@@ -2,7 +2,6 @@ package org.jetblue.jetblue.Controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
 import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
 import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
@@ -32,7 +31,7 @@ public class AirlineController {
     public ResponseEntity<?> setAirline(
             @RequestBody @Valid AirlineRequest airline
     ) {
-        Airline airlineRes = airlineService.setAirline(airlineMapper.toAirline(airline));
+        Airline airlineRes = airlineService.setAirline(AirlineMapper.toAirline(airline));
 
         if (airlineRes == null) {
             return ResponseEntity.notFound().build();
@@ -47,13 +46,13 @@ public class AirlineController {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<AirlineResponse> getAirline(
+    public ResponseEntity<?> getAirline(
             @PathVariable String airline
     ) {
         Airline airlineRes = airlineService.getAirline(airline);
 
         if (airlineRes == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Airline not found!!!");
         } else {
             return ResponseEntity.ok(airlineMapper.toAirlineResponse(airlineRes));
         }
@@ -66,9 +65,9 @@ public class AirlineController {
     )
     public ResponseEntity<?> updateAirline(
             @PathVariable String airline,
-            @RequestBody Airline newAirline
+            @RequestBody AirlineRequest newAirline
     ) {
-        Airline airlineRes = airlineService.updateAirline(airline, newAirline);
+        AirlineResponse airlineRes = airlineService.updateAirline(airline, newAirline);
         if (airlineRes == null) {
             return ResponseEntity.notFound().build();
         } else {

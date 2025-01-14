@@ -35,8 +35,11 @@ logging:
     com:
       fasterxml:
         jackson: DEBUG
-
-
-
-#    logging.level.org.springframework.http.converter.json=DEBUG
-#    logging.level.com.fasterxml.jackson=DEBUG
+sonar:
+  projectKey: jetBlue
+  projectName: jetBlue
+  token: sqp_9556d3f9dbed22d021f940371892374d7200b425
+  login: admin
+  password: Ronaldo#$780
+  host:
+    url: http://localhost:9000

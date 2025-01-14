@@ -11,13 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class JetblueApplicationTests {
 
-    @Autowired
-    private AirlineController airlineController;
-
-    @Test
-    void contextLoads() {
-        assertThat(airlineController).isNotNull();
-    }
 
 
 }

@@ -1,6 +1,9 @@
 package org.jetblue.jetblue.Service.Implementation;
 
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
+import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
+import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
 import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Repositories.AirlineRepo;
@@ -39,20 +42,20 @@ public class AirlineImpl implements AirlineService {
     }
 
     @Override
-    public Airline updateAirline(String airlineName, Airline airline) {
+    public AirlineResponse updateAirline(String airlineName, AirlineRequest airline) {
         Airline airlineResp = airlineRepo
                 .findByAirlineCode(airlineName)
                 .orElse(null);
         if (airlineResp == null) {
-            setAirline(airline);
-            return new Airline();
+            setAirline(AirlineMapper.toAirline(airline));
+            return null;
         } else {
-            airlineResp.setAirlineName(airline.getAirlineName());
-            airlineResp.setAirlineCode(airline.getAirlineCode());
-            airlineResp.setAirlineUrl(airline.getAirlineUrl());
-            airlineResp.setAirlineLogoLink(airline.getAirlineLogoLink());
+            airlineResp.setAirlineName(airline.airlineName());
+            airlineResp.setAirlineCode(airline.airlineCode());
+            airlineResp.setAirlineUrl(airline.airlineUrl());
+            airlineResp.setAirlineLogoLink(airline.airlineLogoLink());
             airlineRepo.save(airlineResp);
-            return airlineResp;
+            return AirlineMapper.toAirlineResponse(airlineResp);
         }
     }
 

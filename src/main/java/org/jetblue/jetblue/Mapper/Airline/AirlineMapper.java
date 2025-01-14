@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AirlineMapper {
 
-    public Airline toAirline(AirlineRequest airlineRequest) {
+    public static Airline toAirline(AirlineRequest airlineRequest) {
         return Airline.builder()
                 .airlineCode(airlineRequest.airlineCode())
                 .airlineName(airlineRequest.airlineName())
@@ -17,7 +17,7 @@ public class AirlineMapper {
                 .build();
     }
 
-    public AirlineResponse toAirlineResponse(Airline airline) {
+    public static AirlineResponse toAirlineResponse(Airline airline) {
         return AirlineResponse.builder()
                 .airlineCode(airline.getAirlineCode())
                 .airlineName(airline.getAirlineName())
