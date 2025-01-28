@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
 import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
+import org.jetblue.jetblue.Mapper.Flight.FlightSearch.FlightSearchRequest;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DTO.FlightPostDTO;
 import org.jetblue.jetblue.Models.DTO.FlightSearch;
@@ -96,14 +97,18 @@ public class flightController {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> getFlights(@RequestBody FlightSearch flightSearch) {
+    public ResponseEntity<?> getFlights(
+            @RequestBody
+            @Valid
+            FlightSearchRequest flightSearch
+    ) {
         try {
             List<FlightResponse> flights = flightService.getFlight(
-                    flightSearch.getDeparture(),
-                    flightSearch.getArrival(),
-                    flightSearch.getFlightStatus()
+                    flightSearch.departure(),
+                    flightSearch.arrival(),
+                    flightSearch.statusFlight()
             );
-            if (flights.isEmpty()) { // Check if the list is empty
+            if (flights.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok(flights);

@@ -18,20 +18,20 @@ public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(unique=true)
+    @Column(unique = true)
     private String code;
     private String name;
     private String location;
-    @Column(unique=true)
+    @Column(unique = true)
     private double latitude;
-    @Column(unique=true)
+    @Column(unique = true)
     private double longitude;
 
-    @OneToMany(mappedBy = "departure", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departure", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference("departure-flights")
     private List<Flight> departures;
 
-    @OneToMany(mappedBy = "arrival", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "arrival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference("arrival-flights")
     private List<Flight> arrivals;
 }

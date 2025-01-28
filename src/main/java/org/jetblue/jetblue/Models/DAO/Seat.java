@@ -12,11 +12,10 @@ import org.jetblue.jetblue.Models.ENUM.SeatType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "seat"
+@Table(name = "seat")
 //        uniqueConstraints = {
 //                @UniqueConstraint(columnNames = {"flight_id", "seat_number"}),
 //        }
-)
 public class Seat {
 
     @Id

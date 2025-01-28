@@ -23,12 +23,13 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
 
     boolean existsByFlightFlightNumberAndSeatLabel(String flightNumber, String seatLabel);
 
-    @Query("select s from Seat s where s.flight.flightNumber = ?1")
-    List<Seat> findByFlight_FlightNumber(String flightNumber);
 
-    Optional<Seat> findBySeatLabel(String seatLabel);
 
     Optional<Flight> findFlightBySeatLabel(String seatLabel);
 
     Optional<Seat> findSeatByFlight_FlightNumberAndSeatLabel(String flightFlightNumber, String seatLabel);
+
+    Optional<Seat> findSeatByFlag(String flag);
+
+    List<Seat> findByFlight_FlightNumber(String flightNumber);
 }

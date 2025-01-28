@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -215,14 +216,13 @@ public class SeatImpl implements SeatService {
     }
 
     @Override
-    public Seat getSeat(String seatLabel) {
-        return seatsRepo.findBySeatLabel(seatLabel).orElse(null);
+    public SeatResponse getSeat(String seatFlag) {
+        return seatsRepo.findSeatByFlag(seatFlag).map(SeatMapper::toSeatResponse).orElse(null);
     }
 
     @Override
-    public List<Seat> getAllSeats(String flightNumber) {
-
-        return seatsRepo.findByFlight_FlightNumber(flightNumber);
+    public List<SeatResponse> getAllSeats(String flightNumber) {
+        return seatsRepo.findByFlight_FlightNumber(flightNumber).stream().map(SeatMapper::toSeatResponse).collect(Collectors.toList());
     }
 
 

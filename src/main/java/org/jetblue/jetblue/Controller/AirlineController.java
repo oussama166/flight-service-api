@@ -54,7 +54,7 @@ public class AirlineController {
         if (airlineRes == null) {
             return ResponseEntity.badRequest().body("Airline not found!!!");
         } else {
-            return ResponseEntity.ok(airlineMapper.toAirlineResponse(airlineRes));
+            return ResponseEntity.ok(AirlineMapper.toAirlineResponse(airlineRes));
         }
     }
 

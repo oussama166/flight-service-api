@@ -17,14 +17,14 @@ public class SeatUtils {
         // Generate seat labels
         for (int row = 1; row <= numRows; row++) {
             for (char label : rowLabels) {
-                seats.add(label + String.valueOf(row)); // e.g., A1, B1, ..., F50
+                seats.add(label + String.valueOf(row));
             }
         }
 
         return seats;
     }
     public static String generateSingleSeat(int row, int seatPosition) {
-        char seatLabel = (char) ('A' + seatPosition - 1); // Convert seat position to corresponding letter
-        return seatLabel + String.valueOf(row); // e.g., A1, B1, ..., F1
+        char seatLabel = (char) ('A' + seatPosition);
+        return seatLabel + String.valueOf(row);
     }
 }

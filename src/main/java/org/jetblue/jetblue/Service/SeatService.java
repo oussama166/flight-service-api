@@ -42,12 +42,11 @@ public interface SeatService {
      *
      * @param seatLabel -- seat id
      */
-    Seat getSeat(String seatLabel);
+    SeatResponse getSeat(String seatLabel);
 
     /**
      * Getting the all seat associated with flight
-     *
      * @param flightNumber
-     * */
-    List<Seat> getAllSeats(String flightNumber) ;
+     *  */
+    List<SeatResponse> getAllSeats(String flightNumber) ;
 }

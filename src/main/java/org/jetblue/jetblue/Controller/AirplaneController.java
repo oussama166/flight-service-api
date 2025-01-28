@@ -20,6 +20,7 @@ public class AirplaneController {
 
     // inject the service
     private final AirplaneService airplaneService;
+    private final AirplaneMapper airplaneMapper;
 
     @PostMapping(
             value = "/createAirplane",
@@ -87,7 +88,7 @@ public class AirplaneController {
     public ResponseEntity<?> deleteAirplane(@PathVariable String airplaneName) {
         try {
             Airplane airplaneDeleted = airplaneService.delete(airplaneName);
-            return ResponseEntity.ok(Objects.requireNonNullElse(airplaneDeleted, HttpStatus.NO_CONTENT));
+            return ResponseEntity.ok(Objects.requireNonNullElse(AirplaneMapper.toAirplaneResponse(airplaneDeleted), HttpStatus.NO_CONTENT));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

@@ -8,5 +8,11 @@ public record SeatResponse(
         String airplaneName,
         String seatLabel,
         SeatType seatType,
-        boolean isAvailable, double price) {
+        boolean isAvailable,
+        boolean isReserved,
+        boolean isSpecialTrait,
+        boolean isLeapEnfantSeat,
+        boolean isSold,
+        double price
+) {
 }

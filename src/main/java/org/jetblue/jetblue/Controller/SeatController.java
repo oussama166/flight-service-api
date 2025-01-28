@@ -95,14 +95,14 @@ public class SeatController {
     }
 
     @GetMapping(
-            value = "/getSeat",
+            value = "/getSeat/{seatFlag}",
             produces = "application/json"
     )
     public ResponseEntity<?> getSeat(
-            @PathVariable String seatLabel
+            @PathVariable String seatFlag
     ) {
         try {
-            Seat seat = seatService.getSeat(seatLabel);
+            SeatResponse seat = seatService.getSeat(seatFlag);
             if (seat == null) {
                 return ResponseEntity.noContent().build();
             }
@@ -113,13 +113,13 @@ public class SeatController {
     }
 
     @GetMapping(
-            value = "/getSeats/{flightNumber}",
+            value    = "/getSeats/{flightNumber}",
             consumes = "application/json",
             produces = "application/json"
     )
     public ResponseEntity<?> getSeats(@PathVariable String flightNumber) {
         System.out.println(flightNumber);
-        List<Seat> seats = seatService.getAllSeats(flightNumber);
+        List<SeatResponse> seats = seatService.getAllSeats(flightNumber);
 
         if (!seats.isEmpty()) {
             return ResponseEntity.ok(seats);
