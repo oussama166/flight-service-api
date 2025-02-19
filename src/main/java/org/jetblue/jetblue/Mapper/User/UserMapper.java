@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -34,6 +32,22 @@ public class UserMapper {
                 .verified(userRequest.verified())
                 .password(passwordEncoder.encode(userRequest.password()))
                 .role(userRequest.role())
+                .build();
+    }
+
+    public static UserResponseBasic toUserResponseBasic(User user) {
+        return UserResponseBasic
+                .builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .lastName(user.getLastName())
+                .middleName(user.getMiddleName())
+                .email(user.getEmail())
+                .Birthday(user.getBirthday())
+                .origin(user.getOrigin())
+                .address(user.getAddress())
+                .gender(user.getGender())
+                .phone(user.getPhone())
                 .build();
     }
 }

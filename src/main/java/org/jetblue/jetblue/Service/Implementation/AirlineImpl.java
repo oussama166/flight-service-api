@@ -36,6 +36,8 @@ public class AirlineImpl implements AirlineService {
 
     @Override
     public Airline getAirline(String airlineName) {
+        if (airlineName == null) return null;
+        if (airlineName.isBlank()) return null;
         return airlineRepo
                 .findByAirlineCode(airlineName)
                 .orElse(null);

@@ -5,8 +5,8 @@ import jakarta.validation.Valid;
 import org.jetblue.jetblue.Mapper.User.UserMapper;
 import org.jetblue.jetblue.Mapper.User.UserPasswordRequest;
 import org.jetblue.jetblue.Mapper.User.UserRequest;
+import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Models.DAO.User;
-import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 import org.jetblue.jetblue.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     // Integration
-    private UserService userService;
+    private final UserService userService;
 
 
     UserController(UserService userService) {
@@ -79,7 +79,7 @@ public class UserController {
     @GetMapping(value = "/user/{username}", produces = "application/json")
     public ResponseEntity<?> getUser(@PathVariable String username) {
         try {
-            UserBasicDTO userBasicDTO = userService.findUserByUsername(username);
+            UserResponseBasic userBasicDTO = userService.findUserByUsername(username);
             return ResponseEntity.ok(userBasicDTO);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());

@@ -2,7 +2,7 @@ POST localhost:{{serverPort}}/user
 Content-Type: application/json
 
 {
-  "username": "oussama166",
+  "username": "oussama167",
   "name": "oussama",
   "lastName": "ouardi",
   "address": "Morocco,Casablanca,2060",

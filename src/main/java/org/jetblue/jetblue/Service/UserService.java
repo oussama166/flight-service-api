@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 
@@ -10,7 +11,7 @@ public interface UserService {
      * @param username
      * @return User user
      */
-    UserBasicDTO findUserByUsername(String username) throws Exception;
+    UserResponseBasic findUserByUsername(String username) throws Exception;
 
     /**
      * This function is for register new user
@@ -46,15 +47,6 @@ public interface UserService {
 
     boolean deleteUser(String username);
 
-
-    /**
-     * This function is set data from user
-     *
-     * @param user
-     * @return UserDTO
-     */
-
-    UserBasicDTO getUserBasicDTO(User user);
 
 
 }

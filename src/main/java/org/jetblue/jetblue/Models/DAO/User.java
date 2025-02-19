@@ -2,10 +2,12 @@ package org.jetblue.jetblue.Models.DAO;
 
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.jetblue.jetblue.Models.ENUM.Gender;
 import org.jetblue.jetblue.Models.ENUM.Role;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -22,7 +24,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
     private String name;
     private String lastName;
@@ -39,7 +41,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private boolean verified;
-    @Column(nullable = true)
+    @ColumnDefault("false")
+    private boolean enabled;
     private String frequentFlyerNumber;
     @Enumerated(EnumType.STRING)
     private Role role = Role.User;
@@ -49,7 +52,7 @@ public class User {
     @JoinColumn(name = "user_preference")
     private UserPreference userPreference;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
     @OneToMany

@@ -25,6 +25,6 @@ GET localhost:{{serverPort}}/getFlightByArrDes
 Content-Type: application/json
 
 {
-  "departure": "KJFK",
-  "arrival": "LFPG"
+  "departure": "LFPG",
+  "arrival": "KJFK"
 }

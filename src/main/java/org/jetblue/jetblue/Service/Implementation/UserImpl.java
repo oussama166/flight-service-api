@@ -1,9 +1,15 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jetblue.jetblue.Mapper.User.UserMapper;
+import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 import org.jetblue.jetblue.Repositories.UserRepo;
 import org.jetblue.jetblue.Service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +19,7 @@ import java.util.Optional;
 
 
 @Service
+@AllArgsConstructor
 public class UserImpl implements UserService {
 
     static int USER_CHALLENGE_PASSWORD = 3;
@@ -20,16 +27,16 @@ public class UserImpl implements UserService {
     // Inject the user repo
     private final UserRepo userRepo;
 
-    // Constructor
-    public UserImpl(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    private final Logger logger = LoggerFactory.getLogger(UserImpl.class);
+
+
+
 
     @Override
-    public UserBasicDTO findUserByUsername(String username) throws Exception {
+    public UserResponseBasic findUserByUsername(String username) throws Exception {
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isPresent()) {
-            return getUserBasicDTO(user.get());
+            return UserMapper.toUserResponseBasic(user.get());
         }
         throw new Exception("User not found");
     }
@@ -37,11 +44,10 @@ public class UserImpl implements UserService {
     @Override
     public boolean createUser(User user) {
         // try to find user
-        User userOpt = userRepo.findByUsername(user.getUsername()).orElse(null);
+        User userOpt = userRepo.findByUsernameOrEmail(user.getUsername(),user.getEmail()).orElse(null);
         if (userOpt != null) {
             return false;
         } else {
-
             userRepo.save(user);
             return true;
         }
@@ -109,20 +115,5 @@ public class UserImpl implements UserService {
     }
 
 
-    @Override
-    public UserBasicDTO getUserBasicDTO(User user) {
-        return new UserBasicDTO(
-                user.getUsername(),
-                user.getName(),
-                user.getLastName(),
-                user.getMiddleName(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getAddress(),
-                user.getOrigin(),
-                user.getBirthday(),
-                user.getGender(),
-                user.isVerified()
-        );
-    }
+
 }
