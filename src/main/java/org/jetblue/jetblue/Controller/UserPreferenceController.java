@@ -1,8 +1,11 @@
 package org.jetblue.jetblue.Controller;
 
 
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceRequest;
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceResponse;
 import org.jetblue.jetblue.Models.DAO.UserPreference;
 import org.jetblue.jetblue.Service.UserPreferenceService;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +21,15 @@ public class UserPreferenceController {
     }
 
     @GetMapping(
-            value = "/userPreference",
-            params = "username"
+            value = "/userPreference/{username}",
+            consumes = "application/json",
+            produces = "application/json"
     )
     public ResponseEntity<?> getUserPreference(
-            @RequestParam String username
+            @PathVariable(value = "username") String username
     ) {
         try {
-            UserPreference userPreference = userPreferenceService.getUserPreference(username);
+            UserPreferenceResponse userPreference = userPreferenceService.getUserPreference(username);
             if (userPreference == null) {
                 return ResponseEntity.notFound().build();
             } else {
@@ -42,8 +46,10 @@ public class UserPreferenceController {
             produces = "application/json"
     )
     public ResponseEntity<?> setUserPreference(
-            @PathVariable String username,
-            @RequestBody UserPreference userPreference
+            @PathVariable(value = "username")
+            @DefaultValue(value = "oussama166")
+            String username,
+            @RequestBody UserPreferenceRequest userPreference
     ) {
         UserPreference userPreferenceSaved = userPreferenceService.setUserPreference(username, userPreference);
         try {
@@ -64,7 +70,7 @@ public class UserPreferenceController {
     )
     public ResponseEntity<?> updateUserPreference(
             @PathVariable String username,
-            @RequestBody UserPreference userPreference
+            @RequestBody UserPreferenceRequest userPreference
     ){
         try {
             UserPreference userPreferenceFeed = userPreferenceService.updateUserPreference(username, userPreference);

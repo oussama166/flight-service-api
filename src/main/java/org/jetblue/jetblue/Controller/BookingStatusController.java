@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Controller;
 
+import org.jetblue.jetblue.Mapper.BookingStatus.BookingStatusRequest;
 import org.jetblue.jetblue.Models.DAO.BookingStatus;
 import org.jetblue.jetblue.Repositories.BookingStatusRepo;
 import org.jetblue.jetblue.Service.BookingStatusService;
@@ -23,7 +24,7 @@ public class BookingStatusController {
             produces = "application/json"
     )
     public ResponseEntity<?> setBookingStatus(
-            @RequestBody BookingStatus bookingStatus
+            @RequestBody BookingStatusRequest bookingStatus
     ) {
         try {
             BookingStatus bookingStat = bookingStatusService.setBookingStatus(bookingStatus);
@@ -40,7 +41,7 @@ public class BookingStatusController {
             produces = "application/json"
     )
     public ResponseEntity<?> setBookingListStatus(
-            @RequestBody List<BookingStatus> bookingStatusList
+            @RequestBody List<BookingStatusRequest> bookingStatusList
     ) {
         try {
             BookingStatus bookingStat = bookingStatusService.setBookingStatus(bookingStatusList);

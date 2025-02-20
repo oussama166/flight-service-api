@@ -17,7 +17,7 @@ public interface BookingService {
      * @param flight_number -- flight number
      * @param seat_label  -- Seat associated with the flight
      * */
-    Booking setBooking(String username,String flight_number, String seat_label);
+    Booking setBooking(String username,long flight_number, String seat_label);
 
 
     /**

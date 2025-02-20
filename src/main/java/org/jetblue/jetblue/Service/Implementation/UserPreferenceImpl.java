@@ -1,5 +1,8 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceMapper;
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceRequest;
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceResponse;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DAO.UserPreference;
 import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
@@ -17,7 +20,7 @@ public class UserPreferenceImpl implements UserPreferenceService {
     public final UserPreferenceRepo userPreferenceRepo;
     public final UserRepo userRepo;
 
-    public UserPreferenceImpl(UserPreferenceRepo userPreference, UserRepo userRepo) {
+    public UserPreferenceImpl(UserPreferenceRepo userPreference, UserRepo userRepo, UserPreferenceMapper userPreferenceMapper) {
         this.userPreferenceRepo = userPreference;
         this.userRepo = userRepo;
     }
@@ -32,23 +35,23 @@ public class UserPreferenceImpl implements UserPreferenceService {
     }
 
     @Override
-    public UserPreference getUserPreference(String username) throws Exception {
+    public UserPreferenceResponse getUserPreference(String username) throws Exception {
         UserPreference userPreference = userPreferenceRepo.findByUsername(username).orElse(null);
         if (userPreference == null) {
             throw new Exception("No preference for user !!!");
         }
-        return userPreference;
+        return UserPreferenceMapper.toUserPreferenceResponse(userPreference);
     }
 
     @Override
-    public UserPreference setUserPreference(User user, UserPreference userPreference) {
+    public UserPreference setUserPreference(User user, UserPreferenceRequest userPreference) {
         UserPreference userPreferenceToSet = userPreferenceRepo.findByUsername(user.getUsername()).orElse(null);
         if (userPreferenceToSet == null) {
             UserPreference newUserPreference = UserPreference
                     .builder()
-                    .mealPreference(userPreference.getMealPreference())
-                    .seatPreference(userPreference.getSeatPreference())
-                    .notificationPreference(userPreference.getNotificationPreference())
+                    .mealPreference(userPreference.mealPreference())
+                    .seatPreference(userPreference.seatPreference())
+                    .notificationPreference(userPreference.notificationPreference())
                     .build();
             newUserPreference.setUser(user);
             userPreferenceRepo.save(newUserPreference);
@@ -59,7 +62,7 @@ public class UserPreferenceImpl implements UserPreferenceService {
     }
 
     @Override
-    public UserPreference setUserPreference(String username, UserPreference userPreference) {
+    public UserPreference setUserPreference(String username, UserPreferenceRequest userPreference) {
         UserPreference userPreferenceToSet = userPreferenceRepo.findByUsername(username).orElse(null);
         if (userPreferenceToSet == null) {
             // get the use credential
@@ -71,9 +74,9 @@ public class UserPreferenceImpl implements UserPreferenceService {
 
             UserPreference newUserPreference = UserPreference
                     .builder()
-                    .mealPreference(userPreference.getMealPreference())
-                    .seatPreference(userPreference.getSeatPreference())
-                    .notificationPreference(userPreference.getNotificationPreference())
+                    .mealPreference(userPreference.mealPreference())
+                    .seatPreference(userPreference.seatPreference())
+                    .notificationPreference(userPreference.notificationPreference())
                     .build();
             newUserPreference.setUser(userInfo);
             userPreferenceRepo.save(newUserPreference);
@@ -85,23 +88,23 @@ public class UserPreferenceImpl implements UserPreferenceService {
     }
 
     @Override
-    public UserPreference updateUserPreference(User user, UserPreference userPreference) {
+    public UserPreference updateUserPreference(User user, UserPreferenceRequest userPreference) {
         UserPreference userPreferenceToUpdate = userPreferenceRepo.findByUsername(user.getUsername()).orElse(null);
         if (userPreferenceToUpdate == null) {
             return setUserPreference(user, userPreference);
         }
 
-        return update(userPreference, userPreferenceToUpdate);
+        return update(UserPreferenceMapper.toUserPreference(userPreference), userPreferenceToUpdate);
 
     }
 
     @Override
-    public UserPreference updateUserPreference(String username, UserPreference userPreference) {
+    public UserPreference updateUserPreference(String username, UserPreferenceRequest userPreference) {
         UserPreference userPreferenceToUpdate = userPreferenceRepo.findByUsername(username).orElse(null);
         if (userPreferenceToUpdate == null) {
             return setUserPreference(username, userPreference);
         }
-        return update(userPreference, userPreferenceToUpdate);
+        return update(UserPreferenceMapper.toUserPreference(userPreference), userPreferenceToUpdate);
 
 
     }

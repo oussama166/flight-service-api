@@ -1,5 +1,7 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceRequest;
+import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceResponse;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DAO.UserPreference;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public interface UserPreferenceService {
      * @param username
      * @return UserPreference
      * */
-    UserPreference getUserPreference(String username) throws Exception;
+    UserPreferenceResponse getUserPreference(String username) throws Exception;
 
 
     /**
@@ -28,7 +30,7 @@ public interface UserPreferenceService {
      *
      * @return userPreference
      * */
-    UserPreference setUserPreference(User user, UserPreference userPreference) ;
+    UserPreference setUserPreference(User user, UserPreferenceRequest userPreference) ;
 
     /**
      * Set user preference
@@ -37,7 +39,7 @@ public interface UserPreferenceService {
      *
      * @return userPreference
      * */
-    UserPreference setUserPreference(String username, UserPreference userPreference) ;
+    UserPreference setUserPreference(String username, UserPreferenceRequest userPreference) ;
 
 
     /**
@@ -47,7 +49,7 @@ public interface UserPreferenceService {
      *
      * @return userPreference
      * */
-    UserPreference updateUserPreference(User user, UserPreference userPreference);
+    UserPreference updateUserPreference(User user, UserPreferenceRequest userPreference);
 
     /**
      * update user preference
@@ -56,7 +58,7 @@ public interface UserPreferenceService {
      *
      * @return userPreference
      * */
-    UserPreference updateUserPreference(String username, UserPreference userPreference);
+    UserPreference updateUserPreference(String username, UserPreferenceRequest userPreference);
 
 
 

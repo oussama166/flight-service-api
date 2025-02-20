@@ -1,6 +1,8 @@
 package org.jetblue.jetblue.Controller;
 
 import jakarta.websocket.server.PathParam;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Mapper.Booking.BookingRequest;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
@@ -12,14 +14,11 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@AllArgsConstructor
 public class BookingController {
 
     // Inject the imp
     private final BookingService bookingService;
-
-    public BookingController(BookingService bookingService) {
-        this.bookingService = bookingService;
-    }
 
     @PostMapping(
             value = "setBooking/",
@@ -35,26 +34,27 @@ public class BookingController {
                 booking.seatLabel()
         );
 
-        if(bookingRes == null){
+        if (bookingRes == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(bookingRes);
     }
 
     @PostMapping(
-            value ="setBookingList/{username}",
+            value = "setBookingList/{username}",
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> setBookingList(@PathParam("username") String userName, @RequestBody Set<SeatPassengerDTO> passengersSeats) {
-        Booking bookingRes = bookingService.setBooking(userName,passengersSeats);
-        if(bookingRes == null){
+    public ResponseEntity<?> setBookingList(@PathVariable(value = "username") String userName, @RequestBody Set<SeatPassengerDTO> passengersSeats) {
+        Booking bookingRes = bookingService.setBooking(userName, passengersSeats);
+        if (bookingRes == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(bookingRes);
     }
+
     @GetMapping(
-            value="getUserBooking/{username}",
+            value = "getUserBooking/{username}",
             consumes = "application/json",
             produces = "application/json"
     )

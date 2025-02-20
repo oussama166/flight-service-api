@@ -4,10 +4,13 @@ import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface SeatsRepo extends JpaRepository<Seat, Long> {
 
     @Query(
@@ -24,12 +27,17 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
     boolean existsByFlightFlightNumberAndSeatLabel(String flightNumber, String seatLabel);
 
 
-
     Optional<Flight> findFlightBySeatLabel(String seatLabel);
 
-    Optional<Seat> findSeatByFlight_FlightNumberAndSeatLabel(String flightFlightNumber, String seatLabel);
+
+
+    @Query("select s from Seat s where s.flight.id = ?1 and s.seatLabel = ?2")
+    Optional<Seat> findByFlight_IdAndSeatLabel(long id, String seatLabel);
+
 
     Optional<Seat> findSeatByFlag(String flag);
 
     List<Seat> findByFlight_FlightNumber(String flightNumber);
+
+    Optional<Seat> findFirstByFlight_IdAndSeatLabel(long id, String seatLabel);
 }

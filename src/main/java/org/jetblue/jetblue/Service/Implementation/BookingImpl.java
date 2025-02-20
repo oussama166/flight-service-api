@@ -1,9 +1,6 @@
 package org.jetblue.jetblue.Service.Implementation;
 
-import org.jetblue.jetblue.Models.DAO.Booking;
-import org.jetblue.jetblue.Models.DAO.Flight;
-import org.jetblue.jetblue.Models.DAO.Seat;
-import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.BookingService;
@@ -35,10 +32,11 @@ public class BookingImpl implements BookingService {
     // !ANCHOR : Data need to be appreciated here
 
     @Override
-    public Booking setBooking(String username,String flight_number, String seat_label) {
+    public Booking setBooking(String username,long flight_number, String seat_label) {
         User user = findUserByUsername(username);
         Seat seat = gettingSeat(flight_number,seat_label);
-        Flight flight = findFlightBySeat(flight_number);
+        Flight flight = seat.getFlight();
+        BookingStatus stats = bookingStatusRepo.findByStatus("Confirmed").orElse(null);
 
         verifyUser(user);
         checkSeatAvailability(seat, flight);
@@ -49,7 +47,7 @@ public class BookingImpl implements BookingService {
                 .totalPrice(seat.getPrice())
                 .flight(flight)
                 .user(user)
-                .status(bookingStatusRepo.findByStatus("Confirmed").orElse(null))
+                .status(stats)
                 .build();
 
         if (book != null) {
@@ -139,8 +137,8 @@ public class BookingImpl implements BookingService {
 
     // Helper function
 
-    private Seat ExtractSeat(String FlightNumber,String seatNumber) {
-        return seatsRepo.findSeatByFlight_FlightNumberAndSeatLabel(FlightNumber,seatNumber).orElse(null);
+    private Seat ExtractSeat(long FlightNumber,String seatNumber) {
+        return seatsRepo.findByFlight_IdAndSeatLabel(FlightNumber,seatNumber).orElse(null);
     }
 
     private User findUserByUsername(String username) {
@@ -192,8 +190,8 @@ public class BookingImpl implements BookingService {
 
     }
 
-    private Seat gettingSeat(String FlightNumber,String seatLabel) {
-        return seatsRepo.findSeatByFlight_FlightNumberAndSeatLabel(FlightNumber,seatLabel).orElseThrow(
+    private Seat gettingSeat(long FlightNumber,String seatLabel) {
+        return seatsRepo.findFirstByFlight_IdAndSeatLabel(FlightNumber,seatLabel).orElseThrow(
                 () -> new DataAccessResourceFailureException("Can not found the seat")
         );
     }

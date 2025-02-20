@@ -1,5 +1,7 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import org.jetblue.jetblue.Mapper.BookingStatus.BookingStatusRequest;
+import org.jetblue.jetblue.Mapper.BookingStatus.BookingStatusesMapper;
 import org.jetblue.jetblue.Models.DAO.BookingStatus;
 import org.jetblue.jetblue.Repositories.BookingStatusRepo;
 import org.jetblue.jetblue.Service.BookingStatusService;
@@ -19,28 +21,32 @@ public class bookingStatusImpl implements BookingStatusService {
     }
 
     @Override
-    public BookingStatus setBookingStatus(BookingStatus bookingStatus) {
+    public BookingStatus setBookingStatus(BookingStatusRequest bookingStatus) {
         // trying to find the booking status
-        BookingStatus bookingStats = bookingStatusRepo.findByStatus(bookingStatus.getStatus()).orElse(null);
+        BookingStatus bookingStats = bookingStatusRepo.findByStatus(bookingStatus.status()).orElse(null);
 
-        if(bookingStats != null) {
+        if (bookingStats != null) {
             throw new IllegalStateException("BookingRepo status not found");
         }
-        return BookingStatus.builder()
-                .status(bookingStatus.getStatus())
+        BookingStatus st = BookingStatus.builder()
+                .status(bookingStatus.status())
                 .build();
-        
+        bookingStatusRepo.save(st);
+        return st;
+
     }
 
     @Override
-    public BookingStatus setBookingStatus(List<BookingStatus> bookingStatuses) {
-        System.out.println(bookingStatuses.size());;
+    public BookingStatus setBookingStatus(List<BookingStatusRequest> bookingStatuses) {
 
-        if(bookingStatuses.isEmpty()){
+        if (bookingStatuses.isEmpty()) {
             throw new IllegalArgumentException("bookingStatuses cannot be null or empty");
         }
 
-        return bookingStatusRepo.saveAll(bookingStatuses).get(0);
+        for (BookingStatusRequest bookingStatus : bookingStatuses) {
+            setBookingStatus(bookingStatus);
+        }
+        return BookingStatusesMapper.toBookingStatus(bookingStatuses.get(0));
     }
 
     @Override
@@ -67,7 +73,7 @@ public class bookingStatusImpl implements BookingStatusService {
 
     @Override
     public BookingStatus deleteBookingStatus(String bookingName) {
-        BookingStatus bookingStatus= bookingStatusRepo.findByStatus(bookingName).orElseThrow(
+        BookingStatus bookingStatus = bookingStatusRepo.findByStatus(bookingName).orElseThrow(
                 () -> new DataIntegrityViolationException("BookingRepo status not found")
         );
         bookingStatusRepo.delete(bookingStatus);
