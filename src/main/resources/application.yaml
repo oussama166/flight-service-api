@@ -37,3 +37,7 @@ logging:
         jackson: DEBUG
 server:
   port: 8081
+# Declaring the path for public and private keys
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem

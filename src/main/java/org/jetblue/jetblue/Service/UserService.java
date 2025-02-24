@@ -9,9 +9,18 @@ public interface UserService {
      * This function is for finding user by the username and return all the username info
      *
      * @param username
+     * @return UserBasicResponse user
+     */
+    UserResponseBasic findUserBasicByUsername(String username) throws Exception;
+
+
+    /**
+     * This function is for finding user by the username and return all the username info
+     *
+     * @param username
      * @return User user
      */
-    UserResponseBasic findUserByUsername(String username) throws Exception;
+    User findUserByUsername(String username) throws Exception;
 
     /**
      * This function is for register new user

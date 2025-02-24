@@ -63,6 +63,7 @@ public class UserPreferenceController {
         }
     }
 
+
     @PatchMapping(
             value = "/updateUserPreference/{username}",
             consumes = "application/json",

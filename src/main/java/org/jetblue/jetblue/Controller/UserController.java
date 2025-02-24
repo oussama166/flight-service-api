@@ -80,7 +80,7 @@ public class UserController {
     @GetMapping(value = "/user/{username}", produces = "application/json")
     public ResponseEntity<?> getUser(@PathVariable String username) {
         try {
-            UserResponseBasic userBasicDTO = userService.findUserByUsername(username);
+            UserResponseBasic userBasicDTO = userService.findUserBasicByUsername(username);
             return ResponseEntity.ok(userBasicDTO);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
