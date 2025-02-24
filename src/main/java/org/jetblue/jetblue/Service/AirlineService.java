@@ -17,7 +17,7 @@ public interface AirlineService {
      *
      * @return Airline
      *  */
-    Airline setAirline(Airline airline);
+    AirlineResponse setAirline(Airline airline);
 
 
     /**
@@ -25,7 +25,7 @@ public interface AirlineService {
      *
      * @return Airline
      * */
-    Airline getAirline(String airlineName);
+    AirlineResponse getAirline(String airlineName);
 
     /**
      *

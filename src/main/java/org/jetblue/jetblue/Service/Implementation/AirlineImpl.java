@@ -23,24 +23,28 @@ public class AirlineImpl implements AirlineService {
 
 
     @Override
-    public Airline setAirline(Airline airline) {
+    public AirlineResponse setAirline(Airline airline) {
         // find the airline in database
         Airline airlineResp = airlineRepo.findByAirlineName(airline.getAirlineName()).orElse(null);
         if (airlineResp == null) {
             airlineRepo.save(airline);
-            return airline;
+            return AirlineMapper.toAirlineResponse(airline);
         }
         //! - Refactor this code : Raise stackoverflow issue
         return null;
     }
 
     @Override
-    public Airline getAirline(String airlineName) {
+    public AirlineResponse getAirline(String airlineName) {
         if (airlineName == null) return null;
         if (airlineName.isBlank()) return null;
-        return airlineRepo
+        Airline airline = airlineRepo
                 .findByAirlineCode(airlineName)
                 .orElse(null);
+        if (airline == null) {
+            return null;
+        }
+        return AirlineMapper.toAirlineResponse(airline);
     }
 
     @Override
