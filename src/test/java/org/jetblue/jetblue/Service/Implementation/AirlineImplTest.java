@@ -1,5 +1,8 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
+import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
+import org.jetblue.jetblue.Mapper.Airplane.AirplaneMapper;
 import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Repositories.AirlineRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +30,9 @@ class AirlineImplTest {
 
     @Mock
     private AirlineRepo airlineRepo;
+
+    @Mock
+    private AirplaneMapper airplaneMapper;
 
     @InjectMocks
     private AirlineImpl airlineService;
@@ -60,13 +66,13 @@ class AirlineImplTest {
     void setAirline_test_should_return_name_of_airline() {
         when(airlineRepo.findByAirlineName(airline.getAirlineName())).thenReturn(Optional.empty());
 
-        Airline actual = airlineService.setAirline(airline);
+        AirlineResponse actual = airlineService.setAirline(airline);
 
         assertNotNull(actual);
-        assertEquals(airline.getAirlineName(), actual.getAirlineName());
+        assertEquals(airline.getAirlineName(), actual.airlineName());
 
 
-        verify(airlineRepo, times(1)).save(actual);
+        verify(airlineRepo, times(1)).save(airline);
     }
 
     /**
@@ -78,7 +84,7 @@ class AirlineImplTest {
     void setAirline_test_should_return_null_when_the_airline_exist() {
         when(airlineRepo.findByAirlineName(airline.getAirlineName())).thenReturn(Optional.of(airline));
 
-        Airline actual = airlineService.setAirline(airline);
+        AirlineResponse actual = airlineService.setAirline(airline);
 
         assertNull(actual);
         verify(airlineRepo, times(1)).findByAirlineName(airline.getAirlineName());
@@ -96,14 +102,14 @@ class AirlineImplTest {
     @Test
     @DisplayName(value = "Should return null when the airline name is null or undefined")
     void getAirline_test_should_return_null_when_airline_name_is_null_or_undefined() {
-        Airline actual = airlineService.getAirline(null);
+        AirlineResponse actual = airlineService.getAirline(null);
         assertNull(actual);
     }
 
     @Test
     @DisplayName(value = "Should return null when the airline name is blank or empty string")
     void getAirline_test_should_return_null_when_airline_name_is_blank_or_empty_string() {
-        Airline actual = airlineService.getAirline("");
+        AirlineResponse actual = airlineService.getAirline("");
         assertNull(actual);
     }
 
@@ -112,7 +118,7 @@ class AirlineImplTest {
     void getAirline_should_return_airline_depend_on_airline_code_exist() {
         when(airlineRepo.findByAirlineCode(airline.getAirlineCode())).thenReturn(Optional.of(airline));
 
-        Airline actual = airlineService.getAirline(airline.getAirlineCode());
+        AirlineResponse actual = airlineService.getAirline(airline.getAirlineCode());
 
         assertNotNull(actual);
         assertSame(airline, actual);
@@ -125,7 +131,7 @@ class AirlineImplTest {
     void getAirline_should_return_airline_depend_on_airline_code_not_exist() {
         when(airlineRepo.findByAirlineCode(airline.getAirlineCode())).thenReturn(Optional.empty());
 
-        Airline actual = airlineService.getAirline(airline.getAirlineCode());
+        AirlineResponse actual = airlineService.getAirline(airline.getAirlineCode());
 
         assertNull(actual);
         verify(airlineRepo, times(1)).findByAirlineCode(airline.getAirlineCode());

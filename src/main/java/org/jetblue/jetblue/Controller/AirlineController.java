@@ -2,6 +2,7 @@ package org.jetblue.jetblue.Controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
 import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
 import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
@@ -20,8 +21,11 @@ public class AirlineController {
 
     // Integration
     private AirlineService airlineService;
-    private AirlineMapper airlineMapper;
 
+    @GetMapping(value = "/testController", consumes = "application/json")
+    public String testController() {
+        return "testController";
+    }
 
     @PostMapping(
             value = "/setAirline",
@@ -31,13 +35,12 @@ public class AirlineController {
     public ResponseEntity<?> setAirline(
             @RequestBody @Valid AirlineRequest airline
     ) {
-        Airline airlineRes = airlineService.setAirline(AirlineMapper.toAirline(airline));
+        AirlineResponse airlineRes = airlineService.setAirline(AirlineMapper.toAirline(airline));
 
         if (airlineRes == null) {
             return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(airlineRes);
         }
+        return ResponseEntity.ok(airlineRes);
     }
 
 
@@ -49,12 +52,12 @@ public class AirlineController {
     public ResponseEntity<?> getAirline(
             @PathVariable String airline
     ) {
-        Airline airlineRes = airlineService.getAirline(airline);
+        AirlineResponse airlineRes = airlineService.getAirline(airline);
 
         if (airlineRes == null) {
             return ResponseEntity.badRequest().body("Airline not found!!!");
         } else {
-            return ResponseEntity.ok(AirlineMapper.toAirlineResponse(airlineRes));
+            return ResponseEntity.ok(airlineRes);
         }
     }
 
