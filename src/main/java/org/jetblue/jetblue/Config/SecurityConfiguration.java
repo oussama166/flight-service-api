@@ -36,12 +36,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
         //noinspection removal
         return http.authorizeRequests(
-                        auth -> auth.requestMatchers("/*Airline/**").authenticated().anyRequest().permitAll()
-
+                        auth -> auth
+                                .anyRequest().permitAll()
+//                                .requestMatchers("/*Airline/**").authenticated()
                 )
                 .httpBasic(withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // MEAN WE DONT CREATE ANY SESSION LATER IN THE APPLICATION
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // MEAN WE DON'T CREATE ANY SESSION LATER IN THE APPLICATION
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .build();
     }

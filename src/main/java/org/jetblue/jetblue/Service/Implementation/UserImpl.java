@@ -1,20 +1,20 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Mapper.User.UserMapper;
+import org.jetblue.jetblue.Mapper.User.UserRequest;
 import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
+import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
-import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
+import org.jetblue.jetblue.Models.DAO.UserPreference;
+import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
 import org.jetblue.jetblue.Repositories.UserRepo;
 import org.jetblue.jetblue.Service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.Optional;
 
 
@@ -26,10 +26,7 @@ public class UserImpl implements UserService {
 
     // Inject the user repo
     private final UserRepo userRepo;
-
-    private final Logger logger = LoggerFactory.getLogger(UserImpl.class);
-
-
+    private final UserPreferenceRepo userPreferenceRepo;
 
 
     @Override
@@ -53,7 +50,7 @@ public class UserImpl implements UserService {
     @Override
     public boolean createUser(User user) {
         // try to find user
-        User userOpt = userRepo.findByUsernameOrEmail(user.getUsername(),user.getEmail()).orElse(null);
+        User userOpt = userRepo.findByUsernameOrEmail(user.getUsername(), user.getEmail()).orElse(null);
         if (userOpt != null) {
             return false;
         } else {
@@ -63,21 +60,22 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(String username, User user) {
+    public boolean updateUser(String username, UserUpdateRequest user) {
         User userOpt = userRepo.findByUsername(username).orElse(null);
         if (userOpt == null) {
             return false;
         } else {
-            userOpt.setUsername(user.getUsername());
-            userOpt.setEmail(user.getEmail());
-            userOpt.setAddress(user.getAddress());
-            userOpt.setPhone(user.getPhone());
-            userOpt.setBirthday(user.getBirthday());
-            userOpt.setGender(user.getGender());
-            userOpt.setFrequentFlyerNumber(String.valueOf(user.getFrequentFlyerNumber()));
-            userOpt.setLastName(user.getLastName());
-            userOpt.setName(user.getName());
-            userOpt.setMiddleName(user.getMiddleName());
+            userOpt.setName(user.name());
+            userOpt.setLastName(user.lastName());
+            userOpt.setMiddleName(user.middleName());
+            userOpt.setGender(user.gender());
+            userOpt.setUsername(user.username());
+            userOpt.setAddress(user.address());
+            userOpt.setBirthday(user.birthday());
+            userOpt.setOrigin(user.origin());
+            userOpt.setPhone(user.phone());
+            userOpt.setEmail(user.email());
+            userOpt.setFrequentFlyerNumber(String.valueOf(user.frequentFlyerNumber()));
             userRepo.save(userOpt);
             return true;
         }
@@ -113,16 +111,18 @@ public class UserImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean deleteUser(String username) {
         User user = userRepo.findByUsername(username).orElse(null);
+
         if (user == null) {
             return false;
         } else {
+            userPreferenceRepo.deleteUserPreferenceByUser(user);
             userRepo.delete(user);
             return true;
         }
     }
-
 
 
 }

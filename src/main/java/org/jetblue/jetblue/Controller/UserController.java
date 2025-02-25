@@ -2,11 +2,7 @@ package org.jetblue.jetblue.Controller;
 
 
 import jakarta.validation.Valid;
-import org.jetblue.jetblue.Mapper.User.UserMapper;
-import org.jetblue.jetblue.Mapper.User.UserPasswordRequest;
-import org.jetblue.jetblue.Mapper.User.UserRequest;
-import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
-import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Mapper.User.*;
 import org.jetblue.jetblue.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +52,7 @@ public class UserController {
     @PostMapping(value = "/user/password", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateUserPassword(@RequestBody @Valid UserPasswordRequest user) {
         try {
-            boolean created = userService.updateUserPassword(user.userName(),user.oldPassword(),user.password());
+            boolean created = userService.updateUserPassword(user.userName(), user.oldPassword(), user.password());
 
             if (created) {
                 // Return 201 Created and user details or a success message
@@ -88,7 +84,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/user/update/{username}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody @Valid UserUpdateRequest user) {
         try {
             boolean updated = userService.updateUser(username, user);
             if (updated) {
@@ -99,6 +95,20 @@ public class UserController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
         }
+    }
+
+
+    @DeleteMapping(
+            value = "/user/delete/{username}",
+            consumes = "application/json"
+    )
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        boolean deleted = userService.deleteUser(username);
+
+        if (deleted) {
+            return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User could not be deleted");
     }
 
 

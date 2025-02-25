@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserPreferenceController {
 
-    // Implement the  repo
+    // Inject the dependency
     private final UserPreferenceService userPreferenceService;
 
 

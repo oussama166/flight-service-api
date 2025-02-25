@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceMapper;
 import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceRequest;
 import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceResponse;
@@ -13,17 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class UserPreferenceImpl implements UserPreferenceService {
 
-    Logger log = LoggerFactory.getLogger(UserPreferenceImpl.class);
-    // Integration
+    // Injecttion
     public final UserPreferenceRepo userPreferenceRepo;
     public final UserRepo userRepo;
 
-    public UserPreferenceImpl(UserPreferenceRepo userPreference, UserRepo userRepo, UserPreferenceMapper userPreferenceMapper) {
-        this.userPreferenceRepo = userPreference;
-        this.userRepo = userRepo;
-    }
 
     @Override
     public UserPreference getUserPreference(User user) throws Exception {
@@ -52,6 +49,7 @@ public class UserPreferenceImpl implements UserPreferenceService {
                     .mealPreference(userPreference.mealPreference())
                     .seatPreference(userPreference.seatPreference())
                     .notificationPreference(userPreference.notificationPreference())
+                    .user(user)
                     .build();
             newUserPreference.setUser(user);
             userPreferenceRepo.save(newUserPreference);

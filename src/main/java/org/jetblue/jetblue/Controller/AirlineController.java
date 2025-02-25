@@ -2,11 +2,9 @@ package org.jetblue.jetblue.Controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.jetblue.jetblue.Mapper.Airline.AirlineMapper;
 import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
 import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
-import org.jetblue.jetblue.Models.DAO.Airline;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Service.AirlineService;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +19,6 @@ public class AirlineController {
 
     // Integration
     private AirlineService airlineService;
-
-    @GetMapping(value = "/testController", consumes = "application/json")
-    public String testController() {
-        return "testController";
-    }
 
     @PostMapping(
             value = "/setAirline",

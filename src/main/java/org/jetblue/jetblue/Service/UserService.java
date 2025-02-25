@@ -1,12 +1,14 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.User.UserRequest;
 import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
+import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 
 public interface UserService {
     /**
-     * This function is for finding user by the username and return all the username info
+     * This function is for finding user by the username and return some important and not critical information
      *
      * @param username
      * @return UserBasicResponse user
@@ -37,13 +39,15 @@ public interface UserService {
      * @param user
      * @return boolean
      */
-    boolean updateUser(String username, User user);
+    boolean updateUser(String username, UserUpdateRequest user);
+
     /**
      * This function is for updating the user password by sending the actual password and the new password
-     * @param username -- Username store in database
+     *
+     * @param username    -- Username store in database
      * @param OldPassword -- Old password of user
-     * @param password -- New password of user
-     * */
+     * @param password    -- New password of user
+     */
 
     boolean updateUserPassword(String username, String OldPassword, String password) throws Exception;
 
@@ -55,7 +59,5 @@ public interface UserService {
      */
 
     boolean deleteUser(String username);
-
-
 
 }

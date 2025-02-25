@@ -48,14 +48,14 @@ public class User {
     private Role role = Role.User;
 
     // Relation
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_preference")
     private UserPreference userPreference;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Passenger> passengers;
 
 }

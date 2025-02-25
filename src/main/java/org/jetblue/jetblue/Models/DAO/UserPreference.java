@@ -22,7 +22,7 @@ public class UserPreference {
 
 
     // Relation
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user-id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User user;
 }
