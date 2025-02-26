@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Mapper.User;
 
 import lombok.Builder;
+import org.hibernate.annotations.ColumnDefault;
 import org.jetblue.jetblue.Models.ENUM.Gender;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public record UserResponseBasic(
         String origin,
         LocalDate Birthday,
         Gender gender,
+        @ColumnDefault(value = "true")
         boolean verified
 ) {
 }

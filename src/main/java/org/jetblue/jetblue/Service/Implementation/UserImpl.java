@@ -31,6 +31,7 @@ public class UserImpl implements UserService {
 
     @Override
     public UserResponseBasic findUserBasicByUsername(String username) throws Exception {
+        if (username == null || username.isBlank()) return null;
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isPresent()) {
             return UserMapper.toUserResponseBasic(user.get());
