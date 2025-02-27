@@ -6,6 +6,7 @@ import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.ENUM.Gender;
 import org.jetblue.jetblue.Repositories.UserRepo;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -36,11 +39,15 @@ class UserImplTest {
     @Mock
     UserRepo userRepo;
 
+
+
     @InjectMocks
     UserImpl userImpl;
 
     User user;
     UserUpdateRequest userUpdateRequest;
+
+
 
     @BeforeEach
     void setup() {
@@ -58,6 +65,7 @@ class UserImplTest {
                 .middleName("middleName")
                 .verified(true)
                 .email("email@gmail.com")
+                .password("{bcrypt}$2a$10$eG9JRFqLlBG8xoTRYIBq7O1aOH93uEA6ggBEzPfb4QLmIpLzFgPde")
                 .build();
         userUpdateRequest = UserUpdateRequest
                 .builder()
@@ -72,6 +80,7 @@ class UserImplTest {
                 .middleName("middleName")
                 .email("email@gmail.com")
                 .build();
+
     }
 
     /// <=================================== Test Find userBasic Response by username ===================================> ///
@@ -165,7 +174,7 @@ class UserImplTest {
 
     @Test
     @DisplayName("Should raise Exception when the user is not found")
-    void testUserExistNotFound() throws Exception {
+    void testUserExistNotFound() {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.empty());
 
         Exception ex = assertThrowsExactly(Exception.class, () -> userImpl.findUserByUsername("oussama166"), "User not found");
@@ -352,5 +361,39 @@ class UserImplTest {
         verify(userRepo, never()).save(any(User.class));
     }
 
+    /// <=================================== Test Update user password ===================================> ///
+    /**
+     * Testing the `updateUserPassword`
+     * -  Test case when all things work fine✅
+     */
+    @Test
+    @DisplayName("Should return true when the user password is correctly changed")
+    void shouldReturnTrueWhenUserPasswordIsCorrectlyChanged() throws Exception {
+        // Arrange
+        String OldPassword = "Ronaldo7";
+        String OldHashedPassword = "{bcrypt}$2a$10$ittW08xIh7l.gD6upvtScO0FgjzKUWFfEKwm8gdj8laSSGtXWjRvK";
+        String NewPassword = "password456";
+        String newHashedPassword = "{bcrypt}$2a$10$eG9JRFqLlBG8xoTRYIBq7O1aOH93uEA6ggBEzPfb4QLmIpLzFgPde";
 
+        var userEncoderMock = mock(BCryptPasswordEncoder.class);
+
+        // Mock behavior
+        when(userRepo.findByUsername("oussama166")).thenReturn(Optional.of(user)); // Return user
+        when(userEncoderMock.matches(OldHashedPassword, user.getPassword())).thenReturn(true); // Simulate match
+//        when(userEncoderMock.encode(NewPassword)).thenReturn(newHashedPassword); // Mock encoding
+
+        // Ensure USER_CHALLENGE_PASSWORD is set to a valid value
+        UserImpl.USER_CHALLENGE_PASSWORD = 1;
+
+        // Act
+        boolean result = userImpl.updateUserPassword("oussama166", OldPassword, NewPassword);
+
+        // Assert
+        assertTrue(result);
+        verify(userRepo, times(1)).findByUsername("oussama166");
+        verify(userEncoderMock, times(1)).matches(OldPassword, OldHashedPassword);
+        verify(userEncoderMock, times(1)).encode(NewPassword);
+        verify(userRepo, times(1)).save(user);
+
+    }
 }

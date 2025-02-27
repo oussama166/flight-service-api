@@ -71,6 +71,5 @@ secrets.yml
 .gradletasknamecache
 .git-hooks/
 node_modules
-**/certs/**
 src/Utils/**
 REMIND.todo
