@@ -1,0 +1,14 @@
+POST localhost:{{serverPort}}/setBookingListStatus
+Content-Type: application/json
+
+[
+  {
+    "status": "Confirmed"
+  },
+  {
+    "status": "Pending"
+  },
+  {
+    "status": "Canceled"
+  }
+]

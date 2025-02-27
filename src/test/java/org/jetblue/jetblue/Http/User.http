@@ -1,0 +1,31 @@
+POST localhost:{{serverPort}}/user
+Content-Type: application/json
+
+{
+  "username": "oussama167",
+  "name": "oussama",
+  "lastName": "ouardi",
+  "address": "Morocco,Casablanca,2060",
+  "birthday": "2002-06-10",
+  "email": "oussamaouardi80@gmail.com",
+  "origin": "Casablanca",
+  "gender": "MALE",
+  "phone": "+212646849495",
+  "password": "Ronaldo7",
+  "role": "RegularUser",
+  "verified": true
+}
+
+###
+GET localhost:{{serverPort}}/user/oussama166
+Content-Type: application/json
+
+###
+POST localhost:{{serverPort}}/user/password
+Content-Type: application/json
+
+{
+  "userName": "oussama166",
+  "password": "Ronaldo8",
+  "oldPassword": "Ronaldo7"
+}
