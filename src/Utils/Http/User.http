@@ -1,0 +1,57 @@
+POST localhost:{{serverPort}}/api/user
+Content-Type: application/json
+
+{
+  "username": "oussama167",
+  "name": "oussama",
+  "lastName": "ouardi",
+  "address": "Morocco,Casablanca,2060",
+  "birthday": "2002-06-10",
+  "email": "oussamaouardi80@gmail.com",
+  "origin": "Casablanca",
+  "gender": "MALE",
+  "phone": "+212646849495",
+  "password": "Ronaldo7",
+  "role": "RegularUser",
+  "verified": true
+}
+
+
+###
+@username=oussama167
+GET localhost:{{serverPort}}/api/user/{{username}}
+Content-Type: application/json
+
+###
+POST localhost:{{serverPort}}/api/user/password
+Content-Type: application/json
+
+{
+  "userName": "oussama166",
+  "password": "Ronaldo7",
+  "oldPassword": "oussama16688"
+}
+
+###
+PATCH localhost:{{serverPort}}/api/user/update/{{username}}
+Content-Type: application/json
+
+{
+  "name": "oussama",
+  "lastName": "ouardi",
+  "middleName": "El",
+  "gender": "MALE",
+  "username": "oussama166",
+  "address": "Casablanca",
+  "birthday": "2002-10-06",
+  "origin": "Morocco",
+  "phone": "+212646849495",
+  "email": "oussamaouardi80@gmail.com",
+  "frequentFlyerNumber": ""
+}
+
+###
+DELETE localhost:{{serverPort}}/api/user/delete/{{username}}
+Content-Type: application/json
+
+

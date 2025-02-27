@@ -1,0 +1,24 @@
+@username=oussama167
+
+GET localhost:{{serverPort}}/userPreference/{{username}}
+Content-Type: application/json
+
+###
+POST localhost:{{serverPort}}/setUserPreference/{{username}}
+Content-Type: application/json
+
+{
+  "seatPreference": "B1",
+  "mealPreference": "",
+  "notificationPreference": "PUSH"
+}
+
+###
+PATCH localhost:{{serverPort}}/updateUserPreference/{{username}}
+Content-Type: application/json
+
+{
+  "seatPreference": "A5",
+  "mealPreference": "",
+  "notificationPreference": "PUSH"
+}
