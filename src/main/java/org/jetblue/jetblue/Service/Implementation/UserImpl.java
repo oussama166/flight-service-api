@@ -1,20 +1,20 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Mapper.User.UserMapper;
-import org.jetblue.jetblue.Mapper.User.UserRequest;
 import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
-import org.jetblue.jetblue.Models.DAO.UserPreference;
 import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
 import org.jetblue.jetblue.Repositories.UserRepo;
 import org.jetblue.jetblue.Service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.Optional;
 
 
@@ -91,7 +91,7 @@ public class UserImpl implements UserService {
     public boolean updateUserPassword(String username, String OldPassword, String password) throws Exception {
 
         User user = userRepo.findByUsername(username).orElse(null);
-        var passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        var passwordEncoder = new BCryptPasswordEncoder();
 
         // IN THIS STATE THE USER NEED TO BE NOTIFY
         if (user == null) {
