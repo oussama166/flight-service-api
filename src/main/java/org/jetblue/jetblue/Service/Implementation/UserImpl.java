@@ -41,6 +41,7 @@ public class UserImpl implements UserService {
 
     @Override
     public User findUserByUsername(String username) throws Exception {
+        if (username == null || username.isBlank()) return null;
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isPresent()) {
             return user.get();
@@ -50,6 +51,8 @@ public class UserImpl implements UserService {
 
     @Override
     public boolean createUser(User user) {
+        if (user == null) return false;
+        if (user.getUsername().isBlank() || user.getEmail().isBlank()) return false;
         // try to find user
         User userOpt = userRepo.findByUsernameOrEmail(user.getUsername(), user.getEmail()).orElse(null);
         if (userOpt != null) {
@@ -62,6 +65,7 @@ public class UserImpl implements UserService {
 
     @Override
     public boolean updateUser(String username, UserUpdateRequest user) {
+        if (username.isBlank() || user == null) return false;
         User userOpt = userRepo.findByUsername(username).orElse(null);
         if (userOpt == null) {
             return false;

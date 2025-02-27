@@ -1,12 +1,14 @@
 package org.jetblue.jetblue.Mapper.User;
 
 import jakarta.validation.constraints.Email;
+import lombok.Builder;
 import org.jetblue.jetblue.Models.ENUM.Gender;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+@Builder
 public record UserUpdateRequest  (
         String name,
         String lastName,

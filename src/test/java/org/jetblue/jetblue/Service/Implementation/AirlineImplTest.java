@@ -93,9 +93,9 @@ class AirlineImplTest {
     /// ============================== Test cases of the setAirline function ============================== ///
 
     /**
-     * getAirline
+     * <h2>getAirline</h2>
      *
-     * @param String airlineCode_Name
+     * @param airlineCode_Name
      * @retun airline
      */
 
