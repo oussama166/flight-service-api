@@ -1,0 +1,30 @@
+POST localhost:{{serverPort}}/setFlight
+Content-Type: application/json
+
+{
+  "departureTime": "2025-01-12T18:10:00",
+  "arrivalTime": "2025-01-12T20:00:00",
+  "price": 80,
+  "departure": "LFPG",
+  "arrival": "KJFK",
+  "airline": "RAM",
+  "airplane": "Boeing 777-9",
+  "flightStatus": "On Time",
+  "maxFirst": 60,
+  "maxSecond": 70,
+  "maxThird": 60,
+  "maxSeats": 350
+}
+
+###
+@flightNumber=0b634307-0749-484b-9691-c1325510b308
+GET localhost:{{serverPort}}/getFlight/{{flightNumber}}
+
+###
+GET localhost:{{serverPort}}/getFlightByArrDes
+Content-Type: application/json
+
+{
+  "departure": "LFPG",
+  "arrival": "KJFK"
+}
