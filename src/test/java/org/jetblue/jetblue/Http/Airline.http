@@ -1,14 +1,16 @@
-POST localhost:8080/setAirline
+POST localhost:{{serverPort}}/setAirline
 Content-Type: application/json
 
 {
-  "airlineName": "Aer Lingus UK",
-  "airlineCode": "EUK",
-  "airlineUrl": "https://www.aerlingus.com/html/en-IE/home.html",
-  "airlineLogoLink": "https://mediacentre.aerlingus.com/contents/archives/459/108/images/thumb1200x628_width/aerlingus_459108618666105_thumb.png",
+  "airlineName": "Qatar Airways",
+  "airlineCode": "QTR",
+  "airlineUrl": "https://www.qatarairways.com/en/homepage.html",
+  "airlineLogoLink": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/250px-Qatar_Airways_Logo.svg.png",
   "colFormation": 5,
   "rowFormation": 70
 }
+
+
 
 ###
 POST localhost:8080/setAirline
@@ -26,8 +28,12 @@ Content-Type: application/json
 ###
 @airlineCode=RAM
 
-GET localhost:8080/getAirline/{{airlineCode}}
+GET localhost:{{serverPort}}/getAirline/{{airlineCode}}
 Content-Type: application/json
+###
+
+GET localhost:{{serverPort}}/getAllAirlines
+
 
 ###
 #@airlineCode=RAM

@@ -1,8 +1,8 @@
-POST localhost:{{serverPort}}/user
+POST localhost:{{serverPort}}/api/user
 Content-Type: application/json
 
 {
-  "username": "oussama167",
+  "username": "oussama168",
   "name": "oussama",
   "lastName": "ouardi",
   "address": "Morocco,Casablanca,2060",
@@ -17,8 +17,9 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:{{serverPort}}/user/oussama166
+GET localhost:{{serverPort}}/api/user/oussama166
 Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
 
 ###
 POST localhost:{{serverPort}}/user/password
