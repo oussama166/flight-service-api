@@ -26,5 +26,6 @@ public class AirlineMapper {
                 .colFormation(airline.getColFormation())
                 .rowFormation(airline.getRowFormation())
                 .build();
+
     }
 }

@@ -65,7 +65,7 @@ public interface AirlineService {
      *
      * @return List
      * */
-    List<Airline> getAllAirlines();
+    List<AirlineResponse> getAllAirlines();
 
 
 

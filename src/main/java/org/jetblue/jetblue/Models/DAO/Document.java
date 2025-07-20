@@ -30,8 +30,6 @@ public class Document {
     )
     private Timestamp created;
 
-
-
     // Relation
     @ManyToOne(fetch = FetchType.EAGER)
     private Passenger passenger;

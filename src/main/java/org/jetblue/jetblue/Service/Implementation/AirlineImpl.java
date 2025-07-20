@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -86,7 +87,7 @@ public class AirlineImpl implements AirlineService {
     }
 
     @Override
-    public List<Airline> getAllAirlines() {
-        return airlineRepo.findAll();
+    public List<AirlineResponse> getAllAirlines() {
+        return airlineRepo.findAll().stream().map(AirlineMapper::toAirlineResponse).collect(Collectors.toList());
     }
 }

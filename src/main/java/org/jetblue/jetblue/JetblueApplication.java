@@ -9,9 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(RSAkeyProps.class)
 @SpringBootApplication
 public class JetblueApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(JetblueApplication.class, args);
     }
-
 }

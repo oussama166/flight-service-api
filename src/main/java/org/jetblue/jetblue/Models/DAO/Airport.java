@@ -27,6 +27,7 @@ public class Airport {
     @Column(unique = true)
     private double longitude;
 
+
     @OneToMany(mappedBy = "departure", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference("departure-flights")
     private List<Flight> departures;

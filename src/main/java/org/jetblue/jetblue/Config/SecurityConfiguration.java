@@ -7,20 +7,32 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Filters.authFilter;
+import org.jetblue.jetblue.Filters.tokenFilter;
+import org.jetblue.jetblue.Models.DAO.UserPrincipal;
 import org.jetblue.jetblue.Service.Implementation.CustomDetailsUserProvider;
+import org.jetblue.jetblue.Service.Implementation.TokenImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -33,17 +45,15 @@ public class SecurityConfiguration {
 
 
     @Bean
-    public SecurityFilterChain config(HttpSecurity http) throws Exception {
+    public SecurityFilterChain config(HttpSecurity http, TokenImpl tokenImpl) throws Exception {
         //noinspection removal
-        return http.authorizeRequests(
-                        auth -> auth
-                                .anyRequest().permitAll()
-//                                .requestMatchers("/*Airline/**").authenticated()
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeRequests(auth -> auth
+                        .requestMatchers("/login", "/error").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // MEAN WE DON'T CREATE ANY SESSION LATER IN THE APPLICATION
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .addFilterBefore(new authFilter(tokenImpl), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
 
@@ -51,10 +61,20 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider AuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         authProvider.setUserDetailsService(customDetailsUserProvider);
         return authProvider;
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authenticationProvider.setUserDetailsService(customDetailsUserProvider);
+
+        return new ProviderManager(authenticationProvider);
+    }
+
 
     @Bean
     JwtDecoder decoder() {

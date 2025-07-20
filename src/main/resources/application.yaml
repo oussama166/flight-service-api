@@ -32,6 +32,7 @@ logging:
         http:
           converter:
             json: DEBUG
+        security: TRACE
     com:
       fasterxml:
         jackson: DEBUG
