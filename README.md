@@ -1,163 +1,264 @@
-# ✈️ **Jet API** - Flight Reservation System 🚀
+# ✈️ Flight Service API
 
-Welcome to the **Jet API** – your one-stop service for managing airlines, airports, users, and their preferences in a seamless flight reservation system. Whether you're building a booking system or integrating airline data, this API has got you covered!
-
-## 🌐 **Base URL**
-
-https://api.jetblue.com/v1/
+Welcome to the **Flight Service API** — a modern, scalable backend solution built with **Spring Boot** to manage flight-related operations. From booking flights to handling real-time notifications and user roles, this API is designed to serve as a strong backbone for any airline or travel platform.
 
 ---
 
-## 🛫 **Airline Endpoints**
+## 🌍 Overview
 
-### 1. **Create an Airline**
-- **Method:** `POST`
-- **Endpoint:** `/airline`
-- **Description:** Add a new airline to the system.
-- **Response:** Airline created successfully.
+The Flight Service API supports a full suite of features, including:
 
-### 2. **Get Airline Info**
-- **Method:** `GET`
-- **Endpoint:** `/airline/{airlineId}`
-- **Description:** Retrieve details about a specific airline.
-- **Response:** Detailed airline information.
+* Flight and booking management
+* Secure user authentication and authorization
+* Real-time updates and notifications
+* Scalable architecture with future-ready enhancements
 
-### 3. **Update Airline Info**
-- **Method:** `PUT`
-- **Endpoint:** `/airline/{airlineId}`
-- **Description:** Modify details of an existing airline.
-- **Response:** Airline updated successfully.
-
-### 4. **Delete Airline**
-- **Method:** `DELETE`
-- **Endpoint:** `/airline/{airlineId}`
-- **Description:** Remove an airline from the system.
-- **Response:** Airline deleted.
+This document walks you through its features, setup, and technical design.
 
 ---
 
-## 🏙 **Airport Endpoints**
+## ✨ Features
 
-### 1. **Create an Airport**
-- **Method:** `POST`
-- **Endpoint:** `/airport`
-- **Description:** Add a new airport to the system.
-- **Response:** Airport created successfully.
+### ✅ Current Functionalities
 
-### 2. **Update Airport Info**
-- **Method:** `PATCH`
-- **Endpoint:** `/airport/{airportId}`
-- **Description:** Modify the details of an existing airport.
-- **Response:** Airport information updated.
+**🛫 Flight Management**
 
-### 3. **Get Airport Info**
-- **Method:** `GET`
-- **Endpoint:** `/airport/{airportId}`
-- **Description:** Retrieve details about a specific airport.
-- **Response:** Detailed airport information.
+* Create, retrieve, update, and delete flights
+* Search by flight number, airline, airport
+* Manage schedules, pricing, and seating
 
-### 4. **Get All Airports**
-- **Method:** `GET`
-- **Endpoint:** `/airport`
-- **Description:** List all airports in the system.
-- **Response:** List of all airports.
+**📑 Booking System**
 
-### 5. **Delete an Airport**
-- **Method:** `DELETE`
-- **Endpoint:** `/airport/{airportId}`
-- **Description:** Remove an airport from the system.
-- **Response:** Airport deleted.
+* Create and fetch bookings
+* Link bookings with flights and users
+
+**👥 User Management**
+
+* Register and log in securely
+* Role-based access control
+* Profile and preferences management
+
+**🔐 Security Layer**
+
+* Spring Security + JWT with RSA
+* Custom filters (`authFilter`, `tokenFilter`)
+* Robust access control mechanisms
 
 ---
 
-## 👥 **User Endpoints**
+### 🧭 Future Roadmap
 
-### 1. **Get User Info**
-- **Method:** `GET`
-- **Endpoint:** `/user/{userId}`
-- **Description:** Retrieve details about a specific user.
-- **Response:** User information.
+#### 🔍 Advanced Flight Search
 
-### 2. **Create a User**
-- **Method:** `POST`
-- **Endpoint:** `/user`
-- **Description:** Add a new user to the system.
-- **Response:** User created successfully.
+* Flexible dates, stops, class filters
+* Airline, time-of-day, and layover filtering
 
-### 3. **Modify User Info**
-- **Method:** `PATCH`
-- **Endpoint:** `/user/{userId}`
-- **Description:** Modify the details of an existing user.
-- **Response:** User information updated.
+#### 🕒 Real-Time Status & Notifications
+
+* WebSocket & webhook support
+* Email, SMS, and push alerts
+
+#### 💰 Dynamic Pricing Engine
+
+* Price adjustments by demand and timing
+* Competitor price monitoring
+* Fare rules (e.g., refundability)
+
+#### 💼 Ancillary Services
+
+* Baggage, seat upgrades, in-flight meals
+* Travel insurance and lounge booking
+
+#### 💳 Payment Gateway Integration
+
+* Multi-method payments (cards, wallets)
+* PCI DSS compliance
+* Refund and cancellation handling
+
+#### ✈️ Loyalty Programs
+
+* Miles redemption
+* Tier-based benefits
+
+#### 💡 Personalization
+
+* Fare alerts, saved preferences
+* Travel history analysis
+
+#### 🌐 Globalization
+
+* Multi-language support
+* Currency conversions
+
+#### 🛡️ Operational Excellence
+
+* Rate limiting, caching, logging
+* API versioning and centralized error handling
+
+#### 🧠 Smart Features
+
+* Predictive delay analytics
+* Carbon emission estimations
+* NLP-powered travel assistant chatbot
 
 ---
 
-## 💼 **User Preferences Endpoints**
+## 🛠️ Tech Stack
 
-### 1. **Get User Preferences**
-- **Method:** `GET`
-- **Endpoint:** `/user/{userId}/preferences`
-- **Description:** Retrieve the preferences of a user (e.g., preferred airlines, seating preferences).
-- **Response:** User preferences data.
-
-### 2. **Set User Preferences**
-- **Method:** `POST`
-- **Endpoint:** `/user/{userId}/preferences`
-- **Description:** Set the preferences for a user.
-- **Response:** Preferences set successfully.
-
-### 3. **Update User Preferences**
-- **Method:** `PATCH`
-- **Endpoint:** `/user/{userId}/preferences`
-- **Description:** Update an existing user's preferences.
-- **Response:** Preferences updated successfully.
+* **Backend:** Spring Boot 3.x
+* **Language:** Java 17
+* **Database:** MySQL
+* **ORM:** Spring Data JPA
+* **Security:** Spring Security, JWT, bcrypt
+* **Build Tool:** Maven
+* **Validation:** Jakarta Bean Validation
+* **Testing:** JUnit 5, Mockito
+* **Extras:** Lombok, DevTools, Jackson
 
 ---
 
-## 🛠 **Usage Guide**
+## 🚀 Getting Started
 
-1. **Test the API** using tools like [Postman](https://www.postman.com/) or command-line with `curl`.
-2. **Base URL** is the starting point for all API calls:
+### 🧩 Prerequisites
 
-https://api.jetblue.com/v1/
+* Java 17+
+* Maven 3+
+* MySQL
+* Git
 
-3. **Example Request:**
+### 📦 Installation
+
 ```bash
-curl -X GET "https://api.jetblue.com/v1/airline/123" -H "accept: application/json"
+git clone https://github.com/oussama166/flight-service-api.git
+cd flight-service-api
+mvn clean install
+mvn spring-boot:run
 ```
 
-🔒 Authentication
+### 🗂️ Database Configuration
 
-	•	API Key or OAuth 2.0 depending on the setup.
-	•	Ensure that all requests contain the correct Authorization headers to access restricted endpoints.
+Edit `application.yaml`:
 
-📊 Response Format
-
-All responses will be in JSON format:
-```json
-{
-  "status": "success",
-  "data": {
-    "message": "Airline created successfully."
-  }
-}
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:8889/JetBlue
+    username: root
+    password: root
 ```
 
-❗️ Error Handling
+The DB will be created automatically on launch.
 
-	•	400 Bad Request: Invalid input parameters or request body.
-	•	404 Not Found: The requested resource does not exist.
-	•	500 Internal Server Error: A problem occurred on the server.
+---
 
-🛡 Rate Limiting
+## 🔐 JWT & RSA Key Setup
 
-	•	The API enforces rate limits to ensure fair usage. If you exceed the rate limit, you will receive a 429 Too Many Requests response.
+```bash
+# Generate private key
+openssl genrsa -out private.pem 2048
 
-[//]: # (💡 Need Help?)
+# Extract public key
+openssl rsa -in private.pem -pubout -out public.pem
+```
 
-[//]: # ()
-[//]: # (	•	Reach out to the Jet Blue API Support Team for assistance or queries.)
+Place the keys in:
 
-[//]: # (	•	Explore our API Documentation for detailed explanations.)
+```
+src/main/resources/certs/
+```
 
-Enjoy building with Jet Blue API! 🚀
+---
+
+## 📡 API Endpoints
+
+### ✈️ Flight
+
+* `POST /setFlight` → Add a new flight
+* `GET /getFlight/{flightNumber}` → Get details by flight number
+* `GET /getFlightByArrDes` → Search flights by departure, arrival, and status
+
+### 👤 User
+
+* `POST /register` → Sign up a new user
+* `POST /login` → Authenticate and receive JWT
+
+### 📘 Booking
+
+* `POST /setBooking` → Make a new booking
+
+***Interactive API docs:** Available via `/swagger-ui.html`*
+
+---
+
+## 🏗️ Architecture
+
+### 📐 Layered Design
+
+* **Controller:** Handles requests (`org.jetblue.jetblue.Controller`)
+* **Service:** Business logic (`org.jetblue.jetblue.Service`)
+* **Repository:** Data layer using JPA (`org.jetblue.jetblue.Repositories`)
+* **Model:** Entities, DTOs, enums (`org.jetblue.jetblue.Models`)
+* **Security:** JWT & filters (`org.jetblue.jetblue.Filters`)
+
+### 📊 Design Patterns
+
+* Dependency Injection
+* DTO + Mapper Pattern
+* Repository Abstraction
+* Layered Separation of Concerns
+
+---
+
+## 🧪 Testing
+
+### 🔎 Test Categories
+
+* **Unit Tests:** Services (`Service/Implementation/`)
+* **Controller Tests:** API endpoints
+* **HTTP Test Files:** Manual request samples
+
+### ▶️ Run Tests
+
+```bash
+mvn test                     # Run all
+mvn test jacoco:report       # With coverage
+mvn test -Dtest=UserImplTest
+```
+
+Frameworks:
+
+* **JUnit 5**
+* **Mockito**
+* **Spring Security Test**
+
+---
+
+## 🤝 Contributing
+
+We welcome contributors! Please:
+
+1. Fork and create a new branch
+2. Follow clean code and naming conventions
+3. Add or update tests
+4. Submit a well-documented pull request
+
+---
+
+## ⚖️ License
+
+Distributed under the **Apache 2.0 License**. See [`LICENSE`](LICENSE) for details.
+
+---
+
+## 📬 Contact
+
+Maintainer: **Oussama Ouardi**
+📧 [oussamaouardi80@gmail.com](mailto:oussamaouardi80@gmail.com)
+🐙 [GitHub](https://github.com/oussama166)
+🔗 [Project Link](https://github.com/oussama166/flight-service-api)
+
+---
+
+Let your API fly high! 🚀✈️
+*Ready for takeoff? Clone, build, and start exploring today.*
+
