@@ -17,8 +17,9 @@ Content-Type: application/json
 }
 
 ###
-@flightNumber=9e4193f8-eaf9-496c-b203-9f05595cb9d0
+@flightNumber=0b634307-0749-484b-9691-c1325510b308
 GET localhost:{{serverPort}}/getFlight/{{flightNumber}}
+Authorization: Bearer {{bearerToken}}
 
 ###
 GET localhost:{{serverPort}}/getFlightByArrDes

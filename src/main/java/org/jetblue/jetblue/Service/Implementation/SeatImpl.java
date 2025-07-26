@@ -8,6 +8,7 @@ import org.jetblue.jetblue.Models.DAO.Airplane;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.DTO.SeatCreate;
+import org.jetblue.jetblue.Models.DTO.SeatCreationRequest;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Repositories.AirplaneRepo;
 import org.jetblue.jetblue.Repositories.FlightRepo;
@@ -41,15 +42,16 @@ public class SeatImpl implements SeatService {
     // Implementation
 
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<SeatResponse> createSeats(int maxSeatNumber, double price, SeatType seatType, String airplaneName, int startRow) {
+    public List<SeatResponse> createSeats(SeatCreationRequest seatCreationRequest) {
+
+
         List<Seat> seats = new ArrayList<>();
 
         // Find the flight associated with the airplane name
-        Flight flight = flightRepo.findByFlightNumber(airplaneName).orElseThrow(
-                () -> new DataIntegrityViolationException("Flight " + airplaneName + " not found")
+        Flight flight = flightRepo.findByFlightNumber(seatCreationRequest.getAirplaneName()).orElseThrow(
+                () -> new DataIntegrityViolationException("Flight " + seatCreationRequest.getAirplaneName() + " not found")
         );
 
         // Validate flight status
@@ -62,12 +64,12 @@ public class SeatImpl implements SeatService {
         int row = flight.getAirline().getRowFormation();
         int counter = 0;
 
-        for (int i = startRow; i <= row; i++) {
-            if (counter >= maxSeatNumber) {
+        for (int i = seatCreationRequest.getRowStart(); i <= row; i++) {
+            if (counter >= seatCreationRequest.getMaxSeatNumber()) {
                 break;
             }
             for (int j = 1; j <= col; j++) {
-                if (counter >= maxSeatNumber) {
+                if (counter >= seatCreationRequest.getMaxSeatNumber()) {
                     break;
                 }
 
@@ -81,43 +83,16 @@ public class SeatImpl implements SeatService {
                 }
 
                 // Update reservation counts based on seat type
-                switch (seatType) {
-                    case FIRST_CLASS:
-                        if (flight.getFirstClassReserve() < flight.getMaxFirstClass()) {
-                            flight.setFirstClassReserve(flight.getFirstClassReserve() + 1);
-                        } else {
-                            throw new DataIntegrityViolationException("First class reserve is full");
-                        }
-                        break;
-
-                    case SECOND_CLASS:
-                        if (flight.getSecondClassReserve() < flight.getMaxSecondClass()) {
-                            flight.setSecondClassReserve(flight.getSecondClassReserve() + 1);
-                        } else {
-                            throw new DataIntegrityViolationException("Second class reserve is full");
-                        }
-                        break;
-
-                    case ECONOMY_CLASS:
-                        if (flight.getThirdClassReserve() < flight.getMaxThirdClass()) {
-                            flight.setThirdClassReserve(flight.getThirdClassReserve() + 1);
-                        } else {
-                            throw new DataIntegrityViolationException("Economy class reserve is full");
-                        }
-                        break;
-
-                    default:
-                        throw new IllegalArgumentException("Invalid seat type");
-                }
+                reservationBySeat(flight, seatCreationRequest.getSeatType());
 
                 // Create and configure the seat
                 Seat seat = new Seat();
                 seat.setFlight(flight);
-                seat.setSeatType(seatType);
+                seat.setSeatType(seatCreationRequest.getSeatType());
                 seat.setSeatLabel(seatLabel);
                 seat.setRow(i);
                 seat.setCol(j);
-                seat.setPrice(price);
+                seat.setPrice(seatCreationRequest.getPrice());
                 seat.setAvailable(true);
                 seat.setSold(false);
                 seat.setSpecialTrait(false);
@@ -134,24 +109,8 @@ public class SeatImpl implements SeatService {
         return sta.stream().map(SeatMapper::toSeatResponse).toList();
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public SeatResponse createSeat(SeatCreate seat) {
-
-        // Fetch the flight associated with the seat
-        Flight flight = seatsRepo.findByFlightFlightNumber(seat.getFlightNumber()).orElseThrow(
-                () -> new DataIntegrityViolationException("Flight associated with seat not found")
-        );
-
-        Optional<Airplane> airplane = airplaneRepo.findByName(flight.getAirplane().getName());
-
-
-        if (flight.getStatus().getStatus().contentEquals("Revoked") || flight.getStatus().getStatus().contentEquals("canceled")) {
-            throw new DataIntegrityViolationException("We can not have seat on revoked or canceled flight");
-        }
-
-        // Check the seat type and update reservation counts accordingly
-        switch (seat.getSeatType()) {
+    private void reservationBySeat(Flight flight, SeatType seatType) {
+        switch (seatType) {
             case FIRST_CLASS:
                 if (flight.getFirstClassReserve() < flight.getMaxFirstClass()) {
                     flight.setFirstClassReserve(flight.getFirstClassReserve() + 1);
@@ -179,6 +138,26 @@ public class SeatImpl implements SeatService {
             default:
                 throw new IllegalArgumentException("Invalid seat type");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SeatResponse createSeat(SeatCreate seat) {
+
+        // Fetch the flight associated with the seat
+        Flight flight = seatsRepo.findByFlightFlightNumber(seat.getFlightNumber()).orElseThrow(
+                () -> new DataIntegrityViolationException("Flight associated with seat not found")
+        );
+
+        Optional<Airplane> airplane = airplaneRepo.findByName(flight.getAirplane().getName());
+
+
+        if (flight.getStatus().getStatus().contentEquals("Revoked") || flight.getStatus().getStatus().contentEquals("canceled")) {
+            throw new DataIntegrityViolationException("We can not have seat on revoked or canceled flight");
+        }
+
+        // Check the seat type and update reservation counts accordingly
+        reservationBySeat(flight, seat.getSeatType());
 
 
         // Create the seat and set its properties
@@ -186,7 +165,7 @@ public class SeatImpl implements SeatService {
 
 
         // Save the seat instance and return
-        Seat st= seatsRepo.save(seatInst);
+        Seat st = seatsRepo.save(seatInst);
         return SeatMapper.toSeatResponse(st);
     }
 

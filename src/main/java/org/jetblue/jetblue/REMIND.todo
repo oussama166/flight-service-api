@@ -1,3 +1,2 @@
-+ create controller for flight status
-+ create "Model-Controller" for seats
-+ create logics for flight
+- We need to do check on all the endpoint to check if all the endpoints are working
+-

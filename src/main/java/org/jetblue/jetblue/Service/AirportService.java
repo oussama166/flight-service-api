@@ -13,28 +13,28 @@ public interface AirportService {
      * @return airport
      */
 
-    public Airport createAirport(Airport airport);
+    Airport createAirport(Airport airport);
 
     /**
      * This function update the credential info about airport
      *
      * @return Airport
      */
-    public Airport updateAirport(String code, Airport airport);
+    Airport updateAirport(String code, Airport airport);
 
     /**
      * This function is for getting airport info using the code of airport
      *
      * @return Airport
      */
-    public Airport getAirport(String code);
+    Airport getAirport(String code);
 
     /**
      * This function is dedicated to get all the airports
      *
      * @return List<Airports>
      */
-    public List<AirportResponse> getAllAirports();
+    List<AirportResponse> getAllAirports();
 
 
     /**

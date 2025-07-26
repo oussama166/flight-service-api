@@ -52,13 +52,7 @@ public class SeatController {
     ) {
         try {
             // Create seats using the seatService
-            List<SeatResponse> seats = seatService.createSeats(
-                    seatCreationRequest.getMaxSeatNumber(),
-                    seatCreationRequest.getPrice(),
-                    seatCreationRequest.getSeatType(),
-                    seatCreationRequest.getAirplaneName(),
-                    seatCreationRequest.getRowStart()
-            );
+            List<SeatResponse> seats = seatService.createSeats(seatCreationRequest);
 
             // If the list is not empty, return the seats created with HTTP status 201 (Created)
             if (!seats.isEmpty()) {

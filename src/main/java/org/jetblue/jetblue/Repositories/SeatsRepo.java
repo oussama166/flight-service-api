@@ -37,6 +37,9 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
 
     Optional<Seat> findSeatByFlag(String flag);
 
+    @Query(
+            "SELECT s FROM Seat s WHERE s.flight.flightNumber = ?1 ORDER BY s.seatLabel asc"
+    )
     List<Seat> findByFlight_FlightNumber(String flightNumber);
 
     Optional<Seat> findFirstByFlight_IdAndSeatLabel(long id, String seatLabel);
