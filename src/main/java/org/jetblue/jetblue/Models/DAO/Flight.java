@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,12 +71,15 @@ public class Flight {
 
     @ManyToOne
     @JoinColumn(name = "airline_id")
-    @JsonBackReference("airline-flight") // Add this annotation
+    @JsonBackReference("airline-flight")
     private Airline airline;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_status_id")
     private FlightStatus status;
+
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StopOver> stopOvers = new ArrayList<>();
 
     @PrePersist
     public void generateFlightNumber() {

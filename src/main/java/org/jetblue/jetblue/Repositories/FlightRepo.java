@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,33 +30,5 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     )
     Optional<Flight> findByFlightNumber(String flightNumber);
 
-    @Query(value = """
-            SELECT fl.id, fl.departure_time, fl.arrival_time, fl.airport_arr, fl.airport_dep,
-                   fl.flight_status_id, fl.airline_id
-            FROM Flight fl
-            LEFT JOIN airport arr ON arr.id = fl.airport_arr
-            LEFT JOIN airport dept ON dept.id = fl.airport_dep
-            LEFT JOIN flight_status fls ON fls.id = fl.flight_status_id
-            LEFT JOIN airline air ON air.id = fl.airline_id
-            WHERE fl.departure_time >= :departureStart
-              AND fl.arrival_time <= :arrivalEnd
-              AND (:depName IS NULL OR :depName = '' OR dept.name = :depName)
-              AND (:destName IS NULL OR :destName = '' OR arr.name = :destName)
-              AND (:status IS NULL OR :status = '' OR fls.status = :status)
-              AND (:airlineName IS NULL OR :airlineName = '' OR air.airline_name = :airlineName)
-            """, nativeQuery = true)
-    List<Flight> searchFlights(
-            @Param("departureStart") LocalDateTime departureStart,
-            @Param("arrivalEnd") LocalDateTime arrivalEnd,
-            @Param("depName") String depName,
-            @Param("destName") String destName,
-            @Param("status") String status,
-            @Param("airlineName") String airlineName
-    );
-
-    List<Flight> findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_Location(LocalDateTime departureStart, LocalDateTime departureEnd,
-                                                                 String departureLocation);
-
-
-
+    List<Flight> findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_LocationOrArrival_Location(LocalDateTime departureTimeAfter, LocalDateTime arrivalTimeBefore, String departureLocation, String arrivalLocation);
 }

@@ -18,17 +18,19 @@ public class AdvanceSearchImpl implements AdvanceSearchService {
 
     private final FlightRepo flightRepo;
 
+
     @Override
     public List<FlightResponse> searchFlights(
             SearchRequest searchRequest
     ) {
-        return flightRepo.findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_Location(
+        return flightRepo.findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_LocationOrArrival_Location(
                 searchRequest.departureTime(),
                 searchRequest.arrivalTime(),
-                searchRequest.origin()
+                searchRequest.origin(),
+                searchRequest.destination()
         ).stream().map(FlightMapper::toFlightResponse).collect(Collectors.toList());
-
-
     }
+
+
 
 }
