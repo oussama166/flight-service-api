@@ -62,11 +62,11 @@ public class flightController {
             @PathVariable String flightNumber
     ) {
         try {
-            Flight flightResp = flightService.getFlight(flightNumber);
+            FlightResponse flightResp = flightService.getFlight(flightNumber);
             if (flightResp == null) {
                 return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.ok(FlightMapper.toFlightResponse(flightResp));
+            return ResponseEntity.ok(flightResp);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

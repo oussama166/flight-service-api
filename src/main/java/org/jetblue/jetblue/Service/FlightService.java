@@ -44,7 +44,7 @@ public interface FlightService {
      * @param numberFlight -- each flight has unique flight number
      *
      * */
-    Flight getFlight(String numberFlight);
+    FlightResponse getFlight(String numberFlight);
 
     /**
      * Getting flight using the Number Flight

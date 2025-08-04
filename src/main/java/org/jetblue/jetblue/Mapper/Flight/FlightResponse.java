@@ -1,8 +1,10 @@
 package org.jetblue.jetblue.Mapper.Flight;
 
 import lombok.Builder;
+import org.jetblue.jetblue.Mapper.StopOver.StopOverResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 public record FlightResponse(
@@ -14,6 +16,7 @@ public record FlightResponse(
         String arrival,
         String airline,
         String flightStatus,
-        String flightNumber
+        String flightNumber,
+        List<StopOverResponse> stopOvers
 ) {
 }

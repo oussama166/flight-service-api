@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StopOverMapper {
-    public StopOverResponse toStopOverResponse(StopOver stopOver) {
+    public static StopOverResponse toStopOverResponse(StopOver stopOver) {
         return StopOverResponse.builder()
                 .stopOrder(stopOver.getStopOrder())
                 .arrivalTime(stopOver.getArrivalTime())

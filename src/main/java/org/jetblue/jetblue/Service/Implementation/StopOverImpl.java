@@ -22,13 +22,12 @@ public class StopOverImpl implements StopOverService {
     private final StopOverRepo stopOverRepo;
     private final FlightRepo flightRepo;
     private final AirportRepo airportRepo;
-    private final StopOverMapper stopOverMapper;
 
     @Override
     public List<StopOverResponse> getStopOverDetails(String flightNumber) {
         return stopOverRepo.findByFlight_FlightNumber(flightNumber)
                 .map(stopOvers -> stopOvers.stream()
-                        .map(stopOverMapper::toStopOverResponse)
+                        .map(StopOverMapper::toStopOverResponse)
                         .toList())
                 .orElse(List.of());
     }
@@ -105,5 +104,12 @@ public class StopOverImpl implements StopOverService {
 
         stopOverRepo.delete(stopOverToDelete);
 
+        // Decrement stopOrder for all subsequent stopovers
+        stopOvers.stream()
+                .filter(s -> s.getStopOrder() > stopOrderIndex)
+                .forEach(s -> {
+                    s.setStopOrder(s.getStopOrder() - 1);
+                    stopOverRepo.save(s);
+                });
     }
 }
