@@ -17,4 +17,6 @@ public interface AirplaneService {
     List<AirplaneResponse> getAllAirplanes();
 
     Airplane delete(String airplaneName);
+
+    List<Airplane> createAll(List<Airplane> airplanes);
 }

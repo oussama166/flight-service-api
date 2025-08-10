@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -89,5 +90,18 @@ public class AirlineImpl implements AirlineService {
     @Override
     public List<AirlineResponse> getAllAirlines() {
         return airlineRepo.findAll().stream().map(AirlineMapper::toAirlineResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<AirlineResponse> setAirlines(Set<AirlineRequest> airlines) {
+        Set<Airline> airlineSet = airlines.stream()
+                .map(AirlineMapper::toAirline)
+                .collect(Collectors.toSet());
+
+        return airlineSet.stream()
+                .map(this::setAirline)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
     }
 }

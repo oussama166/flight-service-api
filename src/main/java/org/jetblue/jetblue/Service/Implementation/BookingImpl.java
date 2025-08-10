@@ -1,5 +1,8 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import org.jetblue.jetblue.Mapper.Booking.BookingInternal;
+import org.jetblue.jetblue.Mapper.Booking.BookingMapper;
+import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Repositories.*;
@@ -28,34 +31,50 @@ public class BookingImpl implements BookingService {
         this.seatsRepo = seatsRepo;
     }
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookingImpl.class);
     // TODO : Need to implement a booking stack priority for booking logic
     // !ANCHOR : Data need to be appreciated here
 
     @Override
-    public Booking setBooking(String username,long flight_number, String seat_label) {
+    public BookingResponse setBooking(String username, long flight_number, String seat_label) {
         User user = findUserByUsername(username);
-        Seat seat = gettingSeat(flight_number,seat_label);
+        Seat seat = gettingSeat(flight_number, seat_label);
         Flight flight = seat.getFlight();
         BookingStatus stats = bookingStatusRepo.findByStatus("Confirmed").orElse(null);
 
+        if (!flight.getStatus().getStatus().equalsIgnoreCase("On Time")) {
+            throw new IllegalArgumentException("Flight is not available for booking");
+        }
         verifyUser(user);
         checkSeatAvailability(seat, flight);
         ensureSeatIsNotReserved(seat);
 
         Booking book = Booking.builder()
-                .seats(List.of(seat))
+                .seats(seat)
                 .totalPrice(seat.getPrice())
                 .flight(flight)
                 .user(user)
                 .status(stats)
                 .build();
 
-        if (book != null) {
-            bookingRepo.save(book);
-            seat.setAvailable(false);
-            return book;
-        }
-        return null;
+
+        System.out.println("Booking created successfully for user: " + user.getUsername() + " on flight: " + flight.getFlightNumber());
+        bookingRepo.save(book);
+        seat.setAvailable(false);
+        seatsRepo.save(seat);
+
+
+        return BookingMapper.toBookingResponse(
+                new BookingInternal(
+                        user.getUsername(),
+                        flight.getFlightNumber(),
+                        seat.getSeatLabel(),
+                        stats.getStatus(),
+                        book.getTotalPrice(),
+                        false
+                )
+        );
+
     }
 
     @Override
@@ -125,20 +144,34 @@ public class BookingImpl implements BookingService {
     // !ANCHOR : Data need to be appreciated here
 
     @Override
-    public List<Booking> getUserBookings(String username) {
-        try {
-            User us = findUserByUsername(username);
-            return bookingRepo.findByUser(us).orElseThrow(() -> new DataIntegrityViolationException("User not found"));
-        } catch (Exception e) {
-            throw new DataIntegrityViolationException("User not found");
+    public List<BookingResponse> getUserBookings(String username) {
+
+        User us = userRepo.findByUsername(username).orElse(null);
+        if (us == null) {
+            return null;
         }
+        return bookingRepo.findBookingsByUser_Username(us.getUsername())
+                .stream()
+                .map(booking -> BookingMapper.toBookingResponse(
+                        new BookingInternal(
+                                booking.getUser().getUsername(),
+                                booking.getFlight().getFlightNumber(),
+                                "A1",
+                                booking.getStatus().getStatus(),
+                                booking.getTotalPrice(),
+                                false
+                        )
+                ))
+                .toList();
+
+
     }
 
 
     // Helper function
 
-    private Seat ExtractSeat(long FlightNumber,String seatNumber) {
-        return seatsRepo.findByFlight_IdAndSeatLabel(FlightNumber,seatNumber).orElse(null);
+    private Seat ExtractSeat(long FlightNumber, String seatNumber) {
+        return seatsRepo.findByFlight_IdAndSeatLabel(FlightNumber, seatNumber).orElse(null);
     }
 
     private User findUserByUsername(String username) {
@@ -190,8 +223,8 @@ public class BookingImpl implements BookingService {
 
     }
 
-    private Seat gettingSeat(long FlightNumber,String seatLabel) {
-        return seatsRepo.findFirstByFlight_IdAndSeatLabel(FlightNumber,seatLabel).orElseThrow(
+    private Seat gettingSeat(long FlightNumber, String seatLabel) {
+        return seatsRepo.findFirstByFlight_IdAndSeatLabel(FlightNumber, seatLabel).orElseThrow(
                 () -> new DataAccessResourceFailureException("Can not found the seat")
         );
     }

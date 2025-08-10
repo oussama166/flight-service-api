@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Airport.AirportRequest;
 import org.jetblue.jetblue.Mapper.Airport.AirportResponse;
 import org.jetblue.jetblue.Models.DAO.Airport;
 
@@ -14,6 +15,12 @@ public interface AirportService {
      */
 
     Airport createAirport(Airport airport);
+    /**
+     * This function is to add list of new airports to database
+     *
+     * @return airports
+     * */
+    List<Airport> createAirports(List<AirportRequest> airports);
 
     /**
      * This function update the credential info about airport

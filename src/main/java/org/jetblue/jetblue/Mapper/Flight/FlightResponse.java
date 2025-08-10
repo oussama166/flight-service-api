@@ -10,6 +10,7 @@ import java.util.List;
 public record FlightResponse(
         LocalDateTime departureTime,
         LocalDateTime arrivalTime,
+        String durationFlight,
         double price,
         int maxSeat,
         String departure,

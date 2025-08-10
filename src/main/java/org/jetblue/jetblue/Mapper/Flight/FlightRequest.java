@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 public record FlightRequest(
         @NotNull(message = "Departure Time of the flight can not be null !!!")
         LocalDateTime departureTime,
-        @NotNull(message = "Arrival Time of the flight can not be null !!!")
         LocalDateTime arrivalTime,
         @NotNull(message = "the base price of the flight can not be null !!!")
         @DecimalMin(value = "1", message = "Can not set price to flight less then 1")

@@ -34,6 +34,20 @@ public class AirplaneController {
         return ResponseEntity.ok(AirplaneMapper.toAirplaneResponse(newAirplane));
 
     }
+    @PostMapping(
+            value = "/createAirplanes",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<List<AirplaneResponse>> createAirplanes(
+            @RequestBody @Valid List<AirplaneRequest> airplanes
+    ) {
+        List<Airplane> newAirplanes = airplaneService.createAll(AirplaneMapper.toAirplanes(airplanes));
+        if (newAirplanes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(AirplaneMapper.toAirplaneResponses(newAirplanes));
+    }
 
     @PutMapping(
             value = "/updateAirplane/{airplaneName}",

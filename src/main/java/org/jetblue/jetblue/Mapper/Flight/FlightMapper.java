@@ -14,6 +14,7 @@ public class FlightMapper {
                 .flightNumber(flight.getFlightNumber())
                 .arrivalTime(flight.getArrivalTime())
                 .departureTime(flight.getDepartureTime())
+                .durationFlight(flight.getFormattedStopDuration())
                 .price(flight.getPrice())
                 .maxSeat(flight.getMaxSeats())
                 .departure(flight.getDeparture().getName())

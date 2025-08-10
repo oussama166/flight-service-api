@@ -2,13 +2,10 @@ package org.jetblue.jetblue.Controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
 import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Mapper.Flight.FlightSearch.FlightSearchRequest;
 import org.jetblue.jetblue.Models.DAO.Flight;
-import org.jetblue.jetblue.Models.DTO.FlightPostDTO;
-import org.jetblue.jetblue.Models.DTO.FlightSearch;
 import org.jetblue.jetblue.Service.FlightService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +14,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class flightController {
+public class FlightController {
 
     // Injection
     private final FlightService flightService;
@@ -33,7 +30,6 @@ public class flightController {
         try {
             FlightResponse flightResp = flightService.setFlight(
                     flight.departureTime(),
-                    flight.arrivalTime(),
                     flight.price(),
                     flight.maxSeats(),
                     flight.departure(),
@@ -53,6 +49,27 @@ public class flightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping(
+            value = "/setFlights",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> setFlights(
+            @RequestBody @Valid List<FlightRequest> flights
+    ) {
+        try {
+            List<FlightResponse> flightResponses = flightService.setFlights(flights);
+            if (flightResponses.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(flightResponses);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+
 
     @GetMapping(
             value = "/getFlight/{flightNumber}",
@@ -116,4 +133,5 @@ public class flightController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
 }

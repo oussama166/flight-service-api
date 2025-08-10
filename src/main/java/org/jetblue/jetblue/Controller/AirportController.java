@@ -7,6 +7,7 @@ import org.jetblue.jetblue.Mapper.Airport.AirportResponse;
 import org.jetblue.jetblue.Models.DAO.Airport;
 import org.jetblue.jetblue.Service.AirportService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,27 @@ public class AirportController {
                 else {
                     return ResponseEntity.ok("Airport already exist !!!");
                 }
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred  at server level !!!");
+        }
+    }
+    @PostMapping(
+            value="/setAirports",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> setAirports(
+            @RequestBody List<AirportRequest> airports
+    ){
+        try {
+            List<Airport> airportResponse =  airportService.createAirports(airports);
+
+            if(!airportResponse.isEmpty()) {
+                return ResponseEntity.ok(airportResponse);
+            }
+            else {
+                return ResponseEntity.ok("Airport already exist !!!");
+            }
         }catch (Exception e) {
             return ResponseEntity.badRequest().body("Error occurred  at server level !!!");
         }

@@ -1,5 +1,7 @@
 package org.jetblue.jetblue.Models.DAO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -29,14 +31,15 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonManagedReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
-    @OneToMany(mappedBy = "seatBooking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seats;
+    @OneToOne(mappedBy = "seatBooking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Seat seats;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", nullable = false)

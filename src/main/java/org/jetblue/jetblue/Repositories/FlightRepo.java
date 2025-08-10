@@ -3,9 +3,12 @@ package org.jetblue.jetblue.Repositories;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.FlightStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -31,4 +34,20 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     Optional<Flight> findByFlightNumber(String flightNumber);
 
     List<Flight> findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_LocationOrArrival_Location(LocalDateTime departureTimeAfter, LocalDateTime arrivalTimeBefore, String departureLocation, String arrivalLocation);
+
+    @Query("SELECT f FROM Flight f WHERE " +
+           "f.departureTime >= :departureTime AND " +
+           "f.arrivalTime <= :arrivalTime AND " +
+           "UPPER(f.departure.location) LIKE UPPER(CONCAT('%', :departureLocation, '%')) AND " +
+           "UPPER(f.arrival.location) LIKE UPPER(:arrivalLocation) AND " +
+           "UPPER(f.status.status) LIKE UPPER(:status) " +
+           "ORDER BY f.price")
+    List<Flight> findFlightsAdvanced(
+            @Param("departureTime") LocalDateTime departureTime,
+            @Param("arrivalTime") LocalDateTime arrivalTime,
+            @Param("departureLocation") String departureLocation,
+            @Param("arrivalLocation") String arrivalLocation,
+            @Param("status") String status
+    );
+
 }

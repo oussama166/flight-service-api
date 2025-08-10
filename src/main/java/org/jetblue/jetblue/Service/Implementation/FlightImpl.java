@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Service.Implementation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
+import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Mapper.StopOver.StopOverMapper;
 import org.jetblue.jetblue.Mapper.StopOver.StopOverResponse;
@@ -45,7 +46,6 @@ public class FlightImpl implements FlightService {
     @Override
     public FlightResponse setFlight(
             LocalDateTime departureTime,
-            LocalDateTime arrivalTime,
             double price,
             int maxSeat,
             String departure,
@@ -65,6 +65,13 @@ public class FlightImpl implements FlightService {
         Airplane targetAirplane = airplaneRepo.findByName(airplane).orElseThrow(
                 () -> new IllegalArgumentException("Airplane not found"));
 
+        LocalDateTime arrivalTime = FlightUtils.calculateArrivalTime(
+                departureTime,
+                departureAirport.getLatitude(),
+                departureAirport.getLongitude(),
+                arrivalAirport.getLatitude(),
+                arrivalAirport.getLongitude()
+        );
         // Validate business logic
         if (departureAirport.equals(arrivalAirport)) {
             throw new DataIntegrityViolationException("Departure and arrival airports cannot be the same");
@@ -96,6 +103,8 @@ public class FlightImpl implements FlightService {
         flight.setMaxThirdClass(maxThird);
         flight.setMaxSeats(maxSeat);
 
+
+
         // Save flight with proper exception handling
         try {
             Flight res = flightRepo.save(flight);
@@ -104,6 +113,34 @@ public class FlightImpl implements FlightService {
             System.err.println("Failed to save flight: " + e.getMessage());
             throw new RuntimeException("Could not save flight due to unique constraint violation", e);
         }
+    }
+
+    @Override
+    public List<FlightResponse> setFlights(List<FlightRequest> flights) {
+        List<FlightResponse> flightResponses = new ArrayList<>();
+        for (FlightRequest flightRequest : flights) {
+            try {
+                FlightResponse flightResponse = setFlight(
+                        flightRequest.departureTime(),
+                        flightRequest.price(),
+                        flightRequest.maxSeats(),
+                        flightRequest.departure(),
+                        flightRequest.arrival(),
+                        flightRequest.airline(),
+                        flightRequest.airplane(),
+                        flightRequest.maxFirst(),
+                        flightRequest.maxSecond(),
+                        flightRequest.maxThird(),
+                        flightRequest.flightStatus()
+                );
+                if (flightResponse != null) {
+                    flightResponses.add(flightResponse);
+                }
+            } catch (Exception e) {
+                LOG.error("Error setting flight: {}", e.getMessage());
+            }
+        }
+        return flightResponses;
     }
 
     @Override
@@ -125,7 +162,6 @@ public class FlightImpl implements FlightService {
 
 
         return flightResponse;
-
 
 
     }

@@ -31,6 +31,10 @@ public class StopOver {
     @JoinColumn(name = "airport_id", nullable = false)
     private Airport airport;
 
+    @ManyToOne
+    @JoinColumn(name = "airline_id", nullable = false)
+    private Airline airline;
+
     public Duration getStopDuration() {
         if (arrivalTime != null && departureTime != null) {
             return Duration.between(arrivalTime, departureTime);
@@ -47,4 +51,8 @@ public class StopOver {
 
 
 }
-
+/*
+* For the stopover logic we have flight from casablanca to new york
+* the user will take flight from casablanca to madrid and then from madrid to new york
+*
+* */

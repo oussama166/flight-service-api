@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import jakarta.validation.Valid;
 import org.jetblue.jetblue.Mapper.Airline.AirlineRequest;
 import org.jetblue.jetblue.Mapper.Airline.AirlineResponse;
 import org.jetblue.jetblue.Models.DAO.Airline;
@@ -68,5 +69,5 @@ public interface AirlineService {
     List<AirlineResponse> getAllAirlines();
 
 
-
+    Set<AirlineResponse> setAirlines(Set<AirlineRequest> airlines);
 }

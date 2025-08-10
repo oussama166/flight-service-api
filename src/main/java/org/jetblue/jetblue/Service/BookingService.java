@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DAO.Seat;
 import org.jetblue.jetblue.Models.DAO.User;
@@ -17,7 +18,7 @@ public interface BookingService {
      * @param flight_number -- flight number
      * @param seat_label  -- Seat associated with the flight
      * */
-    Booking setBooking(String username,long flight_number, String seat_label);
+    BookingResponse setBooking(String username, long flight_number, String seat_label);
 
 
     /**
@@ -33,6 +34,6 @@ public interface BookingService {
      *
      * @param userName -- user info
      * */
-    List<Booking> getUserBookings(String userName);
+    List<BookingResponse> getUserBookings(String userName);
 
 }

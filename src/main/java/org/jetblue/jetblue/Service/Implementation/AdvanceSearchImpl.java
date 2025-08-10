@@ -6,6 +6,7 @@ import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Mapper.Search.SearchRequest;
 import org.jetblue.jetblue.Repositories.FlightRepo;
 import org.jetblue.jetblue.Service.AdvanceSearchService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,11 +24,12 @@ public class AdvanceSearchImpl implements AdvanceSearchService {
     public List<FlightResponse> searchFlights(
             SearchRequest searchRequest
     ) {
-        return flightRepo.findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_LocationOrArrival_Location(
+        return flightRepo.findFlightsAdvanced(
                 searchRequest.departureTime(),
                 searchRequest.arrivalTime(),
                 searchRequest.origin(),
-                searchRequest.destination()
+                searchRequest.destination(),
+                searchRequest.flightStatus()
         ).stream().map(FlightMapper::toFlightResponse).collect(Collectors.toList());
     }
 
