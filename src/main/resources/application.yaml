@@ -4,41 +4,38 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: false
-        # Explicitly set foreign key constraints
+#        format_sql: true       # Set to true to format SQL nicely in logs
         hbm2ddl.auto: update
-        # Improve foreign key and constraint handling
         check_nullability: true
-        # Allow circular dependencies in constraints
         hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
-    show-sql: true
+#    show-sql: true             # Enable basic SQL logging to console
 
-  application:
-    name: JetBlue-API-Service
-
-# Uncomment the following lines to enable SQL logging for Hibernate
 logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+#        SQL: DEBUG             # Logs the SQL statements
+#        type: TRACE            # Logs SQL parameter binding values (optional, very verbose)
       springframework:
         http:
           converter:
             json: DEBUG
         security: TRACE
-    com:
-      fasterxml:
-        jackson: DEBUG
+      jetblue:
+        jetblue:
+          Service:
+            Implementation:
+
 server:
   port: 8081
-# Declaring the path for public and private keys
+
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem

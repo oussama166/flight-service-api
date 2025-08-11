@@ -33,7 +33,7 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     )
     Optional<Flight> findByFlightNumber(String flightNumber);
 
-    List<Flight> findByDepartureTimeIsAfterAndArrivalTimeIsBeforeAndDeparture_LocationOrArrival_Location(LocalDateTime departureTimeAfter, LocalDateTime arrivalTimeBefore, String departureLocation, String arrivalLocation);
+    List<Flight> findFlightsByDeparture_LocationAndArrival_Location(String departure_location, String arrival_location);
 
     @Query("SELECT f FROM Flight f WHERE " +
            "f.departureTime >= :departureTime AND " +
@@ -50,4 +50,5 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
             @Param("status") String status
     );
 
+    List<Flight> findFlightsByDeparture_locationAndDepartureTimeAfter(String departureLocation, LocalDateTime departureTimeAfter);
 }
