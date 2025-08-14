@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Models.DAO;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.jetblue.jetblue.Models.ENUM.Gender;
@@ -53,6 +54,7 @@ public class User {
     private UserPreference userPreference;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Booking> bookings;
 
     @OneToMany(cascade = CascadeType.ALL)

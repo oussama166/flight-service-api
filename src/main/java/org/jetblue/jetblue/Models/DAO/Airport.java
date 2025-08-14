@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,9 +23,9 @@ public class Airport {
     private String code;
     private String name;
     private String location;
-    @Column(unique = true)
+    @Column(unique = false)
     private double latitude;
-    @Column(unique = true)
+    @Column(unique = false)
     private double longitude;
 
 
@@ -35,4 +36,7 @@ public class Airport {
     @OneToMany(mappedBy = "arrival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference("arrival-flights")
     private List<Flight> arrivals;
+
+    @OneToMany(mappedBy = "airport")
+    private List<StopOver> stopOvers = new ArrayList<>();
 }

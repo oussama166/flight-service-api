@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
 import org.jetblue.jetblue.Models.DAO.*;
 
@@ -12,7 +13,6 @@ public interface FlightService {
      * Create flight using the name of two points
      *
      * @param departureTime -- Date and time when the flight start
-     * @param arrivalTime -- Date and time when the flight end
      * @param price -- Price of the flight should be double
      * @param departure -- Departure airport
      * @param arrival -- Arrival airport
@@ -25,7 +25,6 @@ public interface FlightService {
      * */
     FlightResponse setFlight(
             LocalDateTime departureTime,
-            LocalDateTime arrivalTime,
             double price,
             int maxSeat,
             String departure,
@@ -37,6 +36,7 @@ public interface FlightService {
             int maxThird,
             String flightStatus
     );
+    List<FlightResponse> setFlights(List<FlightRequest> flights);
 
     /**
      * Getting flight using the Number Flight
@@ -44,7 +44,7 @@ public interface FlightService {
      * @param numberFlight -- each flight has unique flight number
      *
      * */
-    Flight getFlight(String numberFlight);
+    FlightResponse getFlight(String numberFlight);
 
     /**
      * Getting flight using the Number Flight

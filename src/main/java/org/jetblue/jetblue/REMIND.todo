@@ -1,2 +1,3 @@
+- Ensure that the flight endpoint is returning also the stopovers of the flight
+- In the searching flight add the searching by the stopover airport and number of stopovers
 - We need to do check on all the endpoint to check if all the endpoints are working
--

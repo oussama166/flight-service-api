@@ -31,11 +31,26 @@ public class AirplaneImpl implements AirplaneService {
     }
 
     @Override
-    public Airplane update(String airplaneName,Airplane airplane) {
+    public List<Airplane> createAll(List<Airplane> airplanes) {
+        for (Airplane airplane : airplanes) {
+            // trying to find the airplane
+            Airplane airplaneResp = airplaneRepo.findByName(airplane.getName()).orElse(null);
+            if (airplaneResp != null) {
+                continue;
+            }
+            airplaneRepo.save(airplane);
+        }
+        return airplanes.stream().
+                filter(airplane -> airplaneRepo.findByName(airplane.getName()).isPresent())
+                .toList();
+    }
+
+    @Override
+    public Airplane update(String airplaneName, Airplane airplane) {
         // trying to find the airplane
         Airplane airplaneResp = airplaneRepo.findByName(airplaneName).orElse(null);
         if (airplaneResp != null) {
-            airplaneResp.setName(airplane.getName() != null ? airplane.getName() : airplaneResp.getName() );
+            airplaneResp.setName(airplane.getName() != null ? airplane.getName() : airplaneResp.getName());
             airplaneResp.setMaxSeat(airplane.getMaxSeat() > 0 ? airplane.getMaxSeat() : airplaneResp.getMaxSeat());
             airplaneResp.setSeats(airplane.getSeats() != null ? airplane.getSeats() : airplaneResp.getSeats());
             airplaneResp.setAirplaneImageUrl(airplane.getAirplaneImageUrl() != null ? airplane.getAirplaneImageUrl() : airplaneResp.getAirplaneImageUrl());

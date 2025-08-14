@@ -12,6 +12,19 @@ Content-Type: application/json
 ###
 POST localhost:{{serverPort}}/setAirport
 Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "code": "SYR",
+  "name": "Aéroport international de Syracuse-Hancock",
+  "location": "New York",
+  "latitude" : 43.11139 ,
+  "longitude" : -76.11583
+}
+
+###
+POST localhost:{{serverPort}}/setAirport
+Content-Type: application/json
 
 {
   "code": "KJFK",

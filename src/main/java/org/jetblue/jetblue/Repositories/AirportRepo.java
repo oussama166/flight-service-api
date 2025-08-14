@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.Optional;
 
 public interface AirportRepo extends JpaRepository<Airport,Long> {
@@ -17,4 +18,5 @@ public interface AirportRepo extends JpaRepository<Airport,Long> {
     Optional<Airport> findByCode( String code);
 
 
+    Optional<Airport> findByCodeAndLatitudeAndLongitude(String code, double latitude, double longitude);
 }

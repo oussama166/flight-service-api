@@ -36,7 +36,22 @@ public class AirlineController {
         return ResponseEntity.ok(airlineRes);
     }
 
+    @PostMapping(
+            value = "/setAirlines",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<?> setAirlines(
+            @RequestBody @Valid Set<AirlineRequest> airlines
+    ) {
+        Set<AirlineResponse> airlineRes = airlineService.setAirlines(airlines);
 
+        if (airlineRes.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(airlineRes);
+        }
+    }
     @GetMapping(
             value = "/getAirline/{airline}",
             consumes = "application/json",

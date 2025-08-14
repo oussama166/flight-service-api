@@ -4,6 +4,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Mapper.Booking.BookingRequest;
+import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Service.BookingService;
@@ -28,7 +29,7 @@ public class BookingController {
     public ResponseEntity<?> setBooking(
             @RequestBody BookingRequest booking
     ) {
-        Booking bookingRes = bookingService.setBooking(
+        BookingResponse bookingRes = bookingService.setBooking(
                 booking.UserName(),
                 booking.FlightNumber(),
                 booking.seatLabel()
@@ -59,7 +60,7 @@ public class BookingController {
             produces = "application/json"
     )
     public ResponseEntity<?> getUserBooking(@PathVariable String username) {
-        List<Booking> bookingList = bookingService.getUserBookings(username);
+        List<BookingResponse> bookingList = bookingService.getUserBookings(username);
         return ResponseEntity.ok(bookingList);
     }
 

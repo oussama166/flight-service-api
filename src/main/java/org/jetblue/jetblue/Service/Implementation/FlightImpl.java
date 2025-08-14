@@ -3,13 +3,14 @@ package org.jetblue.jetblue.Service.Implementation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Mapper.Flight.FlightMapper;
+import org.jetblue.jetblue.Mapper.Flight.FlightRequest;
 import org.jetblue.jetblue.Mapper.Flight.FlightResponse;
-import org.jetblue.jetblue.Models.DAO.Airplane;
-import org.jetblue.jetblue.Models.DAO.Airport;
-import org.jetblue.jetblue.Models.DAO.Flight;
-import org.jetblue.jetblue.Models.DAO.FlightStatus;
+import org.jetblue.jetblue.Mapper.StopOver.StopOverMapper;
+import org.jetblue.jetblue.Mapper.StopOver.StopOverResponse;
+import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.FlightService;
+import org.jetblue.jetblue.Service.StopOverService;
 import org.jetblue.jetblue.Utils.FlightUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,6 +32,12 @@ public class FlightImpl implements FlightService {
     private final AirlineRepo airlineRepo;
     private final FlightStatusRepo flightStatusRepo;
     private final AirplaneRepo airplaneRepo;
+    private final StopOverRepo stopOverRepo;
+
+    private final FlightMapper flightMapper;
+    private final StopOverMapper stopOverMapper;
+
+
     private FlightRepo flightRepo;
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -38,7 +46,6 @@ public class FlightImpl implements FlightService {
     @Override
     public FlightResponse setFlight(
             LocalDateTime departureTime,
-            LocalDateTime arrivalTime,
             double price,
             int maxSeat,
             String departure,
@@ -58,6 +65,13 @@ public class FlightImpl implements FlightService {
         Airplane targetAirplane = airplaneRepo.findByName(airplane).orElseThrow(
                 () -> new IllegalArgumentException("Airplane not found"));
 
+        LocalDateTime arrivalTime = FlightUtils.calculateArrivalTime(
+                departureTime,
+                departureAirport.getLatitude(),
+                departureAirport.getLongitude(),
+                arrivalAirport.getLatitude(),
+                arrivalAirport.getLongitude()
+        );
         // Validate business logic
         if (departureAirport.equals(arrivalAirport)) {
             throw new DataIntegrityViolationException("Departure and arrival airports cannot be the same");
@@ -89,6 +103,8 @@ public class FlightImpl implements FlightService {
         flight.setMaxThirdClass(maxThird);
         flight.setMaxSeats(maxSeat);
 
+
+
         // Save flight with proper exception handling
         try {
             Flight res = flightRepo.save(flight);
@@ -100,8 +116,54 @@ public class FlightImpl implements FlightService {
     }
 
     @Override
-    public Flight getFlight(String numberFlight) {
-        return flightRepo.findByFlightNumber(numberFlight).orElse(null);
+    public List<FlightResponse> setFlights(List<FlightRequest> flights) {
+        List<FlightResponse> flightResponses = new ArrayList<>();
+        for (FlightRequest flightRequest : flights) {
+            try {
+                FlightResponse flightResponse = setFlight(
+                        flightRequest.departureTime(),
+                        flightRequest.price(),
+                        flightRequest.maxSeats(),
+                        flightRequest.departure(),
+                        flightRequest.arrival(),
+                        flightRequest.airline(),
+                        flightRequest.airplane(),
+                        flightRequest.maxFirst(),
+                        flightRequest.maxSecond(),
+                        flightRequest.maxThird(),
+                        flightRequest.flightStatus()
+                );
+                if (flightResponse != null) {
+                    flightResponses.add(flightResponse);
+                }
+            } catch (Exception e) {
+                LOG.error("Error setting flight: {}", e.getMessage());
+            }
+        }
+        return flightResponses;
+    }
+
+    @Override
+    public FlightResponse getFlight(String numberFlight) {
+
+        FlightResponse flightResponse = flightRepo.findByFlightNumber(numberFlight)
+                .map(FlightMapper::toFlightResponse)
+                .orElse(null);
+
+        if (flightResponse == null) return null;
+
+//        stopOverRepo.findByFlight_FlightNumber(numberFlight)
+//                .ifPresent(stopOvers -> {
+//                    List<StopOverResponse> stopOverResponses = stopOvers.stream()
+//                            .map(StopOverMapper::toStopOverResponse)
+//                            .collect(Collectors.toList());
+//                    flightResponse.stopOvers(stopOverResponses);
+//                });;
+
+
+        return flightResponse;
+
+
     }
 
     @Override
@@ -120,6 +182,7 @@ public class FlightImpl implements FlightService {
         // Validate arrival airport
         Airport arrivalAirport = airportRepo.findByCodeOrLocation(arrival)
                 .orElseThrow(() -> new IllegalArgumentException("Arrival airport not found"));
+
 
         // Check if departure and arrival airports are the same
         if (departureAirport.equals(arrivalAirport)) {

@@ -61,7 +61,7 @@ public class Seat {
     private Flight flight;
 
 
-    @ManyToOne()
+    @OneToOne()
     @JoinColumn(name = "seat_booking_id")
     private Booking seatBooking;
 
