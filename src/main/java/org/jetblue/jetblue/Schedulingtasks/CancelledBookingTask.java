@@ -24,7 +24,8 @@ public class CancelledBookingTask {
     // every day at midnight, this method will be executed
     // @Scheduled(cron = "0 0 0 * * *")
     // every 10 minutes, this method will be executed
-    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void cancelBooking() {
         bookingService.getAllBookings().forEach(booking -> {
             // check if the time of creation over the 24 hours
@@ -42,7 +43,7 @@ public class CancelledBookingTask {
                     log.error("Failed to cancel booking with ID: {}", booking.getBookingId());
                 }
             } else {
-                log.info("Booking with ID: {} is still valid, not cancelling", booking.getBookingId());
+                log.info("Booking with ID: {} is still valid, not cancelling , Current Status {}", booking.getBookingId(),booking.getStatus().getStatus());
             }
         });
     }

@@ -190,7 +190,7 @@ public class BookingImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookings() {
-        return bookingRepo.findAll();
+        return bookingRepo.findAllBy();
     }
 
     @Override
