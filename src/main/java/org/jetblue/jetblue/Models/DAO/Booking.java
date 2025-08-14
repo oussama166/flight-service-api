@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +40,21 @@ public class Booking {
     @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
-    @OneToOne(mappedBy = "seatBooking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Seat seats;
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", nullable = false)
     private BookingStatus status;
+
+    private LocalDateTime createTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createTime = LocalDateTime.now();
+    }
+
+
+
 }

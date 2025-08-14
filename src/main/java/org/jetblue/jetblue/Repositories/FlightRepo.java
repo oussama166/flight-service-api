@@ -35,12 +35,12 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
 
     List<Flight> findFlightsByDeparture_LocationAndArrival_Location(String departure_location, String arrival_location);
 
-    @Query("SELECT f FROM Flight f WHERE " +
-           "f.departureTime >= :departureTime AND " +
-           "f.arrivalTime <= :arrivalTime AND " +
-           "UPPER(f.departure.location) LIKE UPPER(CONCAT('%', :departureLocation, '%')) AND " +
-           "UPPER(f.arrival.location) LIKE UPPER(:arrivalLocation) AND " +
-           "UPPER(f.status.status) LIKE UPPER(:status) " +
+    @Query("SELECT f FROM Flight f " +
+           "WHERE (:departureTime IS NULL OR f.departureTime >= :departureTime) " +
+           "AND (:arrivalTime IS NULL OR f.arrivalTime <= :arrivalTime) " +
+           "AND (:departureLocation IS NULL OR UPPER(f.departure.location) LIKE UPPER(CONCAT('%', :departureLocation, '%'))) " +
+           "AND (:arrivalLocation IS NULL OR UPPER(f.arrival.location) LIKE UPPER(CONCAT('%', :arrivalLocation, '%'))) " +
+           "AND (:status IS NULL OR UPPER(f.status.status) LIKE UPPER(CONCAT('%', :status, '%'))) " +
            "ORDER BY f.price")
     List<Flight> findFlightsAdvanced(
             @Param("departureTime") LocalDateTime departureTime,

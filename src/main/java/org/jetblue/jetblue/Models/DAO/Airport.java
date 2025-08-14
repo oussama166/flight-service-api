@@ -23,9 +23,9 @@ public class Airport {
     private String code;
     private String name;
     private String location;
-    @Column(unique = true)
+    @Column(unique = false)
     private double latitude;
-    @Column(unique = true)
+    @Column(unique = false)
     private double longitude;
 
 

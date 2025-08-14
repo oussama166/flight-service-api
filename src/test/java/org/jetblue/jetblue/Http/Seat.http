@@ -6,7 +6,7 @@ Authorization: Bearer {{bearerToken}}
   "flag": "",
   "price": 100,
   "seatType": "FIRST_CLASS",
-  "flightNumber": "0b634307-0749-484b-9691-c1325510b308",
+  "flightNumber": "23bab7e0-e26b-4097-903c-4f3036befa34",
   "col": 0,
   "row": 1
 }
@@ -20,7 +20,7 @@ Authorization: Bearer {{bearerToken}}
   "maxSeatNumber": 20,
   "price": 60,
   "seatType": "SECOND_CLASS",
-  "airplaneName": "0b634307-0749-484b-9691-c1325510b308",
+  "airplaneName": "23bab7e0-e26b-4097-903c-4f3036befa34",
   "rowStart": 5
 }
 
@@ -29,7 +29,7 @@ Authorization: Bearer {{bearerToken}}
 GET localhost:{{serverPort}}/getSeat/{{seatFlag}}
 
 ###
-@flightNumber = 0b634307-0749-484b-9691-c1325510b308
+@flightNumber = 23bab7e0-e26b-4097-903c-4f3036befa34
 GET localhost:{{serverPort}}/getSeats/{{flightNumber}}
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}

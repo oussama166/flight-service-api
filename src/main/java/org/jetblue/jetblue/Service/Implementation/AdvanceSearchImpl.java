@@ -33,6 +33,13 @@ public class AdvanceSearchImpl implements AdvanceSearchService {
     public List<FlightResponse> searchFlights(
             SearchRequest searchRequest
     ) {
+        System.out.println("Searching flights with parameters: " +
+                "departureTime=" + searchRequest.departureTime() +
+                ", arrivalTime=" + searchRequest.arrivalTime() +
+                ", origin=" + searchRequest.origin() +
+                ", destination=" + searchRequest.destination() +
+                ", flightStatus=" + searchRequest.flightStatus());
+
         return flightRepo.findFlightsAdvanced(
                 searchRequest.departureTime(),
                 searchRequest.arrivalTime(),

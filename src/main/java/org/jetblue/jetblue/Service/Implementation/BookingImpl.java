@@ -9,10 +9,19 @@ import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.BookingService;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+
+import static org.jetblue.jetblue.Utils.UserUtils.getCurrentUsername;
 
 @Service
 public class BookingImpl implements BookingService {
@@ -37,32 +46,44 @@ public class BookingImpl implements BookingService {
 
     @Override
     public BookingResponse setBooking(String username, long flight_number, String seat_label) {
+        String currentUsername = getCurrentUsername();
+
+        if (!currentUsername.equals(username)) {
+            throw new SecurityException("Username does not match the authenticated user");
+        }
+
+        logger.info("Booking request for user: {}", username);
+
         User user = findUserByUsername(username);
         Seat seat = gettingSeat(flight_number, seat_label);
         Flight flight = seat.getFlight();
-        BookingStatus stats = bookingStatusRepo.findByStatus("Confirmed").orElse(null);
+        BookingStatus stats = bookingStatusRepo.findByStatus("Pending")
+                .orElseThrow(() -> new IllegalStateException("Pending booking status not found"));
 
-        if (!flight.getStatus().getStatus().equalsIgnoreCase("On Time")) {
+        if (seat == null || flight == null) {
+            throw new DataAccessResourceFailureException("Seat not found for flight number: " + flight_number + " and seat label: " + seat_label);
+        }
+        if (!"On Time".equalsIgnoreCase(flight.getStatus().getStatus())) {
             throw new IllegalArgumentException("Flight is not available for booking");
         }
+
         verifyUser(user);
         checkSeatAvailability(seat, flight);
         ensureSeatIsNotReserved(seat);
 
         Booking book = Booking.builder()
-                .seats(seat)
+                .seat(seat)
                 .totalPrice(seat.getPrice())
                 .flight(flight)
                 .user(user)
                 .status(stats)
                 .build();
 
-
-        System.out.println("Booking created successfully for user: " + user.getUsername() + " on flight: " + flight.getFlightNumber());
         bookingRepo.save(book);
         seat.setAvailable(false);
         seatsRepo.save(seat);
 
+        logger.info("Booking created successfully for user: {} on flight: {}", user.getUsername(), flight.getFlightNumber());
 
         return BookingMapper.toBookingResponse(
                 new BookingInternal(
@@ -74,8 +95,8 @@ public class BookingImpl implements BookingService {
                         false
                 )
         );
-
     }
+
 
     @Override
     public Booking setBooking(String username, Set<SeatPassengerDTO> passengerDTOSet) {
@@ -164,6 +185,60 @@ public class BookingImpl implements BookingService {
                 ))
                 .toList();
 
+
+    }
+
+    @Override
+    public List<Booking> getAllBookings() {
+        return bookingRepo.findAll();
+    }
+
+    @Override
+    public boolean cancelBooking(UUID bookingId) {
+        Optional<Booking> bookingByBookingId = bookingRepo.findBookingByBookingId(bookingId);
+        if (bookingByBookingId.isEmpty()) {
+            throw new DataIntegrityViolationException("Booking not found with ID: " + bookingId);
+        }
+        Booking booking = bookingByBookingId.get();
+        Flight flight = booking.getFlight();
+        Seat seat = booking.getSeat();
+        if (flight == null || seat == null) {
+            throw new DataIntegrityViolationException("Flight or seat associated with booking not found");
+        }
+        String bookingStatus = booking.getStatus().getStatus();
+        System.out.println("Booking Status: " + bookingStatus);
+        // Check if the booking is already canceled
+        if ("Canceled".equalsIgnoreCase(bookingStatus)) {
+            throw new IllegalStateException("Booking is already canceled");
+        }
+        // Update the booking status to "Canceled"
+        BookingStatus canceledStatus = bookingStatusRepo.findByStatus("Canceled")
+                .orElseThrow(() -> new DataIntegrityViolationException("Canceled booking status not found"));
+        booking.setStatus(canceledStatus);
+        bookingRepo.save(booking);
+        // Mark the seat as available again
+        seat.setAvailable(true);
+        seatsRepo.save(seat);
+        // Update the flight's seat availability
+        switch (seat.getSeatType()) {
+            case FIRST_CLASS -> {
+                flight.setFirstClassAvailable(true);
+                flight.setFirstClassReserve(flight.getFirstClassReserved() + 1);
+
+            }
+            case SECOND_CLASS -> {
+                flight.setSecondClassAvailable(true);
+                flight.setSecondClassReserve(flight.getSecondClassReserved() + 1);
+            }
+            case ECONOMY_CLASS -> {
+                flight.setThirdClassAvailable(true);
+                flight.setThirdClassReserve(flight.getThirdClassReserved() + 1);
+            }
+        }
+        flightRepo.save(flight);
+        // Log the cancellation
+        logger.info("Booking with ID: {} has been canceled successfully", bookingId);
+        return true;
 
     }
 

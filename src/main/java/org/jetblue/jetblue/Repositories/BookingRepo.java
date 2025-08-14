@@ -7,10 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface BookingRepo extends JpaRepository<Booking, Long> {
 
     Optional<List<Booking>> findByUser(User user);
 
     List<Booking> findBookingsByUser_Username(String username);
+
+    Optional<Booking> findBookingByBookingId(UUID bookingId);
 }
