@@ -35,7 +35,12 @@ public record UserRequest(
         String email,
         Role role,
         @DefaultValue(value = "false")
-        boolean verified) {
+        boolean verified,
+        String passportNumber,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate passportExpirationDate
+
+        ) {
     public UserRequest {
         if (role == null) {
             role = Role.User;

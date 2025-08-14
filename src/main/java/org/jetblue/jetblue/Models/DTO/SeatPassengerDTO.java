@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeatPassengerDTO {
-    private int seatNumber;
+    private long seatNumber;
     private String firstName;
     private String lastName;
     private String middleName = "";

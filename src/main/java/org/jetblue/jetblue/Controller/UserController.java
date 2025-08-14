@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping(value = "/user", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@RequestBody UserRequest user) {
         try {
-            boolean created = userService.createUser(UserMapper.toUser(user));
+            boolean created = userService.createUser(UserMapper.toUser(user), user.passportNumber(), user.passportExpirationDate());
 
             if (created) {
                 // Return 201 Created and user details or a success message

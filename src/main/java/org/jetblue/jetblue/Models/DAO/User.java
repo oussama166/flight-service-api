@@ -60,4 +60,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Passenger> passengers;
 
+    @OneToMany
+    @JoinColumn(name= "document_user")
+    private List<Document> documents;
+
 }

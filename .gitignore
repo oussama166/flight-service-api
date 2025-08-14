@@ -73,4 +73,7 @@ secrets.yml
 .git-hooks/
 node_modules
 src/Utils/**
+/Uploads
+
 REMIND.todo
+Task.md

@@ -7,6 +7,7 @@ import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.BookingService;
+import org.jetblue.jetblue.Utils.BookingUtils;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.jetblue.jetblue.Utils.UserUtils.getCurrentUsername;
+import static org.jetblue.jetblue.Utils.UserUtils.*;
 
 @Service
 public class BookingImpl implements BookingService {
@@ -71,6 +72,12 @@ public class BookingImpl implements BookingService {
         checkSeatAvailability(seat, flight);
         ensureSeatIsNotReserved(seat);
 
+        boolean verifyUserDocuments = verifyUserDocuments(user);
+
+        if (!verifyUserDocuments) {
+            throw new IllegalArgumentException("User documents are not verified");
+        }
+
         Booking book = Booking.builder()
                 .seat(seat)
                 .totalPrice(seat.getPrice())
@@ -103,10 +110,10 @@ public class BookingImpl implements BookingService {
 //        // association rule for multi seat
 //
 //        User user = findUserByUsername(username);
-//        Flight flight = findFlightBySeat(passengerDTOSet.iterator().next().getSeatNumber());
-//
 //        verifyUser(user);
-//
+//        if (passengerDTOSet.isEmpty()) {
+//            throw new IllegalArgumentException("You must provide at least one passenger to book a flight");
+//        }
 //        // check if the user had max or min required
 //        if (passengerDTOSet.size() > 9) {
 //            throw new IllegalArgumentException("You can not add more then 9 passengers in one flight reservation");
@@ -114,18 +121,28 @@ public class BookingImpl implements BookingService {
 //
 //
 //        passengerDTOSet.forEach(seat -> {
+//            // Get the flight by seat number
+//            Seat seatInfo = seatsRepo.findById(seat.getSeatNumber()).orElseThrow(
+//                    () -> new DataAccessResourceFailureException("Seat not found for seat number: " + seat.getSeatNumber())
+//            );
+//
+//            Flight flight = findFlightBySeat(seatInfo);
+//
+//            if (flight == null) {
+//                throw new DataAccessResourceFailureException("Flight not found for seat number: " + seat.getSeatNumber());
+//            }
 //
 //            Passenger passenger = Passenger.builder()
 //                    .firstName(seat.getFirstName())
 //                    .lastName(seat.getLastName())
 //                    .middleName(seat.getMiddleName())
 //                    .age(seat.getAge())
-//                    .isUnaccompanied(seat.isUnaccompanied())
 //                    .documents(seat.getDocuments())
 //                    .user(user)
 //                    .build();
+//
 //            double passengerPrice = 0.0;
-//            Seat SeatInfo = gettingSeat(seat.getSeatNumber());
+//            Seat SeatInfo = gettingSeat(flight.getId(), seatInfo.getSeatLabel());
 //
 //
 //            String bookingAllow = BookingUtils.validatePassenger(passenger, flight);
@@ -142,7 +159,7 @@ public class BookingImpl implements BookingService {
 //            userRepo.save(user);
 //
 //            // create new booking
-//            passengerPrice = BookingUtils.calculateTicketPrice(passenger,flight);
+//            passengerPrice = BookingUtils.calculateTicketPrice(passenger, flight);
 //
 //            bookingRepo.save(
 //                    Booking.builder()
@@ -154,15 +171,10 @@ public class BookingImpl implements BookingService {
 //            );
 //
 //
-//
-//
 //        });
 //
-//
-//    }
         return new Booking();
     }
-    // !ANCHOR : Data need to be appreciated here
 
     @Override
     public List<BookingResponse> getUserBookings(String username) {
@@ -263,11 +275,6 @@ public class BookingImpl implements BookingService {
         return seatsRepo.findFlightBySeatLabel(seatLabel).orElseThrow(() -> new DataIntegrityViolationException("Flight booking cannot be found!"));
     }
 
-    private void verifyUser(User user) {
-        if (!user.isVerified()) {
-            throw new IllegalArgumentException("User is not verified");
-        }
-    }
 
     private void checkSeatAvailability(Seat seat, Flight flight) {
         switch (seat.getSeatType()) {
