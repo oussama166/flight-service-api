@@ -255,7 +255,7 @@ public class BookingImpl implements BookingService {
     }
 
 
-    // Helper function
+    // DocumentUtils function
 
     private Seat ExtractSeat(long FlightNumber, String seatNumber) {
         return seatsRepo.findByFlight_IdAndSeatLabel(FlightNumber, seatNumber).orElse(null);
