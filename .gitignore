@@ -75,6 +75,7 @@ secrets.yml
 node_modules
 src/Utils/**
 /Uploads
+src/main/resources/certs
 
 REMIND.todo
 Task.md
