@@ -50,6 +50,7 @@ build/
 .metadata
 .recommenders
 .vscode
+.env
 /code
 MANIFEST.MF
 _site/

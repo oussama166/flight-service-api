@@ -7,7 +7,6 @@ import static org.jetblue.jetblue.Utils.PathEncoded.DecodeFilePath;
 
 @Component
 public class DocumentMapper {
-
     public static DocumentResponse toDocResponse(Document doc) {
         if (doc == null) {
             return null;
@@ -18,5 +17,4 @@ public class DocumentMapper {
                 .fullName(doc.getPassenger().getFirstName() + " " + doc.getPassenger().getLastName())
                 .build();
     }
-
 }

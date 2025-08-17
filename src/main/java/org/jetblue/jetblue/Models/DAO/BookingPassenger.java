@@ -3,20 +3,19 @@ package org.jetblue.jetblue.Models.DAO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@Table(name = "booking_passengers")
+@Table(
+        name = "booking_passengers")
 public class BookingPassenger {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // Links to the main Booking record
     @ManyToOne
@@ -32,5 +31,4 @@ public class BookingPassenger {
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = true)
     private Seat seat;
-
 }

@@ -17,6 +17,7 @@ public class authFilter extends OncePerRequestFilter {
 
     private TokenImpl token;
     private static final Logger logger = LoggerFactory.getLogger(authFilter.class);
+
     public authFilter(TokenImpl token) {
         this.token = token;
     }
@@ -25,7 +26,8 @@ public class authFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         String path = request.getServletPath();
 

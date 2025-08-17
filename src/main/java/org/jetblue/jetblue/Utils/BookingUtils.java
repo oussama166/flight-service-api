@@ -2,6 +2,7 @@ package org.jetblue.jetblue.Utils;
 
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.Passenger;
+import org.jetblue.jetblue.Models.DAO.Seat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +36,13 @@ public class BookingUtils {
 
     }
 
-    public static double calculateTicketPrice(Passenger passenger, Flight flightDetails) {
+    public static double calculateTicketPrice(Passenger passenger, Seat SeatDetails) {
         if (passenger.getAge() < 2) {
-            return flightDetails.getPrice() * 0.1; // 90% discount for infants
+            return SeatDetails.getPrice() * 0.1; // 90% discount for infants
         } else if (passenger.getAge() < 12) {
-            return flightDetails.getPrice() * 0.75; // 25% discount for children
+            return SeatDetails.getPrice() * 0.75; // 25% discount for children
         } else {
-            return flightDetails.getPrice(); // Full fare for others
+            return SeatDetails.getPrice(); // Full fare for others
         }
     }
 

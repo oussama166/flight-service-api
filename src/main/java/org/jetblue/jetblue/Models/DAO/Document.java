@@ -35,6 +35,7 @@ public class Document {
 
     // Relation
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "passenger_id", nullable = false)
     private Passenger passenger;
 
 

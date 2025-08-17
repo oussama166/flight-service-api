@@ -11,11 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.jetblue.jetblue.Utils.DocumentUtils.createPassengerFolder;
 
 @RestController
 @RequestMapping("/api/files")
@@ -23,6 +18,8 @@ import static org.jetblue.jetblue.Utils.DocumentUtils.createPassengerFolder;
 @AllArgsConstructor
 public class DocumentController {
     private DocumentService documentService;
+
+
 
     private static final String UPLOAD_DIR = "uploads/";
 

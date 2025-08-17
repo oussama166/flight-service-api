@@ -36,10 +36,12 @@ public class PassengerImpl implements PassengerService {
                 .firstName(passenger.firstName())
                 .middleName(passenger.middleName())
                 .lastName(passenger.lastName())
+                .birthDate(passenger.birthDate())
                 .age(Period.between(userInfo.get().getBirthday(), LocalDate.now()).getYears())
                 .passportNumber(passenger.passportNumber())
                 .passportExpiryDate(passenger.passportExpiryDate())
                 .user(userInfo.get())
+                .hasAccount(passenger.isUser())
                 .build();
         try {
             Passenger savedPassenger = passengerRepo.save(newPassenger);

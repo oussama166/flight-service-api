@@ -9,10 +9,12 @@ public record PassengerRequest(
         String firstName,
         String middleName,
         String lastName,
+        LocalDate birthDate,
         String email,
         String phoneNumber,
         String passportNumber,
         LocalDate passportExpiryDate,
-        String userName
+        String userName,
+        boolean isUser
 ) {
 }

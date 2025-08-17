@@ -19,10 +19,12 @@ public class Passenger {
     private String firstName;
     private String lastName;
     private String middleName;
+    private LocalDate birthDate;
     private int age;
     private String passportNumber;
     private LocalDate passportExpiryDate;
     private boolean isUnaccompanied = false;
+    private boolean hasAccount = false;
 
     // Relation
     @ManyToOne
@@ -31,6 +33,5 @@ public class Passenger {
 
     @OneToMany(mappedBy = "passenger",
             cascade = CascadeType.ALL)
-    @Column(name = "documents", nullable = true)
     private Set<Document> documents;
 }

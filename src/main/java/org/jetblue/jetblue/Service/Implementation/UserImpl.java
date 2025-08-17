@@ -72,10 +72,12 @@ public class UserImpl implements UserService {
                                 .userName(user.getUsername())
                                 .firstName(user.getName())
                                 .middleName(user.getMiddleName())
+                                .birthDate(user.getBirthday())
                                 .lastName(user.getLastName())
                                 .email(user.getEmail())
                                 .passportNumber(passportNumber)
                                 .passportExpiryDate(passportExpirationDate)
+                                .isUser(true)
                                 .build()
                 );
             }
