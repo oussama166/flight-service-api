@@ -3,18 +3,22 @@ package org.jetblue.jetblue.Service.Implementation;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.Passenger.PassengerRequest;
 import org.jetblue.jetblue.Mapper.User.UserMapper;
 import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Models.ENUM.Role;
 import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
 import org.jetblue.jetblue.Repositories.UserRepo;
+import org.jetblue.jetblue.Service.PassengerService;
 import org.jetblue.jetblue.Service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -27,6 +31,7 @@ public class UserImpl implements UserService {
     // Inject the user repo
     private final UserRepo userRepo;
     private final UserPreferenceRepo userPreferenceRepo;
+    private final PassengerService passengerService;
 
 
     @Override
@@ -50,7 +55,7 @@ public class UserImpl implements UserService {
     }
 
     @Override
-    public boolean createUser(User user) {
+    public boolean createUser(User user, String passportNumber, LocalDate passportExpirationDate) {
         if (user == null) return false;
         if (user.getUsername().isBlank() || user.getEmail().isBlank()) return false;
         // try to find user
@@ -59,6 +64,23 @@ public class UserImpl implements UserService {
             return false;
         } else {
             userRepo.save(user);
+            // Create user passenger
+            if (user.getRole() == Role.User) {
+                passengerService.createPassenger(
+                        PassengerRequest
+                                .builder()
+                                .userName(user.getUsername())
+                                .firstName(user.getName())
+                                .middleName(user.getMiddleName())
+                                .birthDate(user.getBirthday())
+                                .lastName(user.getLastName())
+                                .email(user.getEmail())
+                                .passportNumber(passportNumber)
+                                .passportExpiryDate(passportExpirationDate)
+                                .isUser(true)
+                                .build()
+                );
+            }
             return true;
         }
     }

@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Controller;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.jetblue.jetblue.Mapper.Booking.BookingFeeResponse;
 import org.jetblue.jetblue.Mapper.Booking.BookingRequest;
 import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.Booking;
@@ -47,7 +48,7 @@ public class BookingController {
             produces = "application/json"
     )
     public ResponseEntity<?> setBookingList(@PathVariable(value = "username") String userName, @RequestBody Set<SeatPassengerDTO> passengersSeats) {
-        Booking bookingRes = bookingService.setBooking(userName, passengersSeats);
+        BookingFeeResponse bookingRes = bookingService.setBookings(userName, passengersSeats);
         if (bookingRes == null) {
             return ResponseEntity.notFound().build();
         }

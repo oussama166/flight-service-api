@@ -205,7 +205,7 @@ public class SeatImpl implements SeatService {
     }
 
 
-    // Helper functions
+    // DocumentUtils functions
 
     private static Seat getSeat(SeatCreate seat, Flight flight, Airplane airplane) {
         Seat seatInst = new Seat();

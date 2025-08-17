@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Service;
 
+import org.jetblue.jetblue.Mapper.Booking.BookingFeeResponse;
 import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DAO.Seat;
@@ -28,7 +29,7 @@ public interface BookingService {
      * @param username   -- User information
      * @param passengers -- List of passenger and seat associated with the flight
      */
-    Booking setBooking(String username, Set<SeatPassengerDTO> passengers);
+    BookingFeeResponse setBookings(String username, Set<SeatPassengerDTO> passengers);
 
     /**
      * Get the booking associated with the user account

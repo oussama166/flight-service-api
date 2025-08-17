@@ -6,6 +6,8 @@ import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
 
+import java.time.LocalDate;
+
 public interface UserService {
     /**
      * This function is for finding user by the username and return some important and not critical information
@@ -28,9 +30,11 @@ public interface UserService {
      * This function is for register new user
      *
      * @param user
+     * @param passportNumber
+     * @param passportExpirationDate
      */
 
-    boolean createUser(User user);
+    boolean createUser(User user, String passportNumber, LocalDate passportExpirationDate);
 
     /**
      * This function is for updating user info with insert new info about user

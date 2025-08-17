@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Models.DAO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -18,13 +19,19 @@ public class Passenger {
     private String firstName;
     private String lastName;
     private String middleName;
+    private LocalDate birthDate;
     private int age;
-    private boolean isUnaccompanied;
+    private String passportNumber;
+    private LocalDate passportExpiryDate;
+    private boolean isUnaccompanied = false;
+    private boolean hasAccount = false;
 
     // Relation
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "passenger")
+    @OneToMany(mappedBy = "passenger",
+            cascade = CascadeType.ALL)
     private Set<Document> documents;
 }

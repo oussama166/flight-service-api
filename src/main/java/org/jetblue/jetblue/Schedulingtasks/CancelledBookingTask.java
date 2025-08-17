@@ -29,6 +29,14 @@ public class CancelledBookingTask {
     public void cancelBooking() {
         bookingService.getAllBookings().forEach(booking -> {
             // check if the time of creation over the 24 hours
+
+            ///  localDatTime.now() => exp // 2023-10-01T12:00:00
+            ///  booking.getCreateTime() => exp // 2023-10-01T12:00:00
+            ///  booking.getCreateTime().plusHours(24) => exp // 2023-10-02T12:00:00
+            ///  LocalDateTime.now().isAfter(booking.getCreateTime().plusHours(24)) => exp // false
+            ///  transcript this to humun language
+            ///  if the current time is after the booking creation time plus 24 hours, then
+            ///  cancel the booking, else do nothing
             if (LocalDateTime
                     .now()
                     .isAfter(

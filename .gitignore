@@ -50,6 +50,7 @@ build/
 .metadata
 .recommenders
 .vscode
+.env
 /code
 MANIFEST.MF
 _site/
@@ -73,4 +74,8 @@ secrets.yml
 .git-hooks/
 node_modules
 src/Utils/**
+/Uploads
+src/main/resources/certs/*
+
 REMIND.todo
+Task.md
