@@ -1,0 +1,65 @@
+package org.jetblue.jetblue.Events.Listener;
+
+import lombok.extern.slf4j.Slf4j;
+import org.jetblue.jetblue.Events.SeatCancelledEvent;
+import org.jetblue.jetblue.Events.SeatDynamizedPriceEvent;
+import org.jetblue.jetblue.Events.SeatReservedEvent;
+import org.jetblue.jetblue.Models.DAO.Flight;
+import org.jetblue.jetblue.Repositories.FlightRepo;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+import static org.jetblue.jetblue.Utils.PriceEngine.dynamicPricing;
+
+@Component
+@Slf4j
+public class SeatEventListener {
+
+    private final FlightRepo flightRepository;
+
+    public SeatEventListener(FlightRepo flightRepository) {
+        this.flightRepository = flightRepository;
+    }
+
+    @EventListener
+    public void handleSeatReserved(SeatReservedEvent event) {
+        Flight flight = flightRepository.findById(event.getFlightId())
+                .orElseThrow(() -> new RuntimeException("Flight not found"));
+
+        switch (event.getSeatClass().toUpperCase()) {
+            case "ECONOMY" -> flight.setThirdClassReserve(flight.getThirdClassReserve() + 1);
+            case "BUSINESS" -> flight.setSecondClassReserve(flight.getSecondClassReserve() + 1);
+            case "FIRST" -> flight.setFirstClassReserve(flight.getFirstClassReserve() + 1);
+        }
+
+        flightRepository.save(flight);
+    }
+
+    @EventListener
+    public void handleSeatCancelled(SeatCancelledEvent event) {
+        Flight flight = flightRepository.findById(event.getFlightId())
+                .orElseThrow(() -> new RuntimeException("Flight not found"));
+
+        switch (event.getSeatClass().toUpperCase()) {
+            case "ECONOMY" -> flight.setThirdClassReserve(flight.getThirdClassReserve() - 1);
+            case "BUSINESS" -> flight.setSecondClassReserve(flight.getSecondClassReserve() - 1);
+            case "FIRST" -> flight.setFirstClassReserve(flight.getFirstClassReserve() - 1);
+        }
+
+        flightRepository.save(flight);
+    }
+
+    @EventListener
+    public void handelSeatDynamizedPrice(SeatDynamizedPriceEvent event) {
+        // calculate the price adding
+        if (!"DYNAMIC".equals(event.getFlight().getPricingType().name())) {
+            log.warn("Pricing type {} not supported", event.getFlight().getPricingType().name());
+            return;
+        }
+
+        double price = dynamicPricing(event.getFlight());
+        System.out.println(price);
+
+    }
+}
+

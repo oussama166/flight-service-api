@@ -1,0 +1,307 @@
+POST localhost:{{serverPort}}/setFlight
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "departureTime": "2025-01-12T18:10:00",
+  "arrivalTime": "2025-01-12T20:00:00",
+  "price": 80,
+  "departure": "CDG",
+  "arrival": "JFK",
+  "airline": "RAM",
+  "airplane": "Boeing 777-9",
+  "flightStatus": "On Time",
+  "maxFirst": 60,
+  "maxSecond": 70,
+  "maxThird": 60,
+  "maxSeats": 350
+}
+
+###
+
+POST localhost:{{serverPort}}/setFlights
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+[
+  {
+    "departureTime": "2025-09-16T10:00:00",
+    "arrivalTime": "2025-09-16T14:00:00",
+    "price": 638.94,
+    "maxSeats": 186,
+    "departure": "KIX",
+    "arrival": "BHX",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 12,
+    "maxSecond": 30,
+    "maxThird": 144,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-15T19:00:00",
+    "arrivalTime": "2025-08-15T21:15:00",
+    "price": 523.69,
+    "maxSeats": 189,
+    "departure": "HGH",
+    "arrival": "HND",
+    "airline": "JBU",
+    "airplane": "Boeing 737-800",
+    "maxFirst": 8,
+    "maxSecond": 24,
+    "maxThird": 157,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-12T16:00:00",
+    "arrivalTime": "2025-09-13T02:45:00",
+    "price": 717.78,
+    "maxSeats": 186,
+    "departure": "BKK",
+    "arrival": "VNO",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 8,
+    "maxSecond": 24,
+    "maxThird": 154,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-11T15:00:00",
+    "arrivalTime": "2025-08-11T18:30:00",
+    "price": 467.71,
+    "maxSeats": 189,
+    "departure": "KZN",
+    "arrival": "FAO",
+    "airline": "JBU",
+    "airplane": "Boeing 737-800",
+    "maxFirst": 8,
+    "maxSecond": 24,
+    "maxThird": 157,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-28T12:00:00",
+    "arrivalTime": "2025-08-28T17:30:00",
+    "price": 364.14,
+    "maxSeats": 186,
+    "departure": "AMM",
+    "arrival": "LUX",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 16,
+    "maxSecond": 30,
+    "maxThird": 140,
+    "flightStatus": "CANCELLED"
+  },
+  {
+    "departureTime": "2025-09-23T08:00:00",
+    "arrivalTime": "2025-09-23T17:30:00",
+    "price": 607.54,
+    "maxSeats": 186,
+    "departure": "CSX",
+    "arrival": "ERZ",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 10,
+    "maxSecond": 30,
+    "maxThird": 146,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-24T06:00:00",
+    "arrivalTime": "2025-08-24T12:45:00",
+    "price": 390.95,
+    "maxSeats": 189,
+    "departure": "DEN",
+    "arrival": "ASR",
+    "airline": "JBU",
+    "airplane": "Boeing 737-800",
+    "maxFirst": 16,
+    "maxSecond": 24,
+    "maxThird": 149,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-08T16:00:00",
+    "arrivalTime": "2025-09-08T19:00:00",
+    "price": 702.57,
+    "maxSeats": 186,
+    "departure": "OKA",
+    "arrival": "EXT",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 8,
+    "maxSecond": 30,
+    "maxThird": 148,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-12T21:00:00",
+    "arrivalTime": "2025-09-12T23:30:00",
+    "price": 502.22,
+    "maxSeats": 853,
+    "departure": "VNO",
+    "arrival": "CKG",
+    "airline": "JBU",
+    "airplane": "Airbus A380",
+    "maxFirst": 80,
+    "maxSecond": 120,
+    "maxThird": 653,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-01T06:00:00",
+    "arrivalTime": "2025-09-01T16:45:00",
+    "price": 612.08,
+    "maxSeats": 186,
+    "departure": "SIN",
+    "arrival": "BLR",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 12,
+    "maxSecond": 30,
+    "maxThird": 144,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-10T13:00:00",
+    "arrivalTime": "2025-08-10T20:15:00",
+    "price": 554.09,
+    "maxSeats": 853,
+    "departure": "BHX",
+    "arrival": "OKA",
+    "airline": "JBU",
+    "airplane": "Airbus A380",
+    "maxFirst": 80,
+    "maxSecond": 120,
+    "maxThird": 653,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-17T10:00:00",
+    "arrivalTime": "2025-09-17T19:00:00",
+    "price": 683.08,
+    "maxSeats": 186,
+    "departure": "GVA",
+    "arrival": "LYS",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 16,
+    "maxSecond": 24,
+    "maxThird": 146,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-25T13:00:00",
+    "arrivalTime": "2025-09-25T19:15:00",
+    "price": 307.18,
+    "maxSeats": 853,
+    "departure": "CDG",
+    "arrival": "KMG",
+    "airline": "JBU",
+    "airplane": "Airbus A380",
+    "maxFirst": 80,
+    "maxSecond": 120,
+    "maxThird": 653,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-02T09:00:00",
+    "arrivalTime": "2025-09-02T11:00:00",
+    "price": 321.02,
+    "maxSeats": 853,
+    "departure": "CTU",
+    "arrival": "OST",
+    "airline": "JBU",
+    "airplane": "Airbus A380",
+    "maxFirst": 80,
+    "maxSecond": 120,
+    "maxThird": 653,
+    "flightStatus": "CANCELLED"
+  },
+  {
+    "departureTime": "2025-09-02T14:00:00",
+    "arrivalTime": "2025-09-02T21:00:00",
+    "price": 343.17,
+    "maxSeats": 186,
+    "departure": "LGW",
+    "arrival": "OPO",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 10,
+    "maxSecond": 24,
+    "maxThird": 152,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-09-01T19:00:00",
+    "arrivalTime": "2025-09-01T21:45:00",
+    "price": 324.13,
+    "maxSeats": 186,
+    "departure": "CDG",
+    "arrival": "CRL",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 16,
+    "maxSecond": 15,
+    "maxThird": 155,
+    "flightStatus": "CANCELLED"
+  },
+  {
+    "departureTime": "2025-09-28T21:00:00",
+    "arrivalTime": "2025-09-29T05:30:00",
+    "price": 624.8,
+    "maxSeats": 186,
+    "departure": "BRU",
+    "arrival": "SGN",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 8,
+    "maxSecond": 24,
+    "maxThird": 154,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-26T07:00:00",
+    "arrivalTime": "2025-08-26T11:30:00",
+    "price": 357.54,
+    "maxSeats": 186,
+    "departure": "EXT",
+    "arrival": "OSL",
+    "airline": "JBU",
+    "airplane": "Airbus A320-200",
+    "maxFirst": 16,
+    "maxSecond": 30,
+    "maxThird": 140,
+    "flightStatus": "On Time"
+  },
+  {
+    "departureTime": "2025-08-11T07:00:00",
+    "arrivalTime": "2025-08-11T17:00:00",
+    "price": 320.55,
+    "maxSeats": 853,
+    "departure": "EWR",
+    "arrival": "OVB",
+    "airline": "JBU",
+    "airplane": "Airbus A380",
+    "maxFirst": 80,
+    "maxSecond": 120,
+    "maxThird": 653,
+    "flightStatus": "CANCELLED"
+  }
+]
+
+###
+@flightNumber=0b634307-0749-484b-9691-c1325510b308
+GET localhost:{{serverPort}}/getFlight/{{flightNumber}}
+Authorization: Bearer {{bearerToken}}
+
+###
+GET localhost:{{serverPort}}/getFlightByArrDes
+Content-Type: application/json
+
+{
+  "departure": "LFPG",
+  "arrival": "KJFK"
+}

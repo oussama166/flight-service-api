@@ -1,0 +1,53 @@
+POST localhost:{{serverPort}}/setAirline
+Content-Type: application/json
+
+{
+  "airlineName": "Qatar Airways",
+  "airlineCode": "QTR",
+  "airlineUrl": "https://www.qatarairways.com/en/homepage.html",
+  "airlineLogoLink": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/250px-Qatar_Airways_Logo.svg.png",
+  "colFormation": 5,
+  "rowFormation": 70
+}
+
+
+
+###
+POST localhost:8080/setAirline
+Content-Type: application/json
+
+{
+  "airlineName": "Royal air maroc",
+  "airlineCode": "RAM",
+  "airlineUrl": "https://www.royalairmaroc.com/fr-fr",
+  "airlineLogoLink": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Logo_Royal_Air_Maroc.svg",
+  "colFormation": 5,
+  "rowFormation": 70
+}
+
+###
+@airlineCode=RAM
+
+GET localhost:{{serverPort}}/getAirline/{{airlineCode}}
+Content-Type: application/json
+###
+
+GET localhost:{{serverPort}}/getAllAirlines
+
+
+###
+#@airlineCode=RAM
+PUT localhost:8080/updateAirline/{{airlineCode}}
+Content-Type: application/json
+
+{
+  "airlineName": "MOROCCAN ROYAL AIR",
+  "airlineCode": "RAM",
+  "airlineUrl": "https://www.royalairmaroc.com/fr-fr",
+  "airlineLogoLink": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Logo_Royal_Air_Maroc.svg"
+}
+
+###
+
+DELETE localhost:8080/deleteAirline/{{airlineCode}}
+Content-Type: application/json

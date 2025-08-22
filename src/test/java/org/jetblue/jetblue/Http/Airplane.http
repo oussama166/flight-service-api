@@ -1,0 +1,45 @@
+POST localhost:{{serverPort}}/createAirplane
+Content-Type: application/json
+
+{
+  "name": "Boeing 777-9",
+  "maxSeat": 350,
+  "airplaneImageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Air_New_Zealand_Boeing_777-200ER_MEL_Zhao.jpg"
+}
+
+###
+POST localhost:{{serverPort}}/createAirplane
+Content-Type: application/json
+
+{
+  "name": "Airbus A320",
+  "maxSeat": 200,
+  "airplaneImageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Airbus_A320-214%2C_Airbus_Industrie_JP7617615.jpg"
+}
+
+
+###
+
+@airplaneName= Airbus A320
+GET localhost:{{serverPort}}/getAirplane/{{airplaneName}}
+Content-Type: application/json
+
+###
+GET localhost:{{serverPort}}/getAirplanes
+Content-Type: application/json
+
+
+###
+PUT localhost:{{serverPort}}/updateAirplane/{{airplaneName}}
+Content-Type: application/json
+
+{
+  "name": "Airbus A320",
+  "airplaneImageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Airbus_A320-214%2C_Airbus_Industrie_JP7617615.jpg",
+  "maxSeat": 250
+}
+
+###
+
+DELETE localhost:{{serverPort}}/deleteAirplane/{{airplaneName}}
+Content-Type: application/json

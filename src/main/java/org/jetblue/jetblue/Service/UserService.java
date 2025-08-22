@@ -1,0 +1,67 @@
+package org.jetblue.jetblue.Service;
+
+import org.jetblue.jetblue.Mapper.User.UserRequest;
+import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
+import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
+import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Models.DTO.UserBasicDTO;
+
+import java.time.LocalDate;
+
+public interface UserService {
+    /**
+     * This function is for finding user by the username and return some important and not critical information
+     *
+     * @param username
+     * @return UserBasicResponse user
+     */
+    UserResponseBasic findUserBasicByUsername(String username) throws Exception;
+
+
+    /**
+     * This function is for finding user by the username and return all the username info
+     *
+     * @param username
+     * @return User user
+     */
+    User findUserByUsername(String username) throws Exception;
+
+    /**
+     * This function is for register new user
+     *
+     * @param user
+     * @param passportNumber
+     * @param passportExpirationDate
+     */
+
+    boolean createUser(User user, String passportNumber, LocalDate passportExpirationDate);
+
+    /**
+     * This function is for updating user info with insert new info about user
+     *
+     * @param username
+     * @param user
+     * @return boolean
+     */
+    boolean updateUser(String username, UserUpdateRequest user);
+
+    /**
+     * This function is for updating the user password by sending the actual password and the new password
+     *
+     * @param username    -- Username store in database
+     * @param OldPassword -- Old password of user
+     * @param password    -- New password of user
+     */
+
+    boolean updateUserPassword(String username, String OldPassword, String password) throws Exception;
+
+    /**
+     * This function is to delete user
+     *
+     * @param username
+     * @return boolean
+     */
+
+    boolean deleteUser(String username);
+
+}

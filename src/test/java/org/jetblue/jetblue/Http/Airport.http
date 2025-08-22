@@ -1,0 +1,72 @@
+POST localhost:{{serverPort}}/setAirport
+Content-Type: application/json
+
+{
+  "code": "LFPG",
+  "name": "Charles de Gaulle International Airport",
+  "location": "Paris",
+  "latitude" : 49.012798 ,
+  "longitude" : 2.55
+}
+
+###
+POST localhost:{{serverPort}}/setAirport
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "code": "SYR",
+  "name": "Aéroport international de Syracuse-Hancock",
+  "location": "New York",
+  "latitude" : 43.11139 ,
+  "longitude" : -76.11583
+}
+
+###
+POST localhost:{{serverPort}}/setAirport
+Content-Type: application/json
+
+{
+  "code": "KJFK",
+  "name": "John F Kennedy International Airport",
+  "location": "New York",
+  "latitude": 40.639801,
+  "longitude": -73.7789
+}
+###
+POST localhost:{{serverPort}}/setAirport
+Content-Type: application/json
+
+{
+  "code": "GMMN",
+  "name": "Mohammed V International Airport",
+  "location": "Casablanca",
+  "latitude" : 33.3675 ,
+  "longitude" : -7.58997
+}
+
+
+
+###
+@code=GMMN
+PATCH localhost:{{serverPort}}/updateAirport/{{code}}
+Content-Type: application/json
+
+{
+  "code": "GMMN",
+  "name": "Mohammed V International Airport",
+  "location": "Casablanca",
+  "latitude" : 33.3675 ,
+  "longitude" : -7.58997
+}
+
+
+###
+GET localhost:{{serverPort}}/getAirports
+Content-Type: application/json
+
+
+###
+DELETE localhost:{{serverPort}}/deleteAirport/{{code}}
+Content-Type: application/json
+

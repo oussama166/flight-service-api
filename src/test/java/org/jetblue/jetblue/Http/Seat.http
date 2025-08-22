@@ -1,0 +1,35 @@
+POST localhost:{{serverPort}}/createSeat
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "flag": "",
+  "price": 100,
+  "seatType": "FIRST_CLASS",
+  "flightNumber": "23bab7e0-e26b-4097-903c-4f3036befa34",
+  "col": 0,
+  "row": 1
+}
+
+###
+POST localhost:{{serverPort}}/createSeats
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "maxSeatNumber": 20,
+  "price": 60,
+  "seatType": "SECOND_CLASS",
+  "airplaneName": "23bab7e0-e26b-4097-903c-4f3036befa34",
+  "rowStart": 5
+}
+
+###
+@seatFlag= 152fc8a9-5665-4e5a-9f77-22df39cf9322-A0-9e4193f8-eaf9-496c-b203-9f05595cb9d0-1737453952079
+GET localhost:{{serverPort}}/getSeat/{{seatFlag}}
+
+###
+@flightNumber = 23bab7e0-e26b-4097-903c-4f3036befa34
+GET localhost:{{serverPort}}/getSeats/{{flightNumber}}
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
