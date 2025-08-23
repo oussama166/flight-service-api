@@ -16,7 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.jetblue.jetblue.Models.ENUM.CardType.*;
 import static org.jetblue.jetblue.Utils.UserUtils.validateUser;
@@ -28,7 +30,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     UserRepo userRepo;
     CreditCardRepo creditCardRepo;
 
-    public CreditCardServiceImpl(EncryptInfoUtils encryptInfoUtils, UserRepo userRepo , CreditCardRepo creditCardRepo) {
+    public CreditCardServiceImpl(EncryptInfoUtils encryptInfoUtils, UserRepo userRepo, CreditCardRepo creditCardRepo) {
         this.encryptInfoUtils = encryptInfoUtils;
         this.userRepo = userRepo;
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -106,26 +108,34 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @SneakyThrows
     @Override
-    public FullCreditCardInfoResponse CreditCardByUsername(String username) {
+    public List<FullCreditCardInfoResponse> CreditCardByUsername(String username) {
         if (username == null || username.isBlank()) return null;
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isEmpty()) throw new Exception("User not found");
         validateUser(user.get().getUsername());
 
-        Optional<CreditCard> creditCard = creditCardRepo.findByUser_Username((user.get().getUsername()));
-        creditCard.orElseThrow(() -> new Exception("Credit card not found for user: " + username));
-        return CreditCardMapper.toFullCreditCardInfoResponse(creditCard.get());
+        List<CreditCard> creditCard = creditCardRepo.findByUser_Username((user.get().getUsername()));
+        if (creditCard.isEmpty()) return null;
+        return creditCard.stream().map((el)->{
+            try {
+                return CreditCardMapper.toFullCreditCardInfoResponse(el);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
 
     }
 
     @Override
-    public boolean DeleteCreditCardByUsername(String username) {
+    public boolean DeleteCreditCardByUsername(String username, String lastFourDigits) {
         if (username == null || username.isBlank()) return false;
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isEmpty()) return false;
         validateCardNumber(username);
 
-        Optional<CreditCard> creditCard = creditCardRepo.findByUser_Username((user.get().getUsername()));
+        Optional<CreditCard> creditCard = creditCardRepo.findByUser_UsernameAndLastFourDigits(
+                user.get().getUsername(), lastFourDigits
+        );
         if (creditCard.isPresent()) {
             creditCardRepo.delete(creditCard.get());
             return true;

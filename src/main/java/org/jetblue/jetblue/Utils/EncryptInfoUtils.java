@@ -20,16 +20,25 @@ public class EncryptInfoUtils {
         this.privateKey = rsaKeyProps.privateKey();
     }
 
-    public String encrypt(String data) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        return Base64.getEncoder().encodeToString(cipher.doFinal(data.getBytes()));
+    public String encrypt(String data){
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(data.getBytes()));
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public String decrypt(String encryptedData) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
-        return new String(decrypted);
+    public String decrypt(String encryptedData) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+            return new String(decrypted);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

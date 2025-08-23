@@ -11,6 +11,9 @@ import org.jetblue.jetblue.Mapper.Booking.BookingMapper;
 import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
+import org.jetblue.jetblue.Models.ENUM.PaymentGateway;
+import org.jetblue.jetblue.Models.ENUM.PaymentMethod;
+import org.jetblue.jetblue.Models.ENUM.PaymentStatus;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.BookingService;
@@ -48,6 +51,7 @@ public class BookingImpl implements BookingService {
     private final BookingPassengerRepo bookingPassengerRepo;
     private final PassengerRepo passengerRepo;
     private final DocumentRepo documentRepo;
+    private final PaymentRepo paymentRepo;
 
     // Publisher for events
     private final ApplicationEventPublisher publisher;
@@ -129,6 +133,17 @@ public class BookingImpl implements BookingService {
                 }
         );
 
+        Payment payment = Payment.builder()
+                .booking(book)
+                .amount(Double.toString(book.getTotalPrice()))
+                .currency("USD")
+                .method(PaymentMethod.CREDIT_CARD)
+                .paymentGateway(PaymentGateway.STRIPE)
+                .status(PaymentStatus.PENDING)
+                .creditCard(user.getCreditCards().get(0))
+                .build();
+
+        paymentRepo.save(payment);
 
         logger.info("Booking created successfully for user: {} on flight: {}", user.getUsername(), flight.getFlightNumber());
 

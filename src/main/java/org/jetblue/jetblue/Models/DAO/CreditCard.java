@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.jetblue.jetblue.Models.ENUM.CardType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +35,12 @@ public class CreditCard {
     private String billingAddress;
     @Enumerated(EnumType.STRING)
     private CardType cardType;
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "creditCard", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
 }

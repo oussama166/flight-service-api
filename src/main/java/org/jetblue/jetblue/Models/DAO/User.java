@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class User {
     @JoinColumn(name= "document_user")
     private List<Document> documents;
 
-    @OneToOne
-    private CreditCard creditCard;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CreditCard> creditCards = new ArrayList<>();
 
 }

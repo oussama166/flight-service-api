@@ -9,6 +9,8 @@ import org.jetblue.jetblue.Service.CreditCardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController()
 @RequestMapping(value = "/api")
 @AllArgsConstructor
@@ -33,7 +35,7 @@ public class CreditCardController {
     )
     public ResponseEntity<?> getCreditCardByUsername(@PathVariable String username) {
         try {
-            FullCreditCardInfoResponse creditCard = creditCardService.CreditCardByUsername(username);
+            List<FullCreditCardInfoResponse> creditCard = creditCardService.CreditCardByUsername(username);
             if (creditCard == null) {
                 return ResponseEntity.status(404).body("Credit card not found for user: " + username);
             }
@@ -44,13 +46,13 @@ public class CreditCardController {
     }
 
     @DeleteMapping(
-            value = "/credit-card/{username}",
+            value = "/credit-card/{username}/{lastFourDigits}",
             produces = "application/json",
             consumes = "application/json"
     )
-    public ResponseEntity<?> deleteCreditCardByUsername(@PathVariable String username) {
+    public ResponseEntity<?> deleteCreditCardByUsername(@PathVariable String username, @PathVariable String lastFourDigits) {
         try {
-            boolean deleted = creditCardService.DeleteCreditCardByUsername(username);
+            boolean deleted = creditCardService.DeleteCreditCardByUsername(username, lastFourDigits);
             if (deleted) {
                 return ResponseEntity.ok("Credit card deleted successfully for user: " + username);
             } else {

@@ -52,6 +52,10 @@ public class Booking {
     @JoinColumn(name = "status_id", nullable = false)
     private BookingStatus status;
 
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
     private LocalDateTime createTime;
 
     @PrePersist
