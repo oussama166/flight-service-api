@@ -64,4 +64,7 @@ public class User {
     @JoinColumn(name= "document_user")
     private List<Document> documents;
 
+    @OneToOne
+    private CreditCard creditCard;
+
 }

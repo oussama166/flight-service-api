@@ -5,7 +5,9 @@ import org.jetblue.jetblue.Models.DAO.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -15,7 +17,7 @@ public class UserMapper {
     Logger logger = LoggerFactory.getLogger(UserMapper.class);
 
     public static User toUser(UserRequest userRequest) {
-        var passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
                 .username(userRequest.username())
                 .name(userRequest.name())
@@ -27,7 +29,6 @@ public class UserMapper {
                 .address(userRequest.address())
                 .gender(userRequest.gender())
                 .phone(userRequest.phone())
-                .password(BCrypt.hashpw(userRequest.password(), BCrypt.gensalt()))
                 .role(userRequest.role())
                 .verified(userRequest.verified())
                 .password(passwordEncoder.encode(userRequest.password()))

@@ -51,7 +51,6 @@ build/
 .recommenders
 .vscode
 .env
-.env.*
 /code
 MANIFEST.MF
 _site/

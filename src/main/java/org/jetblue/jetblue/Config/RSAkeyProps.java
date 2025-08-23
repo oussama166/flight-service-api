@@ -1,5 +1,6 @@
 package org.jetblue.jetblue.Config;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.security.interfaces.RSAPrivateKey;

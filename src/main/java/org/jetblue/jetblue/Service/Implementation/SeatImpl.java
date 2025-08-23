@@ -96,7 +96,7 @@ public class SeatImpl implements SeatService {
                 seat.setSeatLabel(seatLabel);
                 seat.setRow(i);
                 seat.setCol(j);
-                seat.setPrice(calculatePriceSeat(flight.getPrice(), seatCreationRequest.getSeatType().name()));
+                seat.setPrice(calculatePriceSeat(flight.getPrice(), seatCreationRequest.getSeatType().toSeatTypeName()));
                 seat.setAvailable(true);
                 seat.setSold(false);
                 seat.setSpecialTrait(false);
