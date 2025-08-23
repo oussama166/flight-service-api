@@ -1,8 +1,10 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import lombok.SneakyThrows;
 import org.jetblue.jetblue.Mapper.CreditCard.CreditCardMapper;
 import org.jetblue.jetblue.Mapper.CreditCard.CreditCardRequest;
 import org.jetblue.jetblue.Mapper.CreditCard.CreditCardResponse;
+import org.jetblue.jetblue.Mapper.CreditCard.FullCreditCardInfoResponse;
 import org.jetblue.jetblue.Models.DAO.CreditCard;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Repositories.CreditCardRepo;
@@ -102,15 +104,32 @@ public class CreditCardServiceImpl implements CreditCardService {
         return CreditCardMapper.toCreditCardResponse(save);
     }
 
+    @SneakyThrows
     @Override
-    public CreditCardResponse getCreditCardByUsername(String username) throws Exception {
+    public FullCreditCardInfoResponse CreditCardByUsername(String username) {
         if (username == null || username.isBlank()) return null;
         Optional<User> user = userRepo.findByUsername(username);
         if (user.isEmpty()) throw new Exception("User not found");
         validateUser(user.get().getUsername());
 
         Optional<CreditCard> creditCard = creditCardRepo.findByUser_Username((user.get().getUsername()));
-        return creditCard.map(CreditCardMapper::toCreditCardResponse).orElse(null);
+        creditCard.orElseThrow(() -> new Exception("Credit card not found for user: " + username));
+        return CreditCardMapper.toFullCreditCardInfoResponse(creditCard.get());
 
+    }
+
+    @Override
+    public boolean DeleteCreditCardByUsername(String username) {
+        if (username == null || username.isBlank()) return false;
+        Optional<User> user = userRepo.findByUsername(username);
+        if (user.isEmpty()) return false;
+        validateCardNumber(username);
+
+        Optional<CreditCard> creditCard = creditCardRepo.findByUser_Username((user.get().getUsername()));
+        if (creditCard.isPresent()) {
+            creditCardRepo.delete(creditCard.get());
+            return true;
+        }
+        return false;
     }
 }

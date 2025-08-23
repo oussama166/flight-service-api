@@ -4,7 +4,7 @@ package org.jetblue.jetblue.Controller;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Mapper.CreditCard.CreditCardRequest;
 import org.jetblue.jetblue.Mapper.CreditCard.CreditCardResponse;
-import org.jetblue.jetblue.Models.DAO.CreditCard;
+import org.jetblue.jetblue.Mapper.CreditCard.FullCreditCardInfoResponse;
 import org.jetblue.jetblue.Service.CreditCardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +33,29 @@ public class CreditCardController {
     )
     public ResponseEntity<?> getCreditCardByUsername(@PathVariable String username) {
         try {
-            CreditCardResponse creditCard = creditCardService.getCreditCardByUsername(username);
+            FullCreditCardInfoResponse creditCard = creditCardService.CreditCardByUsername(username);
             if (creditCard == null) {
                 return ResponseEntity.status(404).body("Credit card not found for user: " + username);
             }
             return ResponseEntity.ok(creditCard);
+        } catch (Exception ex) {
+            return ResponseEntity.status(500).body("An error occurred: " + ex.getMessage());
+        }
+    }
+
+    @DeleteMapping(
+            value = "/credit-card/{username}",
+            produces = "application/json",
+            consumes = "application/json"
+    )
+    public ResponseEntity<?> deleteCreditCardByUsername(@PathVariable String username) {
+        try {
+            boolean deleted = creditCardService.DeleteCreditCardByUsername(username);
+            if (deleted) {
+                return ResponseEntity.ok("Credit card deleted successfully for user: " + username);
+            } else {
+                return ResponseEntity.status(404).body("Credit card not found for user: " + username);
+            }
         } catch (Exception ex) {
             return ResponseEntity.status(500).body("An error occurred: " + ex.getMessage());
         }

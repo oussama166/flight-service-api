@@ -6,10 +6,12 @@ import org.jetblue.jetblue.Utils.EncryptInfoUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class CreditCardMapper {
 
     static EncryptInfoUtils encryptInfoUtils;
+    public CreditCardMapper(EncryptInfoUtils encryptInfoUtils) {
+        CreditCardMapper.encryptInfoUtils = encryptInfoUtils;
+    }
 
     public static CreditCardResponse toCreditCardResponse(CreditCard save) {
         return CreditCardResponse
@@ -23,16 +25,21 @@ public class CreditCardMapper {
                 .userName(save.getUser().getUsername())
                 .build();
     }
+
     public static FullCreditCardInfoResponse toFullCreditCardInfoResponse(CreditCard creditCard) throws Exception {
-        return FullCreditCardInfoResponse
-                .builder()
-                .userName(creditCard.getUser().getUsername())
-                .cardHolderName(creditCard.getCardHolderName())
-                .cardNumber(String.format("**** **** **** %s", creditCard.getLastFourDigits()))
-                .cvv(encryptInfoUtils.decrypt(creditCard.getCvv()))
-                .cardType(creditCard.getCardType().name())
-                .expirationDate(creditCard.getExpirationDate())
-                .billingAddress(creditCard.getBillingAddress())
-                .build();
+        try {
+            return FullCreditCardInfoResponse
+                    .builder()
+                    .userName(creditCard.getUser().getUsername())
+                    .cardHolderName(creditCard.getCardHolderName())
+                    .cardNumber(String.format("**** **** **** %s", creditCard.getLastFourDigits()))
+                    .cvv(encryptInfoUtils.decrypt(creditCard.getCvv()))
+                    .cardType(creditCard.getCardType().name())
+                    .expirationDate(creditCard.getExpirationDate())
+                    .billingAddress(creditCard.getBillingAddress())
+                    .build();
+        } catch (Exception e) {
+            throw new Exception("Error decrypting CVV: " + e.getMessage());
+        }
     }
 }
