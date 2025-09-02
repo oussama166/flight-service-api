@@ -29,7 +29,7 @@ public interface BookingService {
      * @param username   -- User information
      * @param passengers -- List of passenger and seat associated with the flight
      */
-    BookingFeeResponse setBookings(String username, Set<SeatPassengerDTO> passengers);
+    BookingFeeResponse setBookings(String username, Set<SeatPassengerDTO> passengers, String flight_number);
 
     /**
      * Get the booking associated with the user account

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Mapper.Booking.BookingFeeResponse;
 import org.jetblue.jetblue.Mapper.Booking.BookingRequest;
 import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
+import org.jetblue.jetblue.Mapper.Passenger.PassengersRequest;
 import org.jetblue.jetblue.Models.DAO.Booking;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 import org.jetblue.jetblue.Service.BookingService;
@@ -47,8 +48,8 @@ public class BookingController {
             consumes = "application/json",
             produces = "application/json"
     )
-    public ResponseEntity<?> setBookingList(@PathVariable(value = "username") String userName, @RequestBody Set<SeatPassengerDTO> passengersSeats) {
-        BookingFeeResponse bookingRes = bookingService.setBookings(userName, passengersSeats);
+    public ResponseEntity<?> setBookingList(@PathVariable(value = "username") String userName, @RequestBody PassengersRequest passengersSeats) {
+        BookingFeeResponse bookingRes = bookingService.setBookings(userName, passengersSeats.passengers(), passengersSeats.flightNumber());
         if (bookingRes == null) {
             return ResponseEntity.notFound().build();
         }

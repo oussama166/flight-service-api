@@ -12,12 +12,16 @@ import java.util.UUID;
 
 public interface BookingRepo extends JpaRepository<Booking, Long> {
 
-    @Query("SELECT b FROM Booking b WHERE b.status.status <> 'Canceled'")
+    @Query("SELECT b FROM Booking b WHERE b.status.status <> 'Cancelled'")
     List<Booking> findAllBy();
+
     Optional<List<Booking>> findByUser(User user);
 
     List<Booking> findBookingsByUser_Username(String username);
 
     Optional<Booking> findBookingByBookingId(UUID bookingId);
+
+    Optional<Booking> findByBookingId(UUID bookingId);
+
 
 }

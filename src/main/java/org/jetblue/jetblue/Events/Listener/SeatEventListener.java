@@ -41,9 +41,29 @@ public class SeatEventListener {
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
 
         switch (event.getSeatClass().toUpperCase()) {
-            case "ECONOMY" -> flight.setThirdClassReserve(flight.getThirdClassReserve() - 1);
-            case "BUSINESS" -> flight.setSecondClassReserve(flight.getSecondClassReserve() - 1);
-            case "FIRST" -> flight.setFirstClassReserve(flight.getFirstClassReserve() - 1);
+            case "ECONOMY" -> {
+                if (flight.getThirdClassReserve() <= 0) {
+                    log.warn("No economy seats to cancel for flight {}", flight.getFlightNumber());
+                    return;
+
+                }
+                flight.setThirdClassReserve(flight.getThirdClassReserve() - 1);
+            }
+            case "BUSINESS" -> {
+                if (flight.getSecondClassReserve() <= 0) {
+                    log.warn("No business seats to cancel for flight {}", flight.getFlightNumber());
+                    return;
+
+                }
+                flight.setSecondClassReserve(flight.getSecondClassReserve() - 1);
+            }
+            case "FIRST" -> {
+                if (flight.getFirstClassReserve() <= 0) {
+                    log.warn("No first class seats to cancel for flight {}", flight.getFlightNumber());
+                    return;
+                }
+                flight.setFirstClassReserve(flight.getFirstClassReserve() - 1);
+            }
         }
 
         flightRepository.save(flight);

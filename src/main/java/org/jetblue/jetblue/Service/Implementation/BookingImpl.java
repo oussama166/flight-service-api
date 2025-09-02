@@ -16,8 +16,10 @@ import org.jetblue.jetblue.Models.ENUM.PaymentMethod;
 import org.jetblue.jetblue.Models.ENUM.PaymentStatus;
 import org.jetblue.jetblue.Models.ENUM.SeatType;
 import org.jetblue.jetblue.Repositories.*;
+import org.jetblue.jetblue.Service.BookingPassengerPaymentService;
 import org.jetblue.jetblue.Service.BookingService;
 import org.jetblue.jetblue.Utils.BookingUtils;
+import org.jetblue.jetblue.Utils.PriceEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
 import static org.jetblue.jetblue.Utils.BookingUtils.calculateTicketPrice;
 import static org.jetblue.jetblue.Utils.DocumentUtils.createPassengerFolderFromPath;
 import static org.jetblue.jetblue.Utils.PathEncoded.EncodeFilePath;
+import static org.jetblue.jetblue.Utils.PriceEngine.discountedPricing;
+import static org.jetblue.jetblue.Utils.PriceEngine.dynamicPricing;
 import static org.jetblue.jetblue.Utils.UserUtils.*;
 
 @Service
@@ -56,8 +60,12 @@ public class BookingImpl implements BookingService {
     // Publisher for events
     private final ApplicationEventPublisher publisher;
 
+    // Service
+    private BookingPassengerPaymentService bookingPassengerPaymentService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(BookingImpl.class);
+    private final BookingPassengerPaymentRepo bookingPassengerPaymentRepo;
     // TODO : Need to implement a booking stack priority for booking logic
     // !ANCHOR : Data need to be appreciated here
 
@@ -83,7 +91,6 @@ public class BookingImpl implements BookingService {
         verifyUser(user);
         checkSeatAvailability(seat, flight);
         ensureSeatIsNotReserved(seat);
-
         boolean verifyUserDocuments = verifyUserDocuments(passengerRepo.findPassengerByUser_UsernameAndFirstNameAndLastNameAndBirthDate(
                         user.getUsername(),
                         user.getName(),
@@ -161,16 +168,18 @@ public class BookingImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookingFeeResponse setBookings(String username, Set<SeatPassengerDTO> passengerDTOSet) {
+    public BookingFeeResponse setBookings(String username, Set<SeatPassengerDTO> passengerDTOSet, String flightNumber) {
         validateUser(username);
         validatePassengerSet(passengerDTOSet);
+        validateBookingUser(username, flightNumber);
+        validateFlightReservation(passengerDTOSet);
 
         User user = findUserByUsername(username);
         verifyUser(user);
 
         double totalPrice = 0.0;
         List<String> seatsLabels = new ArrayList<>();
-        Flight bookedFlight = null; // keep reference for response
+        Flight bookedFlight = null;
 
         for (SeatPassengerDTO seatDTO : passengerDTOSet) {
             Seat seatInfo = seatsRepo.findById(seatDTO.getSeatNumber())
@@ -184,11 +193,16 @@ public class BookingImpl implements BookingService {
                         "Flight not found for seat number: " + seatDTO.getSeatNumber()
                 );
             }
-            bookedFlight = flight; // all seats must belong to same flight
+
+            // Ensure same flight
+            if (bookedFlight == null) {
+                bookedFlight = flight;
+            } else if (!(bookedFlight.getId() == flight.getId())) {
+                throw new IllegalArgumentException("All seats must belong to the same flight");
+            }
 
             Passenger passenger = buildPassenger(seatDTO, user);
             Seat availableSeat = gettingSeat(flight.getId(), seatInfo.getSeatLabel());
-
 
             String validationMsg = BookingUtils.validatePassenger(passenger, flight);
             if (validationMsg != null) {
@@ -197,35 +211,36 @@ public class BookingImpl implements BookingService {
 
             checkSeatAvailability(availableSeat, flight);
             ensureSeatIsNotReserved(availableSeat);
-            /*
-                ATTENTION : Verify user documents This will throw an exception if the documents are not verified min document required Visa And Passport
-            */
-            boolean verifyUserDocuments = verifyUserDocuments(passengerRepo.findPassengerByUser_UsernameAndFirstNameAndLastNameAndBirthDate(
+
+            Passenger existingPassenger = passengerRepo
+                    .findPassengerByUser_UsernameAndFirstNameAndLastNameAndBirthDate(
                             user.getUsername(),
                             passenger.getFirstName(),
                             passenger.getLastName(),
                             passenger.getBirthDate()
-                    ).get()
-            );
+                    )
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Passenger documents not found for: " + passenger.getFirstName() + " " + passenger.getLastName()
+                    ));
 
-            if (!verifyUserDocuments) {
-                throw new IllegalArgumentException("User documents are not verified for passenger: " + passenger.getFirstName() + " " + passenger.getLastName());
+            if (!verifyUserDocuments(existingPassenger)) {
+                throw new IllegalArgumentException("User documents are not verified for passenger: " +
+                                                   passenger.getFirstName() + " " + passenger.getLastName());
             }
+
             if (bookingPassengerRepo.existsByPassenger_IdAndSeat_Flight_Id(passenger.getId(), flight.getId())) {
-                throw new IllegalArgumentException("Seat " + availableSeat.getSeatLabel() + " is already booked for flight " + flight.getFlightNumber());
+                throw new IllegalArgumentException("Passenger already booked for flight " + flight.getFlightNumber());
             }
 
             availableSeat.setAvailable(false);
-
             seatsRepo.save(availableSeat);
 
-            // ATTENTION : Publish the event after booking is saved
             publisher.publishEvent(new SeatReservedEvent(this, flight.getId(), availableSeat.getSeatType().toSeatTypeName()));
 
             double passengerPrice = calculateTicketPrice(passenger, seatInfo);
-            totalPrice += passengerPrice;
+            double discountedPricing = discountedPricing(seatInfo.getSeatType(), passengerPrice, passengerDTOSet.size());
+            totalPrice += discountedPricing;
 
-            // Create booking for this passenger
             Booking booking = Booking.builder()
                     .flight(flight)
                     .user(user)
@@ -237,7 +252,30 @@ public class BookingImpl implements BookingService {
 
             bookingRepo.save(booking);
 
-            // Attach passenger to booking
+            // Ensure user has at least 1 credit card
+            if (user.getCreditCards().isEmpty()) {
+                throw new IllegalArgumentException("User has no registered credit card for payment");
+            }
+
+            Payment payment = Payment.builder()
+                    .booking(booking)
+                    .amount(Double.toString(discountedPricing))
+                    .currency("USD")
+                    .method(PaymentMethod.CREDIT_CARD)
+                    .paymentGateway(PaymentGateway.STRIPE)
+                    .status(PaymentStatus.PENDING)
+                    .creditCard(user.getCreditCards().get(0))
+                    .build();
+
+            paymentRepo.save(payment);
+
+            bookingPassengerPaymentService.addBookingPassengerPayment(
+                    user.getUsername(),
+                    booking.getBookingId().toString(),
+                    passenger.getId(),
+                    payment.getId()
+            );
+
             bookingPassengerRepo.save(
                     BookingPassenger.builder()
                             .booking(booking)
@@ -258,6 +296,34 @@ public class BookingImpl implements BookingService {
                 .flightNumber(bookedFlight.getFlightNumber())
                 .seatLabel(seatsLabels)
                 .build();
+    }
+
+    private void validateFlightReservation(Set<SeatPassengerDTO> passengerDTOSet) {
+        Set<Long> flightIds = passengerDTOSet.stream()
+                .map(dto -> seatsRepo.findById(dto.getSeatNumber())
+                        .orElseThrow(() -> new DataAccessResourceFailureException(
+                                "Seat not found for seat number: " + dto.getSeatNumber()
+                        ))
+                        .getFlight()  // assuming Seat entity has a getFlight() method
+                        .getId()
+                )
+                .collect(Collectors.toSet());
+
+        // If more than 1 flightId is present, seats belong to multiple flights
+        if (flightIds.size() > 1) {
+            throw new IllegalArgumentException("All seats must belong to the same flight");
+        }
+
+    }
+
+    private void validateBookingUser(String username, String flightNumber) {
+        // Check if there is any booking for this user in the given flight
+        long bookingCount = bookingPassengerPaymentRepo
+                .countByFlight_FlightNumberAndUser_Username(flightNumber, username);
+
+        if (bookingCount > 9) {
+            throw new IllegalArgumentException("User " + username + "cannot book more than 9 seats on this flight");
+        }
     }
 
 
@@ -373,7 +439,7 @@ public class BookingImpl implements BookingService {
             throw new IllegalStateException("Booking is already canceled");
         }
         // Update the booking status to "Canceled"
-        BookingStatus canceledStatus = bookingStatusRepo.findByStatus("Canceled")
+        BookingStatus canceledStatus = bookingStatusRepo.findByStatus("Cancelled")
                 .orElseThrow(() -> new DataIntegrityViolationException("Canceled booking status not found"));
         booking.setStatus(canceledStatus);
         bookingRepo.save(booking);

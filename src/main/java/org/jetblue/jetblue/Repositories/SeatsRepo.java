@@ -43,4 +43,6 @@ public interface SeatsRepo extends JpaRepository<Seat, Long> {
     List<Seat> findByFlight_FlightNumber(String flightNumber);
 
     Optional<Seat> findFirstByFlight_IdAndSeatLabel(long id, String seatLabel);
+
+
 }
