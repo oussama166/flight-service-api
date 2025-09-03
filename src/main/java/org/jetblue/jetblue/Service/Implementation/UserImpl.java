@@ -7,10 +7,13 @@ import org.jetblue.jetblue.Mapper.Passenger.PassengerRequest;
 import org.jetblue.jetblue.Mapper.User.UserMapper;
 import org.jetblue.jetblue.Mapper.User.UserResponseBasic;
 import org.jetblue.jetblue.Mapper.User.UserUpdateRequest;
+import org.jetblue.jetblue.Models.DAO.RefreshToken;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.ENUM.Role;
+import org.jetblue.jetblue.Repositories.RefreshTokenRepo;
 import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
 import org.jetblue.jetblue.Repositories.UserRepo;
+import org.jetblue.jetblue.Service.MailingServices.EmailImpl;
 import org.jetblue.jetblue.Service.PassengerService;
 import org.jetblue.jetblue.Service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,10 +23,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
-@AllArgsConstructor
 public class UserImpl implements UserService {
 
     static int USER_CHALLENGE_PASSWORD = 3;
@@ -31,8 +34,21 @@ public class UserImpl implements UserService {
     // Inject the user repo
     private final UserRepo userRepo;
     private final UserPreferenceRepo userPreferenceRepo;
+    private final RefreshTokenRepo refreshTokenRepo;
+    private final PasswordEncoder passwordEncoder;
+
+
+    private final EmailImpl emailImpl;
     private final PassengerService passengerService;
 
+    public UserImpl(UserRepo userRepo, UserPreferenceRepo userPreferenceRepo, RefreshTokenRepo refreshTokenRepo, EmailImpl emailImpl, PassengerService passengerService) {
+        this.userRepo = userRepo;
+        this.userPreferenceRepo = userPreferenceRepo;
+        this.refreshTokenRepo = refreshTokenRepo;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.emailImpl = emailImpl;
+        this.passengerService = passengerService;
+    }
 
     @Override
     public UserResponseBasic findUserBasicByUsername(String username) throws Exception {
@@ -55,6 +71,7 @@ public class UserImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean createUser(User user, String passportNumber, LocalDate passportExpirationDate) {
         if (user == null) return false;
         if (user.getUsername().isBlank() || user.getEmail().isBlank()) return false;
@@ -63,7 +80,11 @@ public class UserImpl implements UserService {
         if (userOpt != null) {
             return false;
         } else {
-            userRepo.save(user);
+            try {
+                userRepo.save(verifyUser(user));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             // Create user passenger
             if (user.getRole() == Role.User) {
                 passengerService.createPassenger(
@@ -149,6 +170,34 @@ public class UserImpl implements UserService {
             userRepo.delete(user);
             return true;
         }
+    }
+
+
+    public RefreshToken generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+        String hashedToken = passwordEncoder.encode(token);
+        // save token in DB linked to user
+
+        return refreshTokenRepo.save(
+                RefreshToken
+                        .builder()
+                        .token(token).user(user)
+                        .refreshToken(hashedToken)
+                        .build()
+        );
+    }
+
+    public User verifyUser(User user) throws Exception {
+        if (user.getEmail() == null || user.getEmail().isBlank()) return null;
+
+        RefreshToken refreshToken = generateVerificationToken(user);
+
+        emailImpl.sendVerificationEmail(user, refreshToken.getRefreshToken());
+
+        user.setRefreshTokens(refreshToken);
+
+        return user;
+
     }
 
 

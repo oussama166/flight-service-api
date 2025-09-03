@@ -9,7 +9,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,7 +19,19 @@ spring:
         hbm2ddl.auto: update
         check_nullability: true
         hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
-#    show-sql: true             # Enable basic SQL logging to console
+  #    show-sql: true             # Enable basic SQL logging to console
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+          enable: true
+    test-connection: true
 
 logging:
   level:

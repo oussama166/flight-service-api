@@ -49,7 +49,7 @@ public class SecurityConfiguration {
         //noinspection removal
         return http.csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/login", "/error").permitAll()
+                        .requestMatchers("/login", "/error","/api/verify").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new authFilter(tokenImpl), UsernamePasswordAuthenticationFilter.class)
