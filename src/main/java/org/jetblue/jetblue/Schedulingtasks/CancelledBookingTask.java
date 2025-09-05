@@ -22,8 +22,8 @@ public class CancelledBookingTask {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     // every day at midnight, this method will be executed
-    // @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 0/5 * * * ?")
+//    @Scheduled(cron = "0 0/5 * * * ?")
+     @Scheduled(cron = "0 0 0 * * *")
     public void cancelBooking() {
         log.info(TASK_NAME + " Fire up at {}", dateFormat.format(new Date()));
         bookingService.getAllBookings().forEach(booking -> {
