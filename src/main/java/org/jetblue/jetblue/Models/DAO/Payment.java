@@ -40,4 +40,8 @@ public class Payment {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @OneToOne
+    @JoinColumn(name = "refund_request_id")
+    private RefundUserRequest refundUserRequest;
+
 }

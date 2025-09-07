@@ -1,10 +1,12 @@
 package org.jetblue.jetblue.Utils;
 
 import com.stripe.model.PaymentIntent;
-import org.jetblue.jetblue.Models.DAO.BookingPassengerPayment;
-import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Models.DAO.*;
+import org.jetblue.jetblue.Models.ENUM.ReasonStatus;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MailTemplatesUtils {
@@ -98,55 +100,90 @@ public class MailTemplatesUtils {
                 .replace("{{verification_url}}", verificationLink);
     }
 
+    public static String generateRefundRequestBody(User user, Flight flight, Seat seat, BookingPassenger bookingPassenger, double penalty, RefundUserRequest refundUserRequest) {
+
+        String recipeDetails =
+                """
+                                <tr>
+                                    <td>{{passenger_fullName}}</td>
+                                    <td>{{seat_label}}</td>
+                                    <td>{{full_amount}}</td>
+                                    <td>{{reason_title}}</td>
+                                    <td>{{penalty_percentage}}</td>
+                                    <td>{{refunded_price}}</td>
+                                </tr>
+                        """;
+
+        Date date = new Date(); // your date object
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM yyyy HH:mm:ss");
+        return generateTemplateHtmlRefundRequestToUser()
+                .replace("{{name}}", user.getName() + " " + user.getLastName())
+                .replace("{{flight_number}}", flight.getFlightNumber())
+                .replace("{{seat_number}}", seat.getSeatLabel())
+                .replace("{{from}}", flight.getDeparture().getLocation())
+                .replace("{{to}}", flight.getArrival().getLocation())
+                .replace("{{request_date}}", formatter.format(refundUserRequest.getCreatedAt()))
+                .replace("{{receipt_details}}", recipeDetails
+                        .replace("{{passenger_fullName}}", bookingPassenger.getPassenger().getFirstName() + " " + bookingPassenger.getPassenger().getLastName())
+                        .replace("{{seat_label}}", seat.getSeatLabel())
+                        .replace("{{full_amount}}", String.valueOf(bookingPassenger.getSeat().getPrice()))
+                        .replace("{{reason_title}}", ReasonStatus.getReason(refundUserRequest.getReasonTitle()))
+                        .replace("{{penalty_percentage}}", String.valueOf(penalty * 100) + "%")
+                        .replace("{{refunded_price}}", String.valueOf(refundUserRequest.getRefundAmount()))
+                )
+                .replace("{{total_refund}}", String.valueOf(refundUserRequest.getRefundAmount()))
+                .replace("{{receipt_id}}", refundUserRequest.getId());
+
+    }
+    //!WARNING: INCOMPLETE METHOD
 
 
-
-
-    public static String  generateTemplateHtmlWelcome(){
+    public static String generateTemplateHtmlWelcome() {
         return
                 """
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <title>Welcome to JetBlue</title>
-                        </head>
-                        <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td align="center" style="padding: 20px 0;">
-                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                            <tr>
-                                                <td style="padding: 30px; color: #333333;">
-                                                    <h2 style="color: #0047ab; margin-top: 0;">Dear {{full_name}},</h2>
-                                                   \s
-                                                    <p>Welcome to <strong>JetBlue</strong>! We are thrilled to have you as a part of our travel family. Whether you're flying for business or leisure, we are committed to providing you with an exceptional experience.</p>
-                                                   \s
-                                                    <p>As a valued customer, you can look forward to:</p>
-                                                    <ul style="padding-left: 20px; color: #444444;">
-                                                        <li>Comfortable seating and spacious cabins</li>
-                                                        <li>Delicious in-flight meals and snacks</li>
-                                                        <li>Friendly and attentive service from our crew</li>
-                                                        <li>A wide range of entertainment options</li>
-                                                    </ul>
-                                                   \s
-                                                    <p>We are dedicated to making your journey with us enjoyable and memorable. If you have any questions or need assistance, please do not hesitate to reach out to our customer service team.</p>
-                                                   \s
-                                                    <p>Thank you for choosing <strong>JetBlue</strong>. We look forward to serving you on your next flight!</p>
-                                                   \s
-                                                    <p style="margin-top: 30px;">Best regards,<br>
-                                                    <strong>The JetBlue Team</strong></p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </body>
-                        </html>
+                                <!DOCTYPE html>
+                                <html lang="en">
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <title>Welcome to JetBlue</title>
+                                </head>
+                                <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
+                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td align="center" style="padding: 20px 0;">
+                                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                                    <tr>
+                                                        <td style="padding: 30px; color: #333333;">
+                                                            <h2 style="color: #0047ab; margin-top: 0;">Dear {{full_name}},</h2>
+                                                           \s
+                                                            <p>Welcome to <strong>JetBlue</strong>! We are thrilled to have you as a part of our travel family. Whether you're flying for business or leisure, we are committed to providing you with an exceptional experience.</p>
+                                                           \s
+                                                            <p>As a valued customer, you can look forward to:</p>
+                                                            <ul style="padding-left: 20px; color: #444444;">
+                                                                <li>Comfortable seating and spacious cabins</li>
+                                                                <li>Delicious in-flight meals and snacks</li>
+                                                                <li>Friendly and attentive service from our crew</li>
+                                                                <li>A wide range of entertainment options</li>
+                                                            </ul>
+                                                           \s
+                                                            <p>We are dedicated to making your journey with us enjoyable and memorable. If you have any questions or need assistance, please do not hesitate to reach out to our customer service team.</p>
+                                                           \s
+                                                            <p>Thank you for choosing <strong>JetBlue</strong>. We look forward to serving you on your next flight!</p>
+                                                           \s
+                                                            <p style="margin-top: 30px;">Best regards,<br>
+                                                            <strong>The JetBlue Team</strong></p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </body>
+                                </html>
                         
-                """;
+                        """;
     }
+
     public static String generateTemplateHtmlEmailReceipt() {
         return """
                 <!DOCTYPE html>
@@ -1180,6 +1217,71 @@ public class MailTemplatesUtils {
                     </table>
                   </body>
                 </html>
+                """;
+    }
+
+    public static String generateTemplateHtmlRefundRequestToUser() {
+        return """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>Refund Request Pending</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; color: #333; background-color: #F2F4F6; }
+                                .container { max-width: 80vw; margin: auto; padding: 20px; background-color: #fff; border-radius: 10px; }
+                                h1 { color: #333; font-size: 22px; }
+                                p { font-size: 14px; color: #333; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+                                th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; word-wrap: break-word; }
+                                th { background-color: #f2f2f2; }
+                                .status { font-weight: bold; color: #ff9800; }
+                                .total { font-weight: bold; text-align: right; }
+                                .total_label { text-align : left; }
+                                .total_price { text-align : left;}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>Hi {{name}},</h1>
+                        <p>Your refund request has been <span class="status">received and is currently pending</span>. Our team is reviewing it, and you will be notified once it has been processed.</p>
+                
+                        <div>
+                            <h2>Refund Details:</h2>
+                            <p><strong>Flight Number:</strong> {{flight_number}}</p>
+                            <p><strong>From: </strong> {{from}}</p>
+                            <p><strong>To: </strong> {{to}}</p>
+                            <p><strong>Request Date:</strong> {{request_date}}</p>
+                        </div>
+                
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Passenger Name</th>
+                                    <th>Seat Number</th>
+                                    <th>Amount Paid (USD)</th>
+                                    <th>Refund Reason</th>
+                                    <th>Percentage Refunded (%)</th>
+                                    <th>Refund Amount (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{receipt_details}}
+                                 <tr>
+                                    <td class="total total_label" colspan="5">Total Refund</td>
+                                    <td class="total total_price">{{total_refund}}</td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                
+                        <p><strong>Refund Request ID:</strong> {{receipt_id}}</p>
+                        <p>If you have any questions regarding your refund, please contact our <a href="{{support_url}}">support team</a>.</p>
+                        <p>Thank you for your patience,<br>[Product Name] Team</p>
+                    </div>
+                </body>
+                </html>
+                
                 """;
     }
 

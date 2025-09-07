@@ -53,6 +53,7 @@ public class SecurityConfiguration {
                                 "/login",
                                 "/error",
                                 "/api/verify",
+                                "/api/user",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",

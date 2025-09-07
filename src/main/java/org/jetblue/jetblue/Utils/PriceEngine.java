@@ -186,4 +186,16 @@ public class PriceEngine {
         }
         return timeFactor;
     }
+
+    public static double refundPenalty(long daysUntilDeparture) {
+        if (daysUntilDeparture > 30) {
+            return 0.10; // 10% penalty for refunding more than 30 days in advance
+        } else if (daysUntilDeparture > 14) {
+            return 0.20; // 20% penalty for refunding between 15 and 30 days in advance
+        } else if (daysUntilDeparture > 7) {
+            return 0.30; // 30% penalty for refunding between 8 and 14 days in advance
+        } else {
+            return 0.50; // 50% penalty for refunding within the last week
+        }
+    }
 }

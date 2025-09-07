@@ -3,8 +3,7 @@ package org.jetblue.jetblue.Service.Implementation.NotificationImpl.Mails;
 import com.stripe.model.PaymentIntent;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.jetblue.jetblue.Models.DAO.BookingPassengerPayment;
-import org.jetblue.jetblue.Models.DAO.User;
+import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Service.NotificationServices.Mails.ReceiptMailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static org.jetblue.jetblue.Utils.MailTemplatesUtils.generateReceiptEmail;
+import static org.jetblue.jetblue.Utils.MailTemplatesUtils.generateRefundRequestBody;
 
 @Service
 public class ReceiptMailImpl implements ReceiptMailService {
@@ -51,5 +51,20 @@ public class ReceiptMailImpl implements ReceiptMailService {
     @Override
     public void sendBulkReceiptEmails(List<String> recipients, String subject, String body) {
 
+    }
+
+    @Override
+    public void sendRefundRequestEmail(String to, String subject, User user, BookingPassenger bookingPassenger, Flight flight, Seat seat, double penalty, RefundUserRequest refundReq) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(
+                generateRefundRequestBody(user, flight, seat, bookingPassenger, penalty,refundReq),
+                true
+        );
+
+        mailSender.send(mimeMessage);
     }
 }

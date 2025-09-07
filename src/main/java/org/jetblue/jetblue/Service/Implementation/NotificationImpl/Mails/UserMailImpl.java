@@ -2,7 +2,6 @@ package org.jetblue.jetblue.Service.Implementation.NotificationImpl.Mails;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Service.NotificationServices.Mails.UserMailsService;
 import org.springframework.beans.factory.annotation.Value;
