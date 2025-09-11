@@ -7,6 +7,7 @@ import org.jetblue.jetblue.Repositories.*;
 import org.jetblue.jetblue.Service.BookingPassengerPaymentService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.jetblue.jetblue.Utils.UserUtils.validateUser;

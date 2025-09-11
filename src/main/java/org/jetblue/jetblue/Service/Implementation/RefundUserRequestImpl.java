@@ -56,7 +56,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
 
         long daysToDeparture = ChronoUnit.DAYS.between(now, departure);
 
-        // if you really need double
+
         long daysToDepartureDouble = (long) daysToDeparture;
         double penalty = refundPenalty(daysToDepartureDouble);
         BigDecimal penaltyAmount = new BigDecimal(Double.valueOf(payment.getAmount()) * penalty).setScale(2, RoundingMode.HALF_UP);
@@ -66,6 +66,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
                 .paymentIntentId(payment)
                 .currency(payment.getCurrency())
                 .reasonTitle(ReasonStatus.fromString(reason))
+                .status(RefundStatus.PENDING)
                 .reasonDescription(description)
                 .refundAmount(penaltyAmount)
                 .createdAt(new Date(System.currentTimeMillis()))
@@ -88,5 +89,37 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
 
         return "success: Refund request submitted successfully";
 
+    }
+
+    @Override
+    public String getRefundPerUser(String userName){
+        List<RefundUserRequest> refunds = refundRepo.findAll(
+                (root, query, criteriaBuilder) -> criteriaBuilder.equal(
+                        root.get("paymentIntentId").get("booking").get("user").get("username"), userName
+                )
+        );
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sb.append("Refund Requests for user: ").append(userName).append("\n\n");
+        for (RefundUserRequest refund : refunds) {
+            sb.append("Refund ID: ").append(refund.getId()).append("\n");
+            sb.append("Payment ID: ").append(refund.getPaymentIntentId().getId()).append("\n");
+            sb.append("Amount: ").append(refund.getAmount()).append(" ").append(refund.getCurrency()).append("\n");
+            sb.append("Refund Amount: ").append(refund.getRefundAmount()).append(" ").append(refund.getCurrency()).append("\n");
+            sb.append("Reason: ").append(refund.getReasonTitle()).append("\n");
+            sb.append("Description: ").append(refund.getReasonDescription()).append("\n");
+            sb.append("Status: ").append(refund.getStatus()).append("\n");
+            sb.append("Created At: ").append(sdf.format(refund.getCreatedAt())).append("\n");
+            sb.append("-------------------------------\n");
+        }
+        return sb.toString();
+
+    }
+
+    public List<RefundUserRequest> getAllRefundRequests() {
+        return refundRepo.findAll(
+                (root, query, criteriaBuilder) -> criteriaBuilder.like(
+                        root.get("status").as(String.class), "%" + "PENDING" + "%")
+                );
     }
 }

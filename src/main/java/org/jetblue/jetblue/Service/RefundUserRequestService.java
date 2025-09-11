@@ -4,4 +4,6 @@ import jakarta.mail.MessagingException;
 
 public interface RefundUserRequestService {
     String processRefund(String paymentId, String reason, String description) throws MessagingException;
+
+    String getRefundPerUser(String userName);
 }
