@@ -27,6 +27,7 @@ public class RefundUserRequestMapper {
           refundUserRequest.getCurrency()
         )
       )
+      .Status(refundUserRequest.getStatus().name())
       .Reason(refundUserRequest.getReasonTitle().name())
       .Description(refundUserRequest.getReasonDescription())
       .CreateAt(refundUserRequest.getCreatedAt().toString())

@@ -6,10 +6,8 @@ import static org.jetblue.jetblue.Utils.UserUtils.getCurrentUsername;
 import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,6 +21,7 @@ import org.jetblue.jetblue.Repositories.PaymentRepo;
 import org.jetblue.jetblue.Repositories.RefundUserRequestRepo;
 import org.jetblue.jetblue.Service.NotificationServices.Mails.ReceiptMailService;
 import org.jetblue.jetblue.Service.RefundUserRequestService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -119,49 +118,21 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
       .toList();
 
     return listORefundUserRequestResponses;
-    // StringBuilder sb = new StringBuilder();
-    // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // sb.append("Refund Requests for user: ").append(userName).append("\n\n");
-    // for (RefundUserRequest refund : refunds) {
-    //   sb.append("Refund ID: ").append(refund.getId()).append("\n");
-    //   sb
-    //     .append("Payment ID: ")
-    //     .append(refund.getPaymentIntentId().getId())
-    //     .append("\n");
-    //   sb
-    //     .append("Amount: ")
-    //     .append(refund.getAmount())
-    //     .append(" ")
-    //     .append(refund.getCurrency())
-    //     .append("\n");
-    //   sb
-    //     .append("Refund Amount: ")
-    //     .append(refund.getRefundAmount())
-    //     .append(" ")
-    //     .append(refund.getCurrency())
-    //     .append("\n");
-    //   sb.append("Reason: ").append(refund.getReasonTitle()).append("\n");
-    //   sb
-    //     .append("Description: ")
-    //     .append(refund.getReasonDescription())
-    //     .append("\n");
-    //   sb.append("Status: ").append(refund.getStatus()).append("\n");
-    //   sb
-    //     .append("Created At: ")
-    //     .append(sdf.format(refund.getCreatedAt()))
-    //     .append("\n");
-    //   sb.append("-------------------------------\n");
-    // }
-    // return sb.toString();
   }
 
-  public List<RefundUserRequest> getAllRefundRequests() {
-    return refundRepo.findAll(
-      (root, query, criteriaBuilder) ->
-        criteriaBuilder.like(
-          root.get("status").as(String.class),
-          "%" + "PENDING" + "%"
-        )
-    );
+  @Override
+  public List<RefundUserRequestResponse> getAllRefundRequests() {
+    return refundRepo
+      .findAll(
+        (root, query, criteriaBuilder) ->
+          criteriaBuilder.like(
+            root.get("status").as(String.class),
+            "%" + "PENDING" + "%"
+          ),
+        Sort.by(Sort.Direction.ASC, "status")
+      )
+      .stream()
+      .map(RefundUserRequestMapper::toRefundUserRequestResponse)
+      .toList();
   }
 }

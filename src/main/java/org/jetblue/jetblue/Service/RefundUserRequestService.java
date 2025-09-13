@@ -9,4 +9,5 @@ public interface RefundUserRequestService {
     throws MessagingException;
 
   List<RefundUserRequestResponse> getRefundPerUser(String userName);
+  List<RefundUserRequestResponse> getAllRefundRequests();
 }

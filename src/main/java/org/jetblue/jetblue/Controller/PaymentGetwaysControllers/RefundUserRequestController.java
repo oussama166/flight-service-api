@@ -4,7 +4,6 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.connector.Response;
 import org.jetblue.jetblue.Mapper.RefundUserRequest.RefundUserRequestReq;
 import org.jetblue.jetblue.Mapper.RefundUserRequest.RefundUserRequestResponse;
 import org.jetblue.jetblue.Service.RefundUserRequestService;
@@ -47,5 +46,16 @@ public class RefundUserRequestController {
       return ResponseEntity.ok().body("No refunded data");
     }
     return ResponseEntity.ok().body(refundPerUser);
+  }
+
+  @GetMapping("/getRefundList")
+  @PreAuthorize("hasRole('Admin')")
+  public ResponseEntity<?> getAllRefundList() {
+    List<RefundUserRequestResponse> allRefundRequests = refundUserRequestService.getAllRefundRequests();
+
+    if (allRefundRequests.isEmpty()) {
+      return ResponseEntity.ok().body("No Refund request");
+    }
+    return ResponseEntity.ok().body(refundUserRequestService);
   }
 }
