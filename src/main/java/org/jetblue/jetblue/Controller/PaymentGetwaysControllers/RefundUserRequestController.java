@@ -58,4 +58,30 @@ public class RefundUserRequestController {
     }
     return ResponseEntity.ok().body(refundUserRequestService);
   }
+
+  @PostMapping("/declineRefund/{paymentId}")
+  @PreAuthorize("hasRole('Admin')")
+  public ResponseEntity<?> declineRefundUser(@PathVariable String paymentId) {
+    try {
+      refundUserRequestService.declineRefundUser(paymentId);
+      return ResponseEntity
+        .ok()
+        .body("The user refund request was rejected successfully");
+    } catch (Exception e) {
+      return ResponseEntity.status(404).body(e.getMessage());
+    }
+  }
+
+  @PostMapping("/approvedRefund/{paymentId}")
+  @PreAuthorize("hasRole('Admin')")
+  public ResponseEntity<?> approvedRefundUser(@PathVariable String paymentId) {
+    try {
+      refundUserRequestService.validateRefundUser(paymentId);
+      return ResponseEntity
+        .ok()
+        .body("The user refund request was refund successfully");
+    } catch (Exception e) {
+      return ResponseEntity.status(404).body(e.getMessage());
+    }
+  }
 }

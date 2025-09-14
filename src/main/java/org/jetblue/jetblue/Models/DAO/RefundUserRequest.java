@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jetblue.jetblue.Models.ENUM.ReasonStatus;
 import org.jetblue.jetblue.Models.ENUM.RefundStatus;
 
@@ -15,6 +16,7 @@ import org.jetblue.jetblue.Models.ENUM.RefundStatus;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class RefundUserRequest {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,4 +39,10 @@ public class RefundUserRequest {
 
   private BigDecimal refundAmount;
   private Date createdAt = new Date(System.currentTimeMillis());
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "handle_by")
+  private User handledBy;
+
+  private Date closedAt;
 }

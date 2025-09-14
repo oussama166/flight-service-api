@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Utils;
 import com.stripe.model.PaymentIntent;
 import org.jetblue.jetblue.Models.DAO.*;
 import org.jetblue.jetblue.Models.ENUM.ReasonStatus;
+import org.jetblue.jetblue.Models.ENUM.RefundStatus;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -100,7 +101,7 @@ public class MailTemplatesUtils {
                 .replace("{{verification_url}}", verificationLink);
     }
 
-    public static String generateRefundRequestBody(User user, Flight flight, Seat seat, BookingPassenger bookingPassenger, double penalty, RefundUserRequest refundUserRequest) {
+    public static String generateRefundRequestBody(User user, Flight flight, Seat seat, BookingPassenger bookingPassenger, double penalty, RefundUserRequest refundUserRequest, RefundStatus status) {
 
         String recipeDetails =
                 """
@@ -114,7 +115,14 @@ public class MailTemplatesUtils {
                                 </tr>
                         """;
 
-        Date date = new Date(); // your date object
+        
+        String message = switch(status.name().toString()){
+            case "PENDING" -> "received and is currently pending";
+            case "COMPLETED" -> "completed and refunded";
+            case "REJECTED" -> "rejected";
+            default -> "received and is currently pending";
+        };
+
         SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM yyyy HH:mm:ss");
         return generateTemplateHtmlRefundRequestToUser()
                 .replace("{{name}}", user.getName() + " " + user.getLastName())
@@ -132,7 +140,9 @@ public class MailTemplatesUtils {
                         .replace("{{refunded_price}}", String.valueOf(refundUserRequest.getRefundAmount()))
                 )
                 .replace("{{total_refund}}", String.valueOf(refundUserRequest.getRefundAmount()))
-                .replace("{{receipt_id}}", refundUserRequest.getId());
+                .replace("{{receipt_id}}", refundUserRequest.getId())
+                .replace("{{status}}", status.name().toLowerCase())
+                .replace("{{status_message}}", message);
 
     }
     //!WARNING: INCOMPLETE METHOD
@@ -1236,7 +1246,10 @@ public class MailTemplatesUtils {
                                 table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
                                 th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; word-wrap: break-word; }
                                 th { background-color: #f2f2f2; }
-                                .status { font-weight: bold; color: #ff9800; }
+                                .status { font-weight: bold;}
+                                .status.pending {color : #ff9800;}
+                                .status.rejected {color : #FF0000;}
+                                .status.completed {color : #00FF00;}
                                 .total { font-weight: bold; text-align: right; }
                                 .total_label { text-align : left; }
                                 .total_price { text-align : left;}
@@ -1245,7 +1258,7 @@ public class MailTemplatesUtils {
                 <body>
                     <div class="container">
                         <h1>Hi {{name}},</h1>
-                        <p>Your refund request has been <span class="status">received and is currently pending</span>. Our team is reviewing it, and you will be notified once it has been processed.</p>
+                        <p>Your refund request has been <span class="status {{status}}">{{status_message}}</span>. Our team is reviewing it, and you will be notified once it has been processed.</p>
                 
                         <div>
                             <h2>Refund Details:</h2>

@@ -2,7 +2,10 @@ package org.jetblue.jetblue.Service.Implementation.PaymentGetways;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Refund;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.RefundCreateParams;
+
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Models.DAO.*;
@@ -220,4 +223,31 @@ public class StripeImpl implements StripeService {
         // find the flight and booking
         return null;
     }
+
+    @Override
+    public String processRefund(String username, String paymentIntentId) throws StripeException {
+        
+        Payment paymentInfo = paymentRepo.findOne(
+            (root,query,builder) -> builder.equal(root.get("id"), paymentIntentId)
+        ).orElse(null);
+
+        
+
+        if (paymentInfo == null) {
+            return "";
+        }
+        System.out.println(paymentInfo.getRefundUserRequest().getRefundAmount().toString());
+
+        RefundCreateParams params = RefundCreateParams
+        .builder()
+        .setCharge(paymentInfo.getTransactionId())
+        .setAmount(paymentInfo.getRefundUserRequest()
+                   .getRefundAmount()
+                   .multiply(BigDecimal.valueOf(100)) 
+                   .longValue())
+        .build();
+        return Refund.create(params).getId();
+    }
+
+    
 }
