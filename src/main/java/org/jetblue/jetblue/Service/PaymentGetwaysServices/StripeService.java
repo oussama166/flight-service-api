@@ -9,6 +9,10 @@ public interface StripeService {
   String processPayments(String flightId)
     throws StripeException, MessagingException;
   String processPayments(String username, Flight flight) throws StripeException;
-  String processRefund(String username, String paymentIntentId)
-    throws StripeException;
+  String processRefund(
+    String username,
+    String paymentIntentId,
+    long refundedAmount
+  )
+    throws StripeException, Exception;
 }

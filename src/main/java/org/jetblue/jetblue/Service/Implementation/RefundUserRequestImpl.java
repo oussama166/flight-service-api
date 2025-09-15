@@ -4,6 +4,7 @@ import static org.jetblue.jetblue.Utils.PriceEngine.refundPenalty;
 import static org.jetblue.jetblue.Utils.UserUtils.getCurrentUsername;
 
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -188,6 +189,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
     );
   }
 
+  @Transactional
   @Override
   public void validateRefundUser(String paymentId) throws Exception {
     String handelBy = getCurrentUsername();
@@ -209,10 +211,23 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
     }
 
     // we need to refund the user
-    String resultRefund = stripeService.processRefund(
-      handelBy,
-      refundRequest.get().getPaymentIntentId().getId()
-    );
+    String resultRefund = "";
+    String idPayment = refundRequest.get().getPaymentIntentId().getId();
+
+    try {
+      resultRefund =
+        stripeService.processRefund(
+          handelBy,
+          idPayment,
+          refundRequest
+            .get()
+            .getRefundAmount()
+            .multiply(BigDecimal.valueOf(100))
+            .longValue()
+        );
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
 
     if (resultRefund.isBlank()) {
       throw new Exception("Issue in the refound process");
@@ -235,7 +250,8 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
       payment.getBooking().getBookingPassengers().get(0),
       payment.getBooking().getFlight(),
       payment.getBooking().getSeat(),
-      Double.parseDouble(refundUserRequest.getRefundAmount().toString()),
+      refundUserRequest.getRefundAmount().doubleValue() /
+      refundUserRequest.getAmount().doubleValue(),
       refundUserRequest,
       RefundStatus.COMPLETED
     );

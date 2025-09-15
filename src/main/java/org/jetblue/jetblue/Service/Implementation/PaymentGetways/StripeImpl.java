@@ -225,28 +225,25 @@ public class StripeImpl implements StripeService {
     }
 
     @Override
-    public String processRefund(String username, String paymentIntentId) throws StripeException {
+    public String processRefund(String username, String paymentIntentId,long refundedAmount) throws Exception {
         
         Payment paymentInfo = paymentRepo.findOne(
-            (root,query,builder) -> builder.equal(root.get("id"), paymentIntentId)
-        ).orElse(null);
+            (root, query, builder) -> builder.equal(root.get("id"), paymentIntentId)
+    ).orElse(null);
 
-        
+    if (paymentInfo == null) {
+        throw new Exception("Payment information not found !!");
+    }
+    String paymentTransactionId = paymentInfo.getTransactionId();
 
-        if (paymentInfo == null) {
-            return "";
-        }
-        System.out.println(paymentInfo.getRefundUserRequest().getRefundAmount().toString());
+    RefundCreateParams params = RefundCreateParams.builder()
+            .setPaymentIntent(paymentTransactionId) 
+            .setAmount(refundedAmount)
+            .build();
 
-        RefundCreateParams params = RefundCreateParams
-        .builder()
-        .setCharge(paymentInfo.getTransactionId())
-        .setAmount(paymentInfo.getRefundUserRequest()
-                   .getRefundAmount()
-                   .multiply(BigDecimal.valueOf(100)) 
-                   .longValue())
-        .build();
-        return Refund.create(params).getId();
+    Refund refund = Refund.create(params);
+
+    return refund.getId(); 
     }
 
     
