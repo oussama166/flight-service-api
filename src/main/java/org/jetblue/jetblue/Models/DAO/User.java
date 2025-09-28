@@ -13,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -83,7 +82,7 @@ public class User {
   private List<Document> documents;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private List<CreditCard> creditCards = new ArrayList<>();
+  private List<CreditCard> creditCards;
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
   private RefreshToken refreshTokens;

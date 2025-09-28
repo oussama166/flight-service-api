@@ -2,6 +2,8 @@ package org.jetblue.jetblue.Service.Implementation;
 
 import static org.jetblue.jetblue.Utils.PriceEngine.refundPenalty;
 import static org.jetblue.jetblue.Utils.UserUtils.getCurrentUsername;
+import static org.jetblue.jetblue.Utils.UserUtils.getRoleConnectedUser;
+import static org.jetblue.jetblue.Utils.UserUtils.userIsAllowed;
 
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -93,23 +95,33 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
 
     refundRepo.save(refundRequest);
 
-    mailService.sendRefundRequestEmail(
-      payment.getBooking().getUser().getEmail(),
-      "Refund Request Submitted",
-      payment.getBooking().getUser(),
-      payment.getBooking().getBookingPassengers().get(0),
-      payment.getBooking().getFlight(),
-      payment.getBooking().getSeat(),
-      penalty,
-      refundRequest,
-      payment.getRefundUserRequest().getStatus()
-    );
+    RefundStatus status = payment.getRefundUserRequest().getStatus();
+    if (refundRequest == null) {
+      throw new IllegalStateException(
+        "No refund request associated with this payment."
+      );
+    }
 
-    return "success: Refund request submitted successfully";
+    if (refundRequest.getStatus() == RefundStatus.PENDING) {
+      mailService.sendRefundRequestEmail(
+        payment.getBooking().getUser().getEmail(),
+        "Refund Request Submitted",
+        payment.getBooking().getUser(),
+        payment.getBooking().getBookingPassengers().get(0),
+        payment.getBooking().getFlight(),
+        payment.getBooking().getSeat(),
+        penalty,
+        refundRequest,
+        status
+      ); // process it
+      return "success: Refund request submitted successfully\n Mail send successful";
+    }
+    return "success: Refund request submitted successfully\n Mail send with issue";
   }
 
   @Override
   public List<RefundUserRequestResponse> getRefundPerUser(String userName) {
+    userIsAllowed("Admin");
     // rebuild this one to be able to create list of user request refund
     List<RefundUserRequest> refunds = refundRepo.findAll(
       (root, query, criteriaBuilder) ->
@@ -133,6 +145,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
 
   @Override
   public List<RefundUserRequestResponse> getAllRefundRequests() {
+    userIsAllowed("Admin");
     return refundRepo
       .findAll(
         (root, query, criteriaBuilder) ->
@@ -148,8 +161,9 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
   }
 
   @Override
-  public void declineRefundUser(String paymentId) throws Exception {
-    String handelBy = getCurrentUsername();
+  public void declineRefundUser(String paymentId, String rejectionReason)
+    throws Exception {
+    String handelBy = userIsAllowed("Admin");
 
     User treatBy = userRepo
       .findByUsername(handelBy)
@@ -172,6 +186,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
     refundUserRequest.setClosedAt(new Date());
     refundUserRequest.setHandledBy(treatBy);
     refundUserRequest.setStatus(RefundStatus.REJECTED);
+    refundUserRequest.setRejectionReason(rejectionReason);
     refundRepo.save(refundUserRequest);
 
     Payment payment = refundUserRequest.getPaymentIntentId();
@@ -193,6 +208,12 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
   @Override
   public void validateRefundUser(String paymentId) throws Exception {
     String handelBy = getCurrentUsername();
+    log.info(getRoleConnectedUser().toString());
+    if (!getRoleConnectedUser().contains("Admin")) {
+      throw new SecurityException(
+        "Access denied : you need to be admin to validate refund!!!!"
+      );
+    }
 
     User treatBy = userRepo
       .findByUsername(handelBy)
@@ -240,8 +261,12 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
     refundUserRequest.setStatus(RefundStatus.APPROVED);
     Payment payment = refundUserRequest.getPaymentIntentId();
     refundRepo.save(refundUserRequest);
+    BigDecimal refundedPercent = refundRequest
+      .get()
+      .getRefundAmount()
+      .divide(refundRequest.get().getAmount(), 4, RoundingMode.HALF_UP);
 
-    System.out.println(payment.getRefundUserRequest().getRefundAmount());
+    double refundedPercentDouble = refundedPercent.doubleValue();
 
     mailService.sendRefundRequestEmail(
       payment.getBooking().getUser().getEmail(),
@@ -250,8 +275,7 @@ public class RefundUserRequestImpl implements RefundUserRequestService {
       payment.getBooking().getBookingPassengers().get(0),
       payment.getBooking().getFlight(),
       payment.getBooking().getSeat(),
-      refundUserRequest.getRefundAmount().doubleValue() /
-      refundUserRequest.getAmount().doubleValue(),
+      refundedPercentDouble,
       refundUserRequest,
       RefundStatus.COMPLETED
     );

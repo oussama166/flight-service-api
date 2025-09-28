@@ -30,6 +30,20 @@ public interface ReceiptMailService {
     String body
   );
 
+  /**
+   * Sends an email to notify the user about the status of their refund request.
+   *
+   * @param to                the email address of the user or client
+   * @param subject           the subject of the email
+   * @param user              the User instance containing all information about the user
+   * @param bookingPassenger  the BookingPassenger instance containing all information about the booking and the passenger
+   * @param flight            the Flight instance associated with the refund request
+   * @param seat              the Seat instance associated with the booking
+   * @param penalty           the penalty amount applied to the refund
+   * @param refundReq         the RefundUserRequest instance containing details of the refund request
+   * @param status            the RefundStatus indicating the current status of the refund
+   * @throws MessagingException if an error occurs while sending the email
+   */
   void sendRefundRequestEmail(
     String to,
     String subject,

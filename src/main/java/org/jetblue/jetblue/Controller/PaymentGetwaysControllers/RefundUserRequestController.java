@@ -24,15 +24,16 @@ public class RefundUserRequestController {
 
   @PostMapping("/requestRefund/")
   @PreAuthorize("hasRole('User')")
-  public String requestRefund(
+  public ResponseEntity<?> requestRefund(
     @RequestBody @Valid RefundUserRequestReq refundUserRequest
   )
     throws MessagingException {
-    return refundUserRequestService.processRefund(
+    String processRefund = refundUserRequestService.processRefund(
       refundUserRequest.paymentId(),
       refundUserRequest.reasonTitle(),
       refundUserRequest.description()
     );
+    return ResponseEntity.ok().body(processRefund);
   }
 
   @GetMapping("/getRefundList/{userName}")
@@ -61,9 +62,12 @@ public class RefundUserRequestController {
 
   @PostMapping("/declineRefund/{paymentId}")
   @PreAuthorize("hasRole('Admin')")
-  public ResponseEntity<?> declineRefundUser(@PathVariable String paymentId) {
+  public ResponseEntity<?> declineRefundUser(
+    @PathVariable String paymentId,
+    @RequestBody String reason
+  ) {
     try {
-      refundUserRequestService.declineRefundUser(paymentId);
+      refundUserRequestService.declineRefundUser(paymentId, reason);
       return ResponseEntity
         .ok()
         .body("The user refund request was rejected successfully");

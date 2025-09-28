@@ -10,7 +10,8 @@ public interface RefundUserRequestService {
 
   void validateRefundUser(String paymentId) throws Exception;
 
-  void declineRefundUser(String paymentId) throws Exception;
+  void declineRefundUser(String paymentId, String rejectReason)
+    throws Exception;
 
   List<RefundUserRequestResponse> getRefundPerUser(String userName);
 

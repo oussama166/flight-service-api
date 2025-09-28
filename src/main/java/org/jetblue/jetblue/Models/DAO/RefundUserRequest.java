@@ -28,6 +28,9 @@ public class RefundUserRequest {
   @Column(length = 1000)
   private String reasonDescription;
 
+  @Column(length = 10000)
+  private String rejectionReason;
+
   @OneToOne(fetch = FetchType.EAGER)
   private Payment paymentIntentId;
 

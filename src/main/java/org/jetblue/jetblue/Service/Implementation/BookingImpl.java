@@ -150,7 +150,7 @@ public class BookingImpl implements BookingService {
                 .status(PaymentStatus.PENDING)
                 .creditCard(user.getCreditCards().get(0))
                 .build();
-
+    
         paymentRepo.save(payment);
 
         logger.info("Booking created successfully for user: {} on flight: {}", user.getUsername(), flight.getFlightNumber());
