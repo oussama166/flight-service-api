@@ -27,6 +27,7 @@ public class UserUtils {
         } else {
             currentUsername = principal.toString();
         }
+
         return currentUsername;
     }
 

@@ -49,7 +49,16 @@ public class SecurityConfiguration {
         //noinspection removal
         return http.csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/login", "/error","/api/verify").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/error",
+                                "/api/verify",
+                                "/api/user",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new authFilter(tokenImpl), UsernamePasswordAuthenticationFilter.class)

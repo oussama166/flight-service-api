@@ -18,6 +18,7 @@ public class JetblueApplication {
         try {
             Dotenv dotenv = Dotenv.load();
             dotenv.entries().forEach(entry -> {
+                System.out.println(entry.getValue());
                 System.setProperty(entry.getKey(), entry.getValue());
             });
         } catch (Exception e) {

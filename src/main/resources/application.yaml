@@ -1,8 +1,11 @@
 spring:
+  devtools:
+    restart:
+      enabled: false
   datasource:
     url: jdbc:mysql://localhost:8889/JetBlue?createDatabaseIfNotExist=true
-    username: ${DATABASE_NAME}
-    password: ${DATABASE_PASSWORD}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
@@ -15,16 +18,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        #        format_sql: true       # Set to true to format SQL nicely in logs
+        format_sql: true # Set to true to format SQL nicely in logs
         hbm2ddl.auto: update
         check_nullability: true
         hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
-  #    show-sql: true             # Enable basic SQL logging to console
+        show-sql: true # Enable basic SQL logging to console
   mail:
-    host: ${EMAIL_HOST}
-    port: ${EMAIL_PORT}
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
     properties:
       mail:
         smtp:
@@ -50,7 +53,7 @@ logging:
             Implementation:
 
 server:
-  port: ${LOCAL_HOST_PORT}
+  port: ${SERVER_PORT}
 
 aws:
   b2:
@@ -66,6 +69,4 @@ rsa:
 
 stripe:
   apiKey: ${STRIPE_API_KEY}
-  secretKey: ${STRIPE_SECRET_KEY}
-
-
+  secretKey: ${STRIPE_PUBLISHABLE_KEY}

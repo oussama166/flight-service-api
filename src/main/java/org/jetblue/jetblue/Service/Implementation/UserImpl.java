@@ -14,6 +14,7 @@ import org.jetblue.jetblue.Repositories.RefreshTokenRepo;
 import org.jetblue.jetblue.Repositories.UserPreferenceRepo;
 import org.jetblue.jetblue.Repositories.UserRepo;
 import org.jetblue.jetblue.Service.MailingServices.EmailImpl;
+import org.jetblue.jetblue.Service.NotificationServices.Mails.UserMailsService;
 import org.jetblue.jetblue.Service.PassengerService;
 import org.jetblue.jetblue.Service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,15 +40,17 @@ public class UserImpl implements UserService {
 
 
     private final EmailImpl emailImpl;
+    private final UserMailsService userMailsService;
     private final PassengerService passengerService;
 
-    public UserImpl(UserRepo userRepo, UserPreferenceRepo userPreferenceRepo, RefreshTokenRepo refreshTokenRepo, EmailImpl emailImpl, PassengerService passengerService) {
+    public UserImpl(UserRepo userRepo, UserPreferenceRepo userPreferenceRepo, RefreshTokenRepo refreshTokenRepo, EmailImpl emailImpl, PassengerService passengerService, UserMailsService userMailsService) {
         this.userRepo = userRepo;
         this.userPreferenceRepo = userPreferenceRepo;
         this.refreshTokenRepo = refreshTokenRepo;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.emailImpl = emailImpl;
         this.passengerService = passengerService;
+        this.userMailsService = userMailsService;
     }
 
     @Override
@@ -192,7 +195,9 @@ public class UserImpl implements UserService {
 
         RefreshToken refreshToken = generateVerificationToken(user);
 
-        emailImpl.sendVerificationEmail(user, refreshToken.getRefreshToken());
+
+
+        userMailsService.sendUserVerificationMail(user, refreshToken.getRefreshToken());
 
         user.setRefreshTokens(refreshToken);
 

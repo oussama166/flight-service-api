@@ -4,6 +4,7 @@ package org.jetblue.jetblue.Models.DAO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetblue.jetblue.Models.ENUM.PaymentStatus;
 
@@ -11,6 +12,7 @@ import org.jetblue.jetblue.Models.ENUM.PaymentStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 @Entity
 @Table(
         name = "booking_passenger_payment",

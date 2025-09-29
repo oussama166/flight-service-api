@@ -1,0 +1,48 @@
+package org.jetblue.jetblue.Models.DAO;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jetblue.jetblue.Models.ENUM.ReasonStatus;
+import org.jetblue.jetblue.Models.ENUM.RefundStatus;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
+public class RefundUserRequest {
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
+
+  @Enumerated(EnumType.STRING)
+  private ReasonStatus reasonTitle;
+
+  @Column(length = 1000)
+  private String reasonDescription;
+
+  @OneToOne(fetch = FetchType.EAGER)
+  private Payment paymentIntentId;
+
+  private BigDecimal amount;
+  private String currency;
+
+  @Enumerated(EnumType.STRING)
+  private RefundStatus status = RefundStatus.PENDING;
+
+  private BigDecimal refundAmount;
+  private Date createdAt = new Date(System.currentTimeMillis());
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "handle_by")
+  private User handledBy;
+
+  private Date closedAt;
+}

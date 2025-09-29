@@ -70,6 +70,7 @@ public class BookingImpl implements BookingService {
     // !ANCHOR : Data need to be appreciated here
 
     @Override
+    @Transactional
     public BookingResponse setBooking(String username, long flight_number, String seat_label) {
         validateUser(username);
 
@@ -492,6 +493,7 @@ public class BookingImpl implements BookingService {
     }
 
     private void ensureSeatIsNotReserved(Seat seat) {
+        System.out.println(seat.isAvailable());
         if (!seat.isAvailable()) {
             throw new IllegalArgumentException("Seat is already reserved");
         }

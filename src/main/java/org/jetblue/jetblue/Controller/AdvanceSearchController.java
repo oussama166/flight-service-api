@@ -1,20 +1,17 @@
 package org.jetblue.jetblue.Controller;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.jetblue.jetblue.Mapper.Search.SearchRequest;
 import org.jetblue.jetblue.Models.Entity.FlightItinerary;
 import org.jetblue.jetblue.Service.AdvanceSearchService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController("/v1")
 @AllArgsConstructor
