@@ -6,8 +6,6 @@ import java.util.UUID;
 import org.jetblue.jetblue.Mapper.Booking.BookingFeeResponse;
 import org.jetblue.jetblue.Mapper.Booking.BookingResponse;
 import org.jetblue.jetblue.Models.DAO.Booking;
-import org.jetblue.jetblue.Models.DAO.Seat;
-import org.jetblue.jetblue.Models.DAO.User;
 import org.jetblue.jetblue.Models.DTO.SeatPassengerDTO;
 
 public interface BookingService {
