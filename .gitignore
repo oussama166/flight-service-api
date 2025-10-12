@@ -36,6 +36,9 @@ build/
 ## Todo ##
 *.todo
 
+## Readme files ##
+BrainStorming.md
+
 *#
 
 *.jar
