@@ -1,7 +1,10 @@
 package org.jetblue.jetblue.Controller;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
+import net.minidev.json.JSONArray;
 import org.jetblue.jetblue.Mapper.FlightBaggageOffer.FlightBaggageOfferReq;
+import org.jetblue.jetblue.Mapper.FlightBaggageOffer.FlightBaggageOfferRes;
 import org.jetblue.jetblue.Service.FlightBaggageOfferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +38,13 @@ public class FlightBaggageOfferController {
     }
   }
 
-  @GetMapping("flightOffers/{flight_number}")
+  @GetMapping("flightOffers")
   public ResponseEntity<?> getMethodName(@RequestParam String flight_number) {
     try {
-      flightBaggageOfferService.showFlightOffers(flight_number);
-      return ResponseEntity.ok("Offers displayed in the console.");
+      List<FlightBaggageOfferRes> showFlightOffers = flightBaggageOfferService.showFlightOffers(
+        flight_number
+      );
+      return ResponseEntity.ok(showFlightOffers);
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     } catch (RuntimeException e) {

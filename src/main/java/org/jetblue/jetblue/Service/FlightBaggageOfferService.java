@@ -3,6 +3,8 @@ package org.jetblue.jetblue.Service;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.jetblue.jetblue.Mapper.FlightBaggageOffer.FlightBaggageOfferRes;
 import org.jetblue.jetblue.Mapper.OfferBaggageItem.OfferBaggageItemReq;
 
 public interface FlightBaggageOfferService {
@@ -13,5 +15,5 @@ public interface FlightBaggageOfferService {
     String flight_number,
     List<@Valid OfferBaggageItemReq> items
   );
-  void showFlightOffers(String flight_number);
+  List<FlightBaggageOfferRes> showFlightOffers(String flight_number);
 }

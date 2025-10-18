@@ -1,6 +1,7 @@
 package org.jetblue.jetblue.Models.DAO;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 @Entity
@@ -9,26 +10,31 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(
-        name = "booking_passengers")
+@Table(name = "booking_passengers")
 public class BookingPassenger {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  // Links to the main Booking record
+  @ManyToOne
+  @JoinColumn(name = "booking_id", nullable = false)
+  private Booking booking;
 
-    // Links to the main Booking record
-    @ManyToOne
-    @JoinColumn(name = "booking_id", nullable = false)
-    private Booking booking;
+  // Links to the Passenger's profile
+  @ManyToOne
+  @JoinColumn(name = "passenger_id", nullable = false)
+  private Passenger passenger;
 
-    // Links to the Passenger's profile
-    @ManyToOne
-    @JoinColumn(name = "passenger_id", nullable = false)
-    private Passenger passenger;
+  // Links to the seat assigned for this specific passenger on this booking
+  @ManyToOne
+  @JoinColumn(name = "seat_id", nullable = true)
+  private Seat seat;
 
-    // Links to the seat assigned for this specific passenger on this booking
-    @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = true)
-    private Seat seat;
+  @OneToOne(
+    mappedBy = "bookingPassenger",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private BookingBaggageFlight baggageFlights;
 }

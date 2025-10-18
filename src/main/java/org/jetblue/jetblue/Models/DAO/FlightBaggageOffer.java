@@ -49,6 +49,14 @@ public class FlightBaggageOffer {
   )
   private List<OfferBaggageItem> offerItems;
 
+  @OneToMany(
+    mappedBy = "flightBaggageOffer",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<BookingBaggageFlight> bookingBaggageFlights;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @PrePersist
   private void prePersist() {
     if (codeOffer == null || codeOffer.isEmpty()) {

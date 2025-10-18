@@ -3,6 +3,7 @@ package org.jetblue.jetblue.Service.Implementation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.jetblue.jetblue.Mapper.FlightBaggageOffer.FlightBaggageOfferRes;
 import org.jetblue.jetblue.Mapper.OfferBaggageItem.OfferBaggageItemReq;
 import org.jetblue.jetblue.Models.DAO.Flight;
 import org.jetblue.jetblue.Models.DAO.FlightBaggageOffer;
@@ -91,7 +92,7 @@ public class FlightBaggageOfferImpl implements FlightBaggageOfferService {
   }
 
   @Override
-  public void showFlightOffers(String flight_number) {
+  public List<FlightBaggageOfferRes> showFlightOffers(String flight_number) {
     if (flight_number == null || flight_number.isEmpty()) {
       throw new IllegalArgumentException(
         "Flight number cannot be null or empty."
@@ -108,17 +109,29 @@ public class FlightBaggageOfferImpl implements FlightBaggageOfferService {
             "Flight with number " + flight_number + " not found."
           )
       );
-    List<FlightBaggageOffer> offers = flightBaggageOfferRepo.findAll(
-      (root, query, criteriaBuilder) ->
-        criteriaBuilder.equal(root.get("flight"), flightRes)
-    );
+    List<FlightBaggageOfferRes> offers = flightBaggageOfferRepo
+      .findAll(
+        (root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(root.get("flight"), flightRes)
+      )
+      .stream()
+      .map(
+        offer ->
+          new FlightBaggageOfferRes(
+            offer.getId(),
+            offer.getCodeOffer(),
+            offer.getName(),
+            offer.getDescription(),
+            offer.getPrice()
+          )
+      )
+      .toList();
     if (offers.isEmpty()) {
       System.out.println("No offers found for flight number: " + flight_number);
     } else {
       System.out.println("Offers for flight number " + flight_number + ":");
-      for (FlightBaggageOffer offer : offers) {
-        System.out.println(offer.toString());
-      }
+      return offers;
     }
+    return null;
   }
 }
