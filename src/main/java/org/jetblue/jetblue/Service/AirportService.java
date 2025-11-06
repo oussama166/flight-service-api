@@ -15,11 +15,12 @@ public interface AirportService {
      */
 
     Airport createAirport(Airport airport);
+
     /**
      * This function is to add list of new airports to database
      *
      * @return airports
-     * */
+     */
     List<Airport> createAirports(List<AirportRequest> airports);
 
     /**
@@ -37,15 +38,22 @@ public interface AirportService {
     Airport getAirport(String code);
 
     /**
+     * This function is for getting airports info using the country of airport
+     *
+     * @return List<Airport>
+     */
+    List<Airport> getAirportsByCountry(String Country);
+
+    /**
      * This function is dedicated to get all the airports
      *
      * @return List<Airports>
      */
     List<AirportResponse> getAllAirports();
 
-
     /**
-     * This function is for deleting airports from the database using the code of the airport
+     * This function is for deleting airports from the database using the code of
+     * the airport
      *
      * @retun Boolean
      */

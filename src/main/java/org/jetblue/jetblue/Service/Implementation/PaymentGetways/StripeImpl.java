@@ -35,6 +35,14 @@ public class StripeImpl implements StripeService {
     private final ReceiptMailService receiptMailService;
 
 
+
+    @Override
+    public String  processSubPayment(String paymentId){
+        
+        return "";
+    }
+
+
     @Override
     public String processPayment(String paymentId) {
         Optional<Payment> payment = paymentRepo.findById(paymentId);

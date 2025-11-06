@@ -1,11 +1,19 @@
 package org.jetblue.jetblue.Service.Implementation;
 
+import static com.stripe.Stripe.partnerId;
 import static org.jetblue.jetblue.Utils.UserUtils.validateUser;
 
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetblue.jetblue.Models.DAO.BookingPassengerPayment;
+import org.jetblue.jetblue.Models.DAO.Payment;
+import org.jetblue.jetblue.Models.ENUM.PaymentGateway;
+import org.jetblue.jetblue.Models.ENUM.PaymentMethod;
+import org.jetblue.jetblue.Models.ENUM.PaymentStatus;
 import org.jetblue.jetblue.Repositories.BookingPassengerPaymentRepo;
 import org.jetblue.jetblue.Repositories.BookingPassengerRepo;
 import org.jetblue.jetblue.Repositories.BookingRepo;
@@ -69,6 +77,7 @@ public class BookingPassengerPaymentImpl
   }
 
   @Override
+  @Transactional
   public void updateBookingPassengerPaymentTotalAmount(
     String username,
     String bookingId,
@@ -88,47 +97,60 @@ public class BookingPassengerPaymentImpl
     );
 
     var userOpt = userRepo.findByUsername(username);
-    if (userOpt.isEmpty()) {
-      log.warn("User not found for username: {}", username);
-      throw new IllegalArgumentException("User not found: " + username);
-    }
-    var user = userOpt.get();
+    var user = userOpt.orElseThrow(
+      () -> new IllegalArgumentException("User not found: " + username)
+    );
 
     var bookingOpt = bookingRepo.findByBookingId(UUID.fromString(bookingId));
-    if (bookingOpt.isEmpty()) {
-      log.warn("Booking not found for bookingId: {}", bookingId);
-      throw new IllegalArgumentException("Booking not found: " + bookingId);
-    }
-    var booking = bookingOpt.get();
+    var booking = bookingOpt.orElseThrow(
+      () -> new IllegalArgumentException("Booking not found: " + bookingId)
+    );
 
     var passengerOpt = passengerBookingRepo.findById(passengerId);
-    if (passengerOpt.isEmpty()) {
-      log.warn("Passenger not found for passengerId: {}", passengerId);
-      throw new IllegalArgumentException("Passenger not found: " + passengerId);
-    }
-    var passenger = passengerOpt.get().getPassenger();
+    var passenger = passengerOpt
+      .orElseThrow(
+        () ->
+          new IllegalArgumentException("Passenger not found: " + passengerId)
+      )
+      .getPassenger();
 
     var flight = booking.getFlight();
-
     log.warn("BookingId: {}, Flight: {}", bookingId, flight);
 
-    var existingRecord = bookingPassengerPaymentRepo.findByFlight_FlightNumberAndUser_IdAndPassenger_Id(
-      flight.getFlightNumber(),
-      user.getId(),
-      passenger.getId()
+    Optional<Payment> existingRecord = paymentRepo.findOne(
+      (root, query, builder) ->
+        builder.equal(root.get("booking").get("bookingId"), bookingId)
     );
+
     if (existingRecord.isPresent()) {
       log.info(
-        "Updating total amount for BookingPassengerPayment record for user: {}, bookingId: {}, passengerId: {} and flight Number is {}",
+        "Updating total amount for BookingPassengerPayment record for user: {}, bookingId: {}, passengerId: {} and flight Number is {} with the amount of {} dollar",
         username,
         bookingId,
         passengerId,
-        flight.getFlightNumber()
+        flight.getFlightNumber(),
+        amount
       );
-      booking.setTotalPrice(amount);
-      var bookingPassengerPayment = existingRecord.get();
-      bookingPassengerPayment.getPayment().setAmount(String.valueOf(amount));
-      bookingPassengerPaymentRepo.save(bookingPassengerPayment);
+
+      booking.setTotalPrice(booking.getTotalPrice() + amount);
+
+      var paymentLinked = Payment
+        .builder()
+        .amount(String.valueOf(amount))
+        .currency("USD")
+        .method(PaymentMethod.CREDIT_CARD)
+        .paymentGateway(PaymentGateway.STRIPE)
+        .status(PaymentStatus.PENDING)
+        .creditCard(user.getCreditCards().get(0))
+        .build();
+
+      Payment parentPayment = existingRecord.get().getBooking().getPayment();
+      if (parentPayment == null) {
+        throw new IllegalStateException("Booking has no parent payment");
+      }
+      paymentLinked.setLinkedPayment(parentPayment);
+
+      paymentRepo.save(paymentLinked);
     } else {
       log.warn(
         "No existing BookingPassengerPayment record found for user: {}, bookingId: {}, passengerId: {} and flight Number is {}. Cannot update total amount.",

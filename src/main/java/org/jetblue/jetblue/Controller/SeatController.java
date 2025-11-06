@@ -1,5 +1,9 @@
 package org.jetblue.jetblue.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.jetblue.jetblue.Mapper.Seat.SeatResponse;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "Seat", description = "Manage seats for flights")
 public class SeatController {
   private final SeatService seatService;
   private final FlightRepo flightRepo;
@@ -22,6 +27,16 @@ public class SeatController {
     value = "/createSeat",
     consumes = "application/json",
     produces = "application/json"
+  )
+  @Operation(
+    summary = "Create a seat",
+    description = "Create a new seat for a flight"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "201", description = "Seat created"),
+      @ApiResponse(responseCode = "400", description = "Bad request"),
+    }
   )
   public ResponseEntity<?> createSeat(@RequestBody SeatCreate seat) {
     try {
@@ -40,6 +55,16 @@ public class SeatController {
     value = "/createSeats",
     consumes = "application/json",
     produces = "application/json"
+  )
+  @Operation(
+    summary = "Create multiple seats",
+    description = "Create multiple seats in batch"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "201", description = "Seats created"),
+      @ApiResponse(responseCode = "400", description = "Bad request"),
+    }
   )
   public ResponseEntity<?> createSeats(
     @RequestBody SeatCreationRequest seatCreationRequest
@@ -66,6 +91,16 @@ public class SeatController {
     consumes = "application/json",
     produces = "application/json"
   )
+  @Operation(
+    summary = "Update seat",
+    description = "Update seat details for a flight"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Seat updated"),
+      @ApiResponse(responseCode = "404", description = "Seat not found"),
+    }
+  )
   public ResponseEntity<?> updateSeat(
     @RequestParam("seatLabel") String seatLabel,
     @RequestParam("flightNumber") String flightNumber,
@@ -83,6 +118,16 @@ public class SeatController {
   }
 
   @GetMapping(value = "/getSeat/{seatFlag}", produces = "application/json")
+  @Operation(
+    summary = "Get seat by flag",
+    description = "Retrieve a seat by its flag"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Seat returned"),
+      @ApiResponse(responseCode = "204", description = "No content"),
+    }
+  )
   public ResponseEntity<?> getSeat(@PathVariable String seatFlag) {
     try {
       SeatResponse seat = seatService.getSeat(seatFlag);
@@ -99,6 +144,16 @@ public class SeatController {
     value = "/getSeats/{flightNumber}",
     consumes = "application/json",
     produces = "application/json"
+  )
+  @Operation(
+    summary = "Get seats for flight",
+    description = "Retrieve all seats for a given flight"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Seats returned"),
+      @ApiResponse(responseCode = "404", description = "Not found"),
+    }
   )
   public ResponseEntity<?> getSeats(@PathVariable String flightNumber) {
     System.out.println(flightNumber);

@@ -65,8 +65,7 @@ public class FlightBaggageBookingImpl implements FlightBaggageBookingService {
     String username = passenger.getPassenger().getUser().getUsername();
     String bookingId = passenger.getBooking().getBookingId().toString();
     Long passengerIdLong = Long.valueOf(passengerId);
-    double updatedTotal =
-      passenger.getBooking().getTotalPrice() + baggageOffer.getPrice();
+    double updatedTotal = baggageOffer.getPrice();
 
     bookingPassengerService.updateBookingPassengerPaymentTotalAmount(
       username,

@@ -1,5 +1,8 @@
 package org.jetblue.jetblue.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -30,6 +33,19 @@ public class BookingController {
     consumes = "application/json",
     produces = "application/json"
   )
+  @Operation(
+    summary = "Create booking",
+    description = "Create a booking for a user and seat on a flight"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Booking created"),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Flight or seat not found"
+      ),
+    }
+  )
   public ResponseEntity<?> setBooking(@RequestBody BookingRequest booking) {
     BookingResponse bookingRes = bookingService.setBooking(
       booking.UserName(),
@@ -47,6 +63,19 @@ public class BookingController {
     value = "setBookingList/{username}",
     consumes = "application/json",
     produces = "application/json"
+  )
+  @Operation(
+    summary = "Create multiple bookings",
+    description = "Create bookings for multiple passengers under a username"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Bookings created"),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Related resources not found"
+      ),
+    }
   )
   public ResponseEntity<?> setBookingList(
     @PathVariable(value = "username") String userName,
@@ -67,6 +96,13 @@ public class BookingController {
     value = "getUserBooking/{username}",
     consumes = "application/json",
     produces = "application/json"
+  )
+  @Operation(
+    summary = "Get user bookings",
+    description = "Retrieve all bookings for a given username"
+  )
+  @ApiResponses(
+    { @ApiResponse(responseCode = "200", description = "Bookings returned") }
   )
   public ResponseEntity<?> getUserBooking(@PathVariable String username) {
     List<BookingResponse> bookingList = bookingService.getUserBookings(

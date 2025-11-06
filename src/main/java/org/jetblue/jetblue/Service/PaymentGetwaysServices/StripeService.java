@@ -6,6 +6,7 @@ import org.jetblue.jetblue.Models.DAO.Flight;
 
 public interface StripeService {
   String processPayment(String paymentId);
+  String processSubPayment(String paymentId);
   String processPayments(String flightId)
     throws StripeException, MessagingException;
   String processPayments(String username, Flight flight) throws StripeException;

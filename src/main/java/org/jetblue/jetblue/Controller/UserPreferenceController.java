@@ -1,6 +1,9 @@
 package org.jetblue.jetblue.Controller;
 
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceRequest;
 import org.jetblue.jetblue.Mapper.UserPreference.UserPreferenceResponse;
 import org.jetblue.jetblue.Models.DAO.UserPreference;
@@ -10,75 +13,109 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "UserPreference", description = "Manage user preferences")
 public class UserPreferenceController {
+  // Inject the dependency
+  private final UserPreferenceService userPreferenceService;
 
-    // Inject the dependency
-    private final UserPreferenceService userPreferenceService;
+  public UserPreferenceController(UserPreferenceService userPreferenceService) {
+    this.userPreferenceService = userPreferenceService;
+  }
 
-
-    public UserPreferenceController(UserPreferenceService userPreferenceService) {
-        this.userPreferenceService = userPreferenceService;
+  @GetMapping(
+    value = "/userPreference/{username}",
+    consumes = "application/json",
+    produces = "application/json"
+  )
+  @Operation(
+    summary = "Get user preference",
+    description = "Retrieve preferences for a specific user"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Preferences returned"),
+      @ApiResponse(responseCode = "404", description = "Not found"),
     }
-
-    @GetMapping(
-            value = "/userPreference/{username}",
-            consumes = "application/json",
-            produces = "application/json"
-    )
-    public ResponseEntity<?> getUserPreference(
-            @PathVariable(value = "username") String username
-    ) {
-        try {
-            UserPreferenceResponse userPreference = userPreferenceService.getUserPreference(username);
-            if (userPreference == null) {
-                return ResponseEntity.notFound().build();
-            } else {
-                return ResponseEntity.ok(userPreference);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.ok("Server error occurred " + e.getMessage());
-        }
+  )
+  public ResponseEntity<?> getUserPreference(
+    @PathVariable(value = "username") String username
+  ) {
+    try {
+      UserPreferenceResponse userPreference = userPreferenceService.getUserPreference(
+        username
+      );
+      if (userPreference == null) {
+        return ResponseEntity.notFound().build();
+      } else {
+        return ResponseEntity.ok(userPreference);
+      }
+    } catch (Exception e) {
+      return ResponseEntity.ok("Server error occurred " + e.getMessage());
     }
+  }
 
-    @PostMapping(
-            value = "/setUserPreference/{username}",
-            consumes = "application/json",
-            produces = "application/json"
-    )
-    public ResponseEntity<?> setUserPreference(
-            @PathVariable(value = "username")
-            @DefaultValue(value = "oussama166")
-            String username,
-            @RequestBody UserPreferenceRequest userPreference
-    ) {
-        UserPreference userPreferenceSaved = userPreferenceService.setUserPreference(username, userPreference);
-        try {
-            if (userPreferenceSaved == null) {
-                return ResponseEntity.badRequest().body("User not found to set preference to him !!!");
-            } else {
-                return ResponseEntity.ok(userPreferenceSaved);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.ok("Server error occurred");
-        }
+  @PostMapping(
+    value = "/setUserPreference/{username}",
+    consumes = "application/json",
+    produces = "application/json"
+  )
+  @Operation(
+    summary = "Set user preference",
+    description = "Create or set preferences for a user"
+  )
+  @ApiResponses(
+    {
+      @ApiResponse(responseCode = "200", description = "Preference set"),
+      @ApiResponse(responseCode = "400", description = "Bad request"),
     }
-
-
-    @PatchMapping(
-            value = "/updateUserPreference/{username}",
-            consumes = "application/json",
-            produces = "application/json"
-    )
-    public ResponseEntity<?> updateUserPreference(
-            @PathVariable String username,
-            @RequestBody UserPreferenceRequest userPreference
-    ){
-        try {
-            UserPreference userPreferenceFeed = userPreferenceService.updateUserPreference(username, userPreference);
-            return ResponseEntity.ok(userPreferenceFeed);
-        }
-        catch (Exception e) {
-            return ResponseEntity.ok("Server error occurred " + e.getMessage());
-        }
+  )
+  public ResponseEntity<?> setUserPreference(
+    @PathVariable(value = "username") @DefaultValue(
+      value = "oussama166"
+    ) String username,
+    @RequestBody UserPreferenceRequest userPreference
+  ) {
+    UserPreference userPreferenceSaved = userPreferenceService.setUserPreference(
+      username,
+      userPreference
+    );
+    try {
+      if (userPreferenceSaved == null) {
+        return ResponseEntity
+          .badRequest()
+          .body("User not found to set preference to him !!!");
+      } else {
+        return ResponseEntity.ok(userPreferenceSaved);
+      }
+    } catch (Exception e) {
+      return ResponseEntity.ok("Server error occurred");
     }
+  }
+
+  @PatchMapping(
+    value = "/updateUserPreference/{username}",
+    consumes = "application/json",
+    produces = "application/json"
+  )
+  @Operation(
+    summary = "Update user preference",
+    description = "Update preferences for a user"
+  )
+  @ApiResponses(
+    { @ApiResponse(responseCode = "200", description = "Preference updated") }
+  )
+  public ResponseEntity<?> updateUserPreference(
+    @PathVariable String username,
+    @RequestBody UserPreferenceRequest userPreference
+  ) {
+    try {
+      UserPreference userPreferenceFeed = userPreferenceService.updateUserPreference(
+        username,
+        userPreference
+      );
+      return ResponseEntity.ok(userPreferenceFeed);
+    } catch (Exception e) {
+      return ResponseEntity.ok("Server error occurred " + e.getMessage());
+    }
+  }
 }

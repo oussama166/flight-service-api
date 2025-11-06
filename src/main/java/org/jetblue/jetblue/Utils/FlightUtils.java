@@ -9,6 +9,11 @@ public class FlightUtils {
 
     // Airplane speed in km/h
     private static final int SPEED_AIRPLANE = 900;
+    private static final int TAKE_OFF_CLIMB_MINUTES = 15;
+    private static final int LANDING_DESCENT_MINUTES = 15;
+    private static final int TAXI_GROUND_MINUTES = 10;
+    private static final int BUFFER_TIME_MINUTES = TAKE_OFF_CLIMB_MINUTES + LANDING_DESCENT_MINUTES
+            + TAXI_GROUND_MINUTES;
 
     // Calculate distance between two lat/lon points in kilometers
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -17,8 +22,8 @@ public class FlightUtils {
         double lonDistance = Math.toRadians(lon2 - lon1);
 
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
-                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                   Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -30,15 +35,16 @@ public class FlightUtils {
         return dist / SPEED_AIRPLANE;
     }
 
-    // Calculate arrival LocalDateTime given departure time and lat/lon of origin & destination
+    // Calculate arrival LocalDateTime given departure time and lat/lon of origin &
+    // destination
     public static LocalDateTime calculateArrivalTime(LocalDateTime departureTime,
-                                                     double lat1, double lon1,
-                                                     double lat2, double lon2) {
+            double lat1, double lon1,
+            double lat2, double lon2) {
         double distance = calculateDistance(lat1, lon1, lat2, lon2);
-        double flightDurationHours = estimateTimeToReachDes(distance);
+        double flightDurationHours = estimateTimeToReachDes(distance) + (double) BUFFER_TIME_MINUTES / 60.0;
 
         // Convert flight duration to minutes for adding to departureTime
-        long minutesToAdd = (long)(flightDurationHours * 60);
+        long minutesToAdd = (long) (flightDurationHours * 60);
 
         // Calculate and return arrival time
         return departureTime.plusMinutes(minutesToAdd);

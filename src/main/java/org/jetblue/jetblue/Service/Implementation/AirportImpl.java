@@ -28,7 +28,9 @@ public class AirportImpl implements AirportService {
     @Override
     public Airport createAirport(Airport airport) {
         // check if there is any airport with the same code in the same country
-        Airport airportInfo = airportRepo.findByCodeAndLatitudeAndLongitude(airport.getCode(), airport.getLatitude(), airport.getLongitude()).orElse(null);
+        Airport airportInfo = airportRepo
+                .findByCodeAndLatitudeAndLongitude(airport.getCode(), airport.getLatitude(), airport.getLongitude())
+                .orElse(null);
 
         if (airportInfo == null) {
             airportRepo.save(airport);
@@ -75,6 +77,16 @@ public class AirportImpl implements AirportService {
     @Override
     public Airport getAirport(String code) {
         return airportRepo.findByCodeOrLocation(code).orElse(null);
+    }
+
+    @Override
+    public List<Airport> getAirportsByCountry(String country) {
+        if (country == null || country.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return airportRepo.findAll(
+                (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("country"), country));
+
     }
 
     @Override
